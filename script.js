@@ -24,7 +24,7 @@ async function generateName() {
         data.names.forEach((name, index) => {
             const li = document.createElement("li");
             li.innerHTML = `<span class="font-semibold">${index + 1}.</span> ${name.replace(/\*\*/g, "").trim()}`;
-            li.classList.add("p-2", "bg-gray-200", "rounded-md", "shadow-sm");
+            li.classList.add("p-3", "bg-gray-200", "rounded-md", "shadow-sm");
             results.appendChild(li);
         });
     } else {
