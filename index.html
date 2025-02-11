@@ -3,40 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Name Generator</title>
+    <title>AI Business Name Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="bg-gradient-to-r from-blue-600 to-indigo-800 flex items-center justify-center min-h-screen">
 
-    <div class="container">
-        <h1>Business Name Generator</h1>
-        <p>Generate a short, brandable business name using AI</p>
+    <div class="bg-white p-8 rounded-lg shadow-lg text-center w-full max-w-lg">
+        <h1 class="text-3xl font-bold text-gray-800">Business Name Generator</h1>
+        <p class="text-gray-500 mt-2">Generate unique business names using AI</p>
 
-        <div class="input-group">
-            <input type="text" id="keywords" placeholder="Enter keywords (e.g., tech, AI)">
-            <button onclick="generateName()">Generate</button>
+        <div class="mt-6 flex">
+            <input type="text" id="keywords" placeholder="Enter keywords..." 
+                   class="w-full p-3 border border-gray-300 rounded-l-lg focus:ring-2 focus:ring-blue-500">
+            <button onclick="generateName()" 
+                    class="bg-blue-500 hover:bg-blue-700 text-white px-6 rounded-r-lg">Generate</button>
         </div>
 
-        <ul id="results" class="mt-4 space-y-2"></ul>
-
-        <div class="features">
-            <div class="feature-box">
-                <i>💡</i>
-                <h3>Get name ideas</h3>
-                <p>Generate short, catchy business names with AI</p>
-            </div>
-            <div class="feature-box">
-                <i>🔍</i>
-                <h3>Filter results</h3>
-                <p>Prioritize keywords, extensions, and name length</p>
-            </div>
-            <div class="feature-box">
-                <i>❤️</i>
-                <h3>Save your names</h3>
-                <p>Our AI learns your preferences over time</p>
-            </div>
-        </div>
+        <ul id="results" class="mt-6 space-y-2"></ul>
     </div>
 
     <script src="script.js"></script>
