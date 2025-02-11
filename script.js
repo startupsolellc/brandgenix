@@ -1,33 +1,46 @@
-async function generateName() {
-    const keywords = document.getElementById("keywords").value.trim();
-    if (!keywords) {
-        alert("Please enter a keyword to generate names!");
-        return;
-    }
+// Ana sayfaya yönlendirme
+function goHome() {
+    window.location.href = "index.html";
+}
 
-    const response = await fetch("/.netlify/functions/generate-name", {
+// API'den yeni isimler almak ve sonuçları karta yerleştirmek
+async function generateNames() {
+    const keywords = sessionStorage.getItem("keywords") || "Startup";
+    
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keywords })
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${API_KEY}` // Buraya API Key'inizi ekleyin
+        },
+        body: JSON.stringify({
+            model: "gpt-4o",
+            messages: [{ role: "user", content: `Generate 6 unique business name ideas based on: ${keywords}` }],
+            max_tokens: 50,
+            temperature: 0.7
+        })
     });
 
-    if (!response.ok) {
-        alert("Error: API request failed! Check your API key or try again later.");
-        return;
-    }
-
     const data = await response.json();
-    const results = document.getElementById("results");
-    results.innerHTML = "";
 
-    if (data.names) {
-        data.names.forEach((name, index) => {
-            const li = document.createElement("li");
-            li.textContent = `${index + 1}. ${name}`;
-            li.classList.add("p-3", "bg-gray-200", "rounded-full", "shadow-md");
-            results.appendChild(li);
+    if (data.choices && data.choices.length > 0) {
+        const names = data.choices[0].message.content.split("\n").filter(name => name.trim() !== "");
+        const cards = document.querySelectorAll(".card");
+
+        cards.forEach((card, index) => {
+            if (names[index]) {
+                card.innerHTML = `<div class="p-6 bg-white rounded-lg shadow-md text-center text-lg font-semibold">${names[index]}</div>`;
+            }
         });
     } else {
-        results.innerHTML = "<li class='text-red-500'>Error generating names. Try again.</li>";
+        console.error("API request failed", data);
     }
 }
+
+// "Create More" butonuna tıklayınca yeni isimler üret
+function generateMore() {
+    generateNames();
+}
+
+// Sayfa yüklendiğinde ilk isimleri üret
+window.onload = generateNames;
