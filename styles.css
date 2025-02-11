@@ -6,12 +6,13 @@ body {
     padding: 0;
 }
 
+/* Placeholder stilleri */
 input::placeholder {
-    color: #bbb;
+    color: #aaa;
     font-size: 16px;
 }
 
-/* Sonuçları daha şık hale getirme */
+/* Sonuçları şık hale getirme */
 #results li {
     background: #fff;
     padding: 12px;
@@ -20,4 +21,16 @@ input::placeholder {
     font-size: 18px;
     text-align: left;
     margin-bottom: 10px;
+}
+
+/* Başlık ve Slogan */
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+    color: #333;
+}
+
+p {
+    font-size: 18px;
+    color: #555;
 }
