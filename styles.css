@@ -29,6 +29,13 @@ input::placeholder {
     color: #333;
 }
 
+/* Açıklama Başlığı */
+#results-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
 /* Sonuç Sayfası Header */
 header {
     background: #dbe5f5;
@@ -74,25 +81,6 @@ footer a:hover {
     text-align: center;
     font-size: 1.2rem;
     font-weight: 600;
-}
-
-/* "Create More" Butonu */
-.create-more {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    background-color: #2563eb;
-    color: white;
-    font-weight: bold;
-    padding: 12px 24px;
-    border-radius: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-}
-.create-more:hover {
-    background-color: #1e40af;
-    transform: scale(1.05);
 }
 
 /* Responsive Design */
