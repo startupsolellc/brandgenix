@@ -26,6 +26,12 @@ exports.handler = async function(event) {
         });
 
         const data = await response.json();
+        console.log("📌 OpenAI API Yanıtı:", JSON.stringify(data, null, 2)); // API yanıtını logla
+
+        // API'den doğru veri gelip gelmediğini kontrol edelim
+        if (!data.choices || !data.choices[0] || !data.choices[0].text) {
+            throw new Error("OpenAI yanıtı beklenen formatta değil!");
+        }
 
         return {
             statusCode: 200,
@@ -36,7 +42,7 @@ exports.handler = async function(event) {
         console.error("❌ Error generating name:", error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: "Bir hata oluştu, lütfen tekrar deneyin." })
+            body: JSON.stringify({ error: "Server error. Check Netlify logs for details." })
         };
     }
 };
