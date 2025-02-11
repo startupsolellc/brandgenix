@@ -124,13 +124,3 @@ footer a:hover {
     100% { transform: rotate(360deg); }
 }
 
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Pacifico&family=Lobster&family=Raleway:wght@400;700&family=Oswald:wght@400;700&display=swap');
-
-/* Farklı Fontlar */
-.font-1 { font-family: 'Poppins', sans-serif; font-weight: 700; }
-.font-2 { font-family: 'Pacifico', cursive; font-weight: 400; }
-.font-3 { font-family: 'Lobster', cursive; font-weight: 400; }
-.font-4 { font-family: 'Raleway', sans-serif; font-weight: 700; }
-.font-5 { font-family: 'Oswald', sans-serif; font-weight: 700; }
-
