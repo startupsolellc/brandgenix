@@ -1,3 +1,5 @@
+const API_KEY = "YOUR_OPENAI_API_KEY"; // OpenAI API Key burada olmalı
+
 // Ana sayfaya yönlendirme
 function goHome() {
     window.location.href = "index.html";
@@ -11,7 +13,7 @@ async function generateNames() {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${API_KEY}` // Buraya API Key'inizi ekleyin
+            "Authorization": `Bearer ${API_KEY}`
         },
         body: JSON.stringify({
             model: "gpt-4o",
@@ -22,24 +24,21 @@ async function generateNames() {
     });
 
     const data = await response.json();
+    const resultsContainer = document.getElementById("results-container");
 
     if (data.choices && data.choices.length > 0) {
+        resultsContainer.innerHTML = ""; // Önceki kartları temizle
         const names = data.choices[0].message.content.split("\n").filter(name => name.trim() !== "");
-        const cards = document.querySelectorAll(".card");
-
-        cards.forEach((card, index) => {
-            if (names[index]) {
-                card.innerHTML = `<div class="p-6 bg-white rounded-lg shadow-md text-center text-lg font-semibold">${names[index]}</div>`;
-            }
+        
+        names.forEach(name => {
+            const card = document.createElement("div");
+            card.className = "p-6 bg-white rounded-lg shadow-md text-center text-lg font-semibold";
+            card.innerText = name;
+            resultsContainer.appendChild(card);
         });
     } else {
         console.error("API request failed", data);
     }
-}
-
-// "Create More" butonuna tıklayınca yeni isimler üret
-function generateMore() {
-    generateNames();
 }
 
 // Sayfa yüklendiğinde ilk isimleri üret
