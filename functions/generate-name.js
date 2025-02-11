@@ -20,8 +20,8 @@ exports.handler = async function(event) {
             body: JSON.stringify({
                 model: "gpt-4o-mini",
                 messages: [
-                    { role: "system", content: "You are a helpful assistant that generates unique business name ideas." },
-                    { role: "user", content: `Generate 5 unique business name ideas based on the following keywords: ${keywords}` }
+                    { role: "system", content: "You are a helpful assistant that generates ONLY business name ideas. Do not provide explanations, descriptions, or numbers. Only return a list of 5 business names, separated by line breaks." },
+                    { role: "user", content: `Generate 5 unique business name ideas based on the keywords: ${keywords}. Only return names, no descriptions.` }
                 ],
                 max_tokens: 100,
                 temperature: 0.7
@@ -38,9 +38,15 @@ exports.handler = async function(event) {
             };
         }
 
+        // Sadece isimleri almak için filtreleme
+        const names = data.choices[0].message.content
+            .split("\n") // Satırlara böl
+            .map(name => name.replace(/^\d+\.\s*/g, "").trim()) // Numaralandırmayı temizle
+            .filter(name => name.length > 0); // Boş satırları kaldır
+
         return {
             statusCode: 200,
-            body: JSON.stringify({ names: data.choices[0].message.content.trim().split("\n") })
+            body: JSON.stringify({ names })
         };
 
     } catch (error) {
