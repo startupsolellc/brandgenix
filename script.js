@@ -9,12 +9,11 @@ async function generateNames() {
     const resultsContainer = document.getElementById("results-container");
     const titleText = document.getElementById("results-title");
 
-    // 🔄 Loading Animasyonu Ekle
-    resultsContainer.innerHTML = `
-        <div class="loading-container">
-            <div class="spinner"></div>
-        </div>
-    `;
+    // 🔄 Loading Animasyonu Ekle (Tam Ortada)
+    const loadingDiv = document.createElement("div");
+    loadingDiv.className = "loading-container";
+    loadingDiv.innerHTML = `<div class="spinner"></div>`;
+    document.body.appendChild(loadingDiv); // Sayfanın tamamına ekle
 
     setTimeout(async () => {
         try {
@@ -26,6 +25,7 @@ async function generateNames() {
 
             const data = await response.json();
             resultsContainer.innerHTML = ""; // Önceki içeriği temizle
+            document.body.removeChild(loadingDiv); // Loading animasyonunu kaldır
 
             if (data.names && data.names.length > 0) {
                 // Başlık güncelleme
@@ -47,6 +47,7 @@ async function generateNames() {
             }
         } catch (error) {
             console.error("API request error:", error);
+            document.body.removeChild(loadingDiv); // Hata olsa bile loading kaldır
         }
     }, 8000); // ⏳ 8 saniye bekletme süresi
 }
