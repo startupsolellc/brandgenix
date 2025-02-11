@@ -3,13 +3,16 @@ function goHome() {
     window.location.href = "index.html";
 }
 
-// API'den isim üretme ve sonuçları ekrana yerleştirme (8 saniye gecikmeli + loading animasyonu)
+// Önceden üretilen isimleri saklamak için değişken
+let previousNames = new Set();
+
+// API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Loading animasyonu)
 async function generateNames() {
     const keywords = sessionStorage.getItem("keywords") || "Startup";
     const resultsContainer = document.getElementById("results-container");
     const titleText = document.getElementById("results-title");
 
-    // 🔄 Loading Animasyonu Ekle (Tam Ortada)
+    // 🔄 Loading Animasyonu Ekle
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "loading-container";
     loadingDiv.innerHTML = `<div class="spinner"></div>`;
@@ -17,21 +20,37 @@ async function generateNames() {
 
     setTimeout(async () => {
         try {
-            const response = await fetch("/.netlify/functions/generate-name", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ keywords })
-            });
+            let uniqueNames = [];
+            let attempts = 0;
+            const maxAttempts = 5; // Maksimum 5 kez tekrar kontrol edecek
 
-            const data = await response.json();
-            resultsContainer.innerHTML = ""; // Önceki içeriği temizle
+            while (uniqueNames.length < 4 && attempts < maxAttempts) {
+                const response = await fetch("/.netlify/functions/generate-name", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ keywords })
+                });
+
+                const data = await response.json();
+
+                if (data.names && data.names.length > 0) {
+                    const newNames = data.names.filter(name => !previousNames.has(name));
+
+                    uniqueNames.push(...newNames);
+                    uniqueNames = [...new Set(uniqueNames)]; // Her ihtimale karşı tekrarları kaldır
+                }
+
+                attempts++;
+            }
+
             document.body.removeChild(loadingDiv); // Loading animasyonunu kaldır
 
-            if (data.names && data.names.length > 0) {
-                // Başlık güncelleme
+            if (uniqueNames.length > 0) {
+                resultsContainer.innerHTML = ""; // Önceki içeriği temizle
                 titleText.innerHTML = `Generated names for "<b>${keywords}</b>":`;
 
-                data.names.slice(0, 4).forEach((name, index) => {
+                uniqueNames.slice(0, 4).forEach((name, index) => {
+                    previousNames.add(name); // İsmi kaydet
                     const card = document.createElement("div");
                     card.className = "card";
                     card.innerText = name;
@@ -40,10 +59,10 @@ async function generateNames() {
                     // 8 saniye sonra fade efekti ile kartları göster
                     setTimeout(() => {
                         card.classList.add("show");
-                    }, 500 + index * 500); // Her kartın gecikmeli görünmesi için ek süre ekledik
+                    }, 500 + index * 500);
                 });
             } else {
-                resultsContainer.innerHTML = "<p class='text-red-500'>Error generating names. Try again.</p>";
+                resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
             }
         } catch (error) {
             console.error("API request error:", error);
