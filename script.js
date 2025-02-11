@@ -5,21 +5,19 @@ function goHome() {
 
 // Önceden üretilen isimleri saklamak için değişken
 let previousNames = new Set();
-const googleFontsApiKey = process.env.GOOGLE_FONTS_API_KEY; // Netlify Environment Variable'dan API Key al
-const googleFontsApiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${googleFontsApiKey}`;
+const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
 
-// Google Fonts API’den rastgele font çekme
+// Netlify Functions üzerinden rastgele font çekme
 async function getRandomFont() {
     try {
-        const response = await fetch(googleFontsApiUrl);
+        const response = await fetch(netlifyFontsApiUrl);
         const data = await response.json();
-        
-        if (data.items && data.items.length > 0) {
-            const randomFont = data.items[Math.floor(Math.random() * data.items.length)].family;
-            return randomFont;
+
+        if (data.fonts && data.fonts.length > 0) {
+            return data.fonts[Math.floor(Math.random() * data.fonts.length)];
         }
     } catch (error) {
-        console.error("Google Fonts API request failed:", error);
+        console.error("Netlify Fonts API request failed:", error);
     }
     return "Arial"; // Hata olursa varsayılan font
 }
