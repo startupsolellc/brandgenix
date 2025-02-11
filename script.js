@@ -21,16 +21,24 @@ async function generateNames() {
 
         if (data.names && data.names.length > 0) {
             // Başlık güncelleme
-            titleText.innerHTML = `Here are five unique business name ideas inspired by the keywords "<b>${keywords}</b>":`;
+            titleText.innerHTML = `Generated names for "<b>${keywords}</b>":`;
 
             data.names.forEach(name => {
-                // Önceki numaralandırmayı temizleme
-                const cleanName = name.replace(/^\d+\.\s\*\*/g, "").replace(/\*\*/g, "");
+                // Önceki numaralandırmayı, gereksiz sloganları ve açıklamaları temizleme
+                const cleanName = name
+                    .replace(/^\d+\.\s\*\*/g, "") // Başındaki numara ve yıldızları temizle
+                    .replace(/\*\*/g, "") // Kalan yıldızları temizle
+                    .replace(/Sure!.*:/, "") // "Sure! Here are..." kısmını temizle
+                    .replace(/Feel free.*/, "") // "Feel free to mix and match..." gibi sloganları kaldır
+                    .trim(); // Boşlukları temizle
                 
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerText = cleanName;
-                resultsContainer.appendChild(card);
+                // Eğer temizlenen isim hala geçerli bir adsa ekle
+                if (cleanName.length > 0) {
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    card.innerText = cleanName;
+                    resultsContainer.appendChild(card);
+                }
             });
         } else {
             resultsContainer.innerHTML = "<p class='text-red-500'>Error generating names. Try again.</p>";
