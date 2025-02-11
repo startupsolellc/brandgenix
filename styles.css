@@ -1,5 +1,28 @@
+/* Google Fonts (Sadece Arayüz İçin) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:wght@400;700&display=swap');
+
+/* Genel Font (Modern ve Minimalist) */
 body {
-    font-family: 'Arial', sans-serif;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+}
+
+/* Başlıklar Daha Prestijli ve Şık */
+h1, h2, h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* Butonlar Dikkat Çekici ve Güçlü */
+button {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+body {
     text-align: center;
     margin: 0;
     padding: 0;
