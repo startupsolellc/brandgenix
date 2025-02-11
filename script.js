@@ -3,7 +3,7 @@ function goHome() {
     window.location.href = "index.html";
 }
 
-// API'den isim üretme ve sonuçları ekrana yerleştirme (5 saniye gecikmeli + fade animasyonu)
+// API'den isim üretme ve sonuçları ekrana yerleştirme (8 saniye gecikmeli + fade animasyonu)
 async function generateNames() {
     const keywords = sessionStorage.getItem("keywords") || "Startup";
     const resultsContainer = document.getElementById("results-container");
@@ -33,7 +33,7 @@ async function generateNames() {
                     card.innerText = name;
                     resultsContainer.appendChild(card);
 
-                    // 5 saniye sonra fade efekti ile kartları göster
+                    // 8 saniye sonra fade efekti ile kartları göster
                     setTimeout(() => {
                         card.classList.add("show");
                     }, 500 + index * 500); // Her kartın gecikmeli görünmesi için ek süre ekledik
@@ -44,7 +44,7 @@ async function generateNames() {
         } catch (error) {
             console.error("API request error:", error);
         }
-    }, 5000); // 5 saniye beklet
+    }, 8000); // 🔥 8 saniye bekletme süresi
 }
 
 // Ana sayfada anahtar kelimeyi al ve yönlendir
