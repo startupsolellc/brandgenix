@@ -5,27 +5,24 @@ async function generateName() {
         return;
     }
 
-    const apiKey = "YOUR_OPENAI_API_KEY"; // OpenAI API Anahtarını buraya ekle!
-    const response = await fetch("https://api.openai.com/v1/completions", {
+    // Netlify'deki gizli API Key ile OpenAI'ye bağlan
+    const response = await fetch("/.netlify/functions/generate-name", {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({
-            model: "gpt-4o",
-            prompt: `Generate 5 unique business name ideas based on the following keywords: ${keywords}`,
-            max_tokens: 50,
-            temperature: 0.7
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ keywords })
     });
+
+    if (!response.ok) {
+        alert("Error: API request failed! Check your API key or try again later.");
+        return;
+    }
 
     const data = await response.json();
     const results = document.getElementById("results");
     results.innerHTML = "";
 
-    if (data.choices) {
-        data.choices[0].text.trim().split("\n").forEach(name => {
+    if (data.names) {
+        data.names.forEach(name => {
             const li = document.createElement("li");
             li.textContent = name;
             results.appendChild(li);
