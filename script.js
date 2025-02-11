@@ -3,14 +3,18 @@ function goHome() {
     window.location.href = "index.html";
 }
 
-// API'den isim üretme ve sonuçları ekrana yerleştirme (8 saniye gecikmeli + fade animasyonu)
+// API'den isim üretme ve sonuçları ekrana yerleştirme (8 saniye gecikmeli + loading animasyonu)
 async function generateNames() {
     const keywords = sessionStorage.getItem("keywords") || "Startup";
     const resultsContainer = document.getElementById("results-container");
     const titleText = document.getElementById("results-title");
 
-    // Butona basınca mevcut içeriği temizle ve yükleme mesajı göster
-    resultsContainer.innerHTML = `<p class="loading-message text-gray-500 text-lg">Generating names... Please wait ⏳</p>`;
+    // 🔄 Loading Animasyonu Ekle
+    resultsContainer.innerHTML = `
+        <div class="loading-container">
+            <div class="spinner"></div>
+        </div>
+    `;
 
     setTimeout(async () => {
         try {
@@ -21,7 +25,7 @@ async function generateNames() {
             });
 
             const data = await response.json();
-            resultsContainer.innerHTML = ""; // Önceki kartları temizle
+            resultsContainer.innerHTML = ""; // Önceki içeriği temizle
 
             if (data.names && data.names.length > 0) {
                 // Başlık güncelleme
@@ -44,7 +48,7 @@ async function generateNames() {
         } catch (error) {
             console.error("API request error:", error);
         }
-    }, 8000); // 🔥 8 saniye bekletme süresi
+    }, 8000); // ⏳ 8 saniye bekletme süresi
 }
 
 // Ana sayfada anahtar kelimeyi al ve yönlendir
