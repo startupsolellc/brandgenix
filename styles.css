@@ -89,3 +89,39 @@ footer a:hover {
         grid-template-columns: 1fr;
     }
 }
+
+/* Sonuç Kartları Grid Yapısı */
+#results-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* 4 sütun */
+    gap: 20px;
+    padding: 20px;
+    max-width: 1000px;
+}
+
+/* Mobilde 2 sütun olacak */
+@media (max-width: 768px) {
+    #results-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Kart Fade Animasyonu */
+.card {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);   
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    opacity: 0;  /* Başlangıçta görünmez */
+    transform: translateY(10px); /* Hafif aşağı kayık */
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out; 
+}
+
+/* Kartlar göründüğünde animasyon */
+.card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
