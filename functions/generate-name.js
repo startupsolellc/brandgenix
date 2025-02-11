@@ -18,7 +18,7 @@ exports.handler = async function(event) {
                 "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-4o-mini",  // Model doğru
+                model: "gpt-4o-mini",
                 messages: [
                     { role: "system", content: "You are a helpful assistant that generates unique business name ideas." },
                     { role: "user", content: `Generate 5 unique business name ideas based on the following keywords: ${keywords}` }
@@ -32,4 +32,22 @@ exports.handler = async function(event) {
         console.log("📌 OpenAI API Yanıtı:", JSON.stringify(data, null, 2)); // Yanıtı konsola yazdır
 
         if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
-            throw new Error("OpenAI yanıtı beklenen formatta değil!")
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ error: "OpenAI yanıtı beklenen formatta değil!" })
+            };
+        }
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ names: data.choices[0].message.content.trim().split("\n") })
+        };
+
+    } catch (error) {
+        console.error("❌ Error generating name:", error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ error: "Server error. Check Netlify logs for details." })
+        };
+    }
+};
