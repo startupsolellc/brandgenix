@@ -1,7 +1,7 @@
 async function generateName() {
     const keywords = document.getElementById("keywords").value.trim();
     if (!keywords) {
-        alert("Please enter some keywords!");
+        alert("Lütfen anahtar kelimeleri girin!");
         return;
     }
 
@@ -12,7 +12,7 @@ async function generateName() {
     });
 
     if (!response.ok) {
-        alert("Error: API request failed! Check your API key or try again later.");
+        alert("Hata: API isteği başarısız oldu! Lütfen tekrar deneyin.");
         return;
     }
 
@@ -23,11 +23,11 @@ async function generateName() {
     if (data.names) {
         data.names.forEach((name, index) => {
             const li = document.createElement("li");
-            li.innerHTML = `<span class="font-semibold">${index + 1}.</span> ${name.replace(/\*\*/g, "").trim()}`;
-            li.classList.add("p-3", "bg-gray-200", "rounded-md", "shadow-sm");
+            li.textContent = `${index + 1}. ${name}`;
+            li.classList.add("p-3", "bg-gray-200", "rounded-full", "shadow-md");
             results.appendChild(li);
         });
     } else {
-        results.innerHTML = "<li class='text-red-500'>Error generating names. Try again.</li>";
+        results.innerHTML = "<li class='text-red-500'>Hata oluştu, lütfen tekrar deneyin.</li>";
     }
 }
