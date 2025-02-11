@@ -23,7 +23,7 @@ exports.handler = async function(event) {
                     { role: "system", content: "You are a helpful assistant that generates unique business name ideas." },
                     { role: "user", content: `Generate 5 unique business name ideas based on the following keywords: ${keywords}` }
                 ],
-                max_tokens: 50,
+                max_tokens: 100,
                 temperature: 0.7
             })
         });
