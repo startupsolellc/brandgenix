@@ -5,7 +5,6 @@ async function generateName() {
         return;
     }
 
-    // Netlify'deki gizli API Key ile OpenAI'ye bağlan
     const response = await fetch("/.netlify/functions/generate-name", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -22,9 +21,9 @@ async function generateName() {
     results.innerHTML = "";
 
     if (data.names) {
-        data.names.forEach(name => {
+        data.names.forEach((name, index) => {
             const li = document.createElement("li");
-            li.textContent = name;
+            li.textContent = `${index + 1}. ${name.replace(/\*\*/g, "").trim()}`; // Markdown formatlarını kaldır
             results.appendChild(li);
         });
     } else {
