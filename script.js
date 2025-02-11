@@ -5,14 +5,13 @@ function goHome() {
 
 // Önceden üretilen isimleri saklamak için değişken
 let previousNames = new Set();
+const googleFontsApiKey = process.env.GOOGLE_FONTS_API_KEY; // Netlify Environment Variable'dan API Key al
+const googleFontsApiUrl = `https://www.googleapis.com/webfonts/v1/webfonts?key=${googleFontsApiKey}`;
 
-// Google Fonts API URL (Kendi API Key'in varsa ekleyebilirsin, ancak ücretsiz kullanım için aşağıdaki şekilde kullanabiliriz)
-const googleFontsApi = "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyD..."; // API key gerekebilir
-
-// Rastgele Google Font seçen fonksiyon
+// Google Fonts API’den rastgele font çekme
 async function getRandomFont() {
     try {
-        const response = await fetch(googleFontsApi);
+        const response = await fetch(googleFontsApiUrl);
         const data = await response.json();
         
         if (data.items && data.items.length > 0) {
@@ -71,7 +70,7 @@ async function generateNames() {
                 uniqueNames.slice(0, 4).forEach(async (name, index) => {
                     previousNames.add(name); // İsmi kaydet
                     const card = document.createElement("div");
-                    
+
                     // Dinamik olarak rastgele bir font al
                     const randomFont = await getRandomFont();
 
