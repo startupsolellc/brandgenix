@@ -6,13 +6,12 @@
     <title>StartupSole Name Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="img/favicon.png">  <!-- Favicon Güncellendi -->
+    <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
 <body class="bg-gradient-to-b from-[#EAEFF7] to-[#F1F4F9] flex flex-col items-center min-h-screen">
 
     <!-- Merkezi İçerik -->
     <div class="flex flex-col items-center justify-center flex-grow space-y-8">
-        <!-- Başlık ve Slogan -->
         <div class="text-center">
             <h1 class="text-4xl font-extrabold text-gray-800">StartupSole Name Generator</h1>
             <p class="text-gray-500 text-lg mt-2">Generate a short, brandable business name using artificial intelligence</p>
@@ -23,7 +22,7 @@
             <div class="flex items-center bg-white rounded-full shadow-md w-full p-3">
                 <input type="text" id="keywords" placeholder="Enter a keyword to spark creativity..." 
                     class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4">
-                <button onclick="generateName()" 
+                <button onclick="redirectToResults()" 
                         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">
                     Generate Name
                 </button>
@@ -31,10 +30,6 @@
         </div>
     </div>
 
-    <!-- Sonuçlar -->
-    <ul id="results" class="mt-6 space-y-2 w-full max-w-2xl"></ul>
-
-    <!-- Alt Kısım -->
     <footer class="mt-auto w-full py-6 bg-transparent text-center text-gray-600">
         <div class="space-x-4">
             <a href="https://startupsole.com/" class="hover:text-blue-600">Anasayfa</a>
@@ -45,6 +40,16 @@
         <p class="mt-4 text-sm">&copy; 2025 STARTUPSOLE LLC</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        function redirectToResults() {
+            const keywords = document.getElementById("keywords").value.trim();
+            if (keywords === "") {
+                alert("Please enter a keyword!");
+                return;
+            }
+            sessionStorage.setItem("keywords", keywords);
+            window.location.href = "results.html";
+        }
+    </script>
 </body>
 </html>
