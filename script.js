@@ -23,10 +23,11 @@ async function generateName() {
     if (data.names) {
         data.names.forEach((name, index) => {
             const li = document.createElement("li");
-            li.textContent = `${index + 1}. ${name.replace(/\*\*/g, "").trim()}`; // Markdown formatlarını kaldır
+            li.innerHTML = `<span class="font-semibold">${index + 1}.</span> ${name.replace(/\*\*/g, "").trim()}`;
+            li.classList.add("p-2", "bg-gray-200", "rounded-md", "shadow-sm");
             results.appendChild(li);
         });
     } else {
-        results.innerHTML = "<li>Error generating names. Try again.</li>";
+        results.innerHTML = "<li class='text-red-500'>Error generating names. Try again.</li>";
     }
 }
