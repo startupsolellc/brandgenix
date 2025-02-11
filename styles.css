@@ -94,12 +94,17 @@ footer a:hover {
     }
 }
 
-/* 🔄 Spinning Gear Animasyonu */
+/* 🔄 Spinning Gear Animasyonu (Tam Ortalanmış) */
 .loading-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 250px;
+    width: 100vw;
+    height: 100vh;
 }
 
 .spinner {
