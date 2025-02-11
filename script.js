@@ -1,7 +1,7 @@
 async function generateName() {
     const keywords = document.getElementById("keywords").value.trim();
     if (!keywords) {
-        alert("Lütfen anahtar kelimeleri girin!");
+        alert("Please enter a keyword to generate names!");
         return;
     }
 
@@ -12,7 +12,7 @@ async function generateName() {
     });
 
     if (!response.ok) {
-        alert("Hata: API isteği başarısız oldu! Lütfen tekrar deneyin.");
+        alert("Error: API request failed! Check your API key or try again later.");
         return;
     }
 
@@ -28,6 +28,6 @@ async function generateName() {
             results.appendChild(li);
         });
     } else {
-        results.innerHTML = "<li class='text-red-500'>Hata oluştu, lütfen tekrar deneyin.</li>";
+        results.innerHTML = "<li class='text-red-500'>Error generating names. Try again.</li>";
     }
 }
