@@ -5,9 +5,27 @@ function goHome() {
 
 // Önceden üretilen isimleri saklamak için değişken
 let previousNames = new Set();
-const fontClasses = ["font-1", "font-2", "font-3", "font-4", "font-5"]; // Kullanılacak fontlar
 
-// API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Loading animasyonu)
+// Google Fonts API URL (Kendi API Key'in varsa ekleyebilirsin, ancak ücretsiz kullanım için aşağıdaki şekilde kullanabiliriz)
+const googleFontsApi = "https://www.googleapis.com/webfonts/v1/webfonts?key=AIzaSyD..."; // API key gerekebilir
+
+// Rastgele Google Font seçen fonksiyon
+async function getRandomFont() {
+    try {
+        const response = await fetch(googleFontsApi);
+        const data = await response.json();
+        
+        if (data.items && data.items.length > 0) {
+            const randomFont = data.items[Math.floor(Math.random() * data.items.length)].family;
+            return randomFont;
+        }
+    } catch (error) {
+        console.error("Google Fonts API request failed:", error);
+    }
+    return "Arial"; // Hata olursa varsayılan font
+}
+
+// API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
     const keywords = sessionStorage.getItem("keywords") || "Startup";
     const resultsContainer = document.getElementById("results-container");
@@ -50,12 +68,22 @@ async function generateNames() {
                 resultsContainer.innerHTML = ""; // Önceki içeriği temizle
                 titleText.innerHTML = `Generated names for "<b>${keywords}</b>":`;
 
-                uniqueNames.slice(0, 4).forEach((name, index) => {
+                uniqueNames.slice(0, 4).forEach(async (name, index) => {
                     previousNames.add(name); // İsmi kaydet
                     const card = document.createElement("div");
-                    const randomFont = fontClasses[Math.floor(Math.random() * fontClasses.length)]; // Rastgele font seç
+                    
+                    // Dinamik olarak rastgele bir font al
+                    const randomFont = await getRandomFont();
 
-                    card.className = `card ${randomFont}`; // Kartın class'ına rastgele font ekle
+                    // Fontu sayfaya yükle
+                    const link = document.createElement("link");
+                    link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}&display=swap`;
+                    link.rel = "stylesheet";
+                    document.head.appendChild(link);
+
+                    // Kartın stilini fonta göre değiştir
+                    card.style.fontFamily = `"${randomFont}", sans-serif`;
+                    card.className = "card";
                     card.innerText = name;
                     resultsContainer.appendChild(card);
 
