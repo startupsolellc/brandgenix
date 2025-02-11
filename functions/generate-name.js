@@ -11,38 +11,25 @@ exports.handler = async function(event) {
             };
         }
 
-        const response = await fetch("https://api.openai.com/v1/completions", {
+        const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
                 "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
             },
             body: JSON.stringify({
-                model: "gpt-4o-mini",
-                prompt: `Generate 5 unique business name ideas based on the following keywords: ${keywords}`,
+                model: "gpt-4o-mini",  // Model doğru
+                messages: [
+                    { role: "system", content: "You are a helpful assistant that generates unique business name ideas." },
+                    { role: "user", content: `Generate 5 unique business name ideas based on the following keywords: ${keywords}` }
+                ],
                 max_tokens: 50,
                 temperature: 0.7
             })
         });
 
         const data = await response.json();
-        console.log("📌 OpenAI API Yanıtı:", JSON.stringify(data, null, 2)); // API yanıtını logla
+        console.log("📌 OpenAI API Yanıtı:", JSON.stringify(data, null, 2)); // Yanıtı konsola yazdır
 
-        // API'den doğru veri gelip gelmediğini kontrol edelim
-        if (!data.choices || !data.choices[0] || !data.choices[0].text) {
-            throw new Error("OpenAI yanıtı beklenen formatta değil!");
-        }
-
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ names: data.choices[0].text.trim().split("\n") })
-        };
-
-    } catch (error) {
-        console.error("❌ Error generating name:", error);
-        return {
-            statusCode: 500,
-            body: JSON.stringify({ error: "Server error. Check Netlify logs for details." })
-        };
-    }
-};
+        if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+            throw new Error("OpenAI yanıtı beklenen formatta değil!")
