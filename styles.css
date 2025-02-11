@@ -14,26 +14,12 @@ input::placeholder {
     font-size: 16px;
 }
 
-/* Kart Tasarımı */
-.card {
-    width: 100%;
-    height: 140px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-}
-
 /* Açıklama Başlığı */
 #results-title {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: bold;
     color: #333;
+    margin-top: 20px;
 }
 
 /* Sonuç Sayfası Header */
@@ -65,63 +51,45 @@ footer a:hover {
     color: #007bff;
 }
 
-/* Güncellenmiş Kart Tasarımı */
+/* ✅ Yeni Kart Grid Yapısı: 2x2 */
 #results-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    grid-template-columns: repeat(2, 1fr); /* 2 sütun */
+    grid-template-rows: repeat(2, auto);  /* 2 satır */
+    gap: 30px;
+    padding: 40px;
+    max-width: 900px; /* Genişlik artırıldı */
+    margin: 0 auto;
 }
 
-#results-container .card {
-    background-color: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: 600;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    #results-container {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Sonuç Kartları Grid Yapısı */
-#results-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 sütun */
-    gap: 20px;
-    padding: 20px;
-    max-width: 1000px;
-}
-
-/* Mobilde 2 sütun olacak */
-@media (max-width: 768px) {
-    #results-container {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-/* Kart Fade Animasyonu */
+/* 📌 Kartları Daha Büyük Hale Getir */
 .card {
     background-color: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);   
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
-    font-size: 1.2rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 700;
+    min-height: 180px; /* Kart yüksekliği artırıldı */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     opacity: 0;  /* Başlangıçta görünmez */
-    transform: translateY(10px); /* Hafif aşağı kayık */
-    transition: opacity 1s ease-in-out, transform 1s ease-in-out; 
+    transform: translateY(10px);
+    transition: opacity 1s ease-in-out, transform 1s ease-in-out;
 }
 
-/* Kartlar göründüğünde animasyon */
+/* 🌟 Kartlar göründüğünde animasyon */
 .card.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* 📌 Mobilde 1 sütun olacak */
+@media (max-width: 768px) {
+    #results-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+    }
 }
