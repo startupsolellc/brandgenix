@@ -5,6 +5,7 @@ function goHome() {
 
 // Önceden üretilen isimleri saklamak için değişken
 let previousNames = new Set();
+const fontClasses = ["font-1", "font-2", "font-3", "font-4", "font-5"]; // Kullanılacak fontlar
 
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Loading animasyonu)
 async function generateNames() {
@@ -12,7 +13,7 @@ async function generateNames() {
     const resultsContainer = document.getElementById("results-container");
     const titleText = document.getElementById("results-title");
 
-    // 🔄 Loading Animasyonu Ekle
+    // 🔄 Loading Animasyonu Ekle (Tam Ortada)
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "loading-container";
     loadingDiv.innerHTML = `<div class="spinner"></div>`;
@@ -52,7 +53,9 @@ async function generateNames() {
                 uniqueNames.slice(0, 4).forEach((name, index) => {
                     previousNames.add(name); // İsmi kaydet
                     const card = document.createElement("div");
-                    card.className = "card";
+                    const randomFont = fontClasses[Math.floor(Math.random() * fontClasses.length)]; // Rastgele font seç
+
+                    card.className = `card ${randomFont}`; // Kartın class'ına rastgele font ekle
                     card.innerText = name;
                     resultsContainer.appendChild(card);
 
