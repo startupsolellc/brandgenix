@@ -43,6 +43,38 @@ input::placeholder {
     margin-top: 20px;
 }
 
+/* Yeni Etiket (Tag) Sistemi İçin Stil */
+#tag-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    background: #f8f9fc;
+    min-height: 40px;
+}
+
+.tag {
+    background: #2563eb;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.tag .remove {
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 8px;
+}
+
+.tag .remove:hover {
+    color: #ff4b4b;
+}
 /* Sonuç Sayfası Header */
 header {
     background: #dbe5f5;
