@@ -1,8 +1,6 @@
-// Firebase Config ve Authentication
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getAuth, signInWithPopup, GoogleAuthProvider, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+// Firebase Config ve Authentication (Tarayıcı Uyumlu Sürüm)
 
-// Firebase config değişkenleri Netlify Environment Variables'dan çekiliyor
+// Firebase SDK'yı script olarak yüklüyoruz
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -13,14 +11,14 @@ const firebaseConfig = {
   measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
-// Firebase başlat
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+// Firebase başlatma
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
 
 // Google ile giriş
 function signInWithGoogle() {
-  signInWithPopup(auth, provider)
+  auth.signInWithPopup(provider)
     .then((result) => {
       const user = result.user;
       sessionStorage.setItem("userUID", user.uid);
@@ -31,7 +29,7 @@ function signInWithGoogle() {
 
 // Misafir olarak giriş
 function signInAnonymouslyUser() {
-  signInAnonymously(auth)
+  auth.signInAnonymously()
     .then((result) => {
       const user = result.user;
       sessionStorage.setItem("userUID", user.uid);
