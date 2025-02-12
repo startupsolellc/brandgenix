@@ -2,16 +2,18 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signInAnonymously } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
+// Firebase config değişkenleri Netlify Environment Variables'dan çekiliyor
 const firebaseConfig = {
-  apiKey: "AIzaSyAJQqgl4Z9cNCw3p6I20IRPh4bQv9XC2EM",
-  authDomain: "name-generator-8e116.firebaseapp.com",
-  projectId: "name-generator-8e116",
-  storageBucket: "name-generator-8e116.appspot.com",
-  messagingSenderId: "444454352302",
-  appId: "1:444454352302:web:271fcfba11485e525e843f",
-  measurementId: "G-BE0NDB7RMC"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
+// Firebase başlat
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
@@ -43,6 +45,39 @@ function getUserUID() {
   return sessionStorage.getItem("userUID") || "guest";
 }
 
+// API'den isim üretme ve sonuçları ekrana yerleştirme
+async function generateNames() {
+    const keywords = sessionStorage.getItem("keywords") || "Startup";
+    const userUID = getUserUID();
+    const resultsContainer = document.getElementById("results-container");
+    const titleText = document.getElementById("results-title");
+
+    try {
+        const response = await fetch("/.netlify/functions/generate-name", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ keywords, idToken: userUID })
+        });
+
+        const data = await response.json();
+        if (data.names && data.names.length > 0) {
+            resultsContainer.innerHTML = "";
+            titleText.innerHTML = `Generated names for "<b>${keywords}</b>":`;
+
+            data.names.forEach(name => {
+                const card = document.createElement("div");
+                card.className = "card";
+                card.innerText = name;
+                resultsContainer.appendChild(card);
+            });
+        } else {
+            resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
+        }
+    } catch (error) {
+        console.error("API request error:", error);
+    }
+}
+
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
@@ -56,39 +91,6 @@ function redirectToResults() {
         window.location.href = "results.html";
     } else {
         alert("Please enter a keyword!");
-    }
-}
-
-// API'den isim üretme ve sonuçları ekrana yerleştirme
-async function generateNames() {
-    const keywords = sessionStorage.getItem("keywords") || "Startup";
-    const userUID = getUserUID();
-    const resultsContainer = document.getElementById("results-container");
-    const titleText = document.getElementById("results-title");
-    
-    try {
-        const response = await fetch("/.netlify/functions/generate-name", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ keywords, idToken: userUID })
-        });
-        
-        const data = await response.json();
-        if (data.names && data.names.length > 0) {
-            resultsContainer.innerHTML = "";
-            titleText.innerHTML = `Generated names for "<b>${keywords}</b>":`;
-            
-            data.names.forEach(name => {
-                const card = document.createElement("div");
-                card.className = "card";
-                card.innerText = name;
-                resultsContainer.appendChild(card);
-            });
-        } else {
-            resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
-        }
-    } catch (error) {
-        console.error("API request error:", error);
     }
 }
 
