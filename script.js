@@ -1,63 +1,6 @@
-// Güncellenmiş script.js
-
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
-}
-
-// Etiket Sistemi için Değişkenler
-let tags = [];
-const tagContainer = document.getElementById("tag-container");
-const tagInput = document.getElementById("tag-input");
-
-// Etiket Ekleme Fonksiyonu
-function addTag(tag) {
-    if (tags.length >= 5) return;
-    if (!tags.includes(tag)) {
-        tags.push(tag);
-        updateTags();
-    }
-}
-
-tagInput.addEventListener("keydown", function(event) {
-    if (event.key === "Enter" && tagInput.value.trim() !== "") {
-        addTag(tagInput.value.trim());
-        tagInput.value = "";
-    }
-});
-
-// Etiketleri Güncelleme
-function updateTags() {
-    tagContainer.innerHTML = "";
-    tags.forEach(tag => {
-        const tagElement = document.createElement("div");
-        tagElement.className = "tag";
-        tagElement.innerText = tag;
-
-        const removeButton = document.createElement("span");
-        removeButton.innerText = " ×";
-        removeButton.className = "remove-tag";
-        removeButton.onclick = () => removeTag(tag);
-        
-        tagElement.appendChild(removeButton);
-        tagContainer.appendChild(tagElement);
-    });
-}
-
-// Etiket Silme Fonksiyonu
-function removeTag(tag) {
-    tags = tags.filter(t => t !== tag);
-    updateTags();
-}
-
-// Sonuç Sayfasına Yönlendirme
-function redirectToResults() {
-    if (tags.length < 3) {
-        alert("Please enter at least 3 keywords!");
-        return;
-    }
-    sessionStorage.setItem("keywords", tags.join(","));
-    window.location.href = "results.html";
 }
 
 // Önceden üretilen isimleri saklamak için değişken
@@ -81,7 +24,8 @@ async function getRandomFont() {
 
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
-    const keywords = sessionStorage.getItem("keywords") || "Startup";
+    const storedKeywords = sessionStorage.getItem("keywords");
+    const keywords = storedKeywords ? JSON.parse(storedKeywords) : ["Startup"];
     const resultsContainer = document.getElementById("results-container");
     const titleText = document.getElementById("results-title");
 
@@ -89,13 +33,13 @@ async function generateNames() {
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "loading-container";
     loadingDiv.innerHTML = `<div class="spinner"></div>`;
-    document.body.appendChild(loadingDiv);
+    document.body.appendChild(loadingDiv); // Sayfanın tamamına ekle
 
     setTimeout(async () => {
         try {
             let uniqueNames = [];
             let attempts = 0;
-            const maxAttempts = 5;
+            const maxAttempts = 5; // Maksimum 5 kez tekrar kontrol edecek
 
             while (uniqueNames.length < 4 && attempts < maxAttempts) {
                 const response = await fetch("/.netlify/functions/generate-name", {
@@ -108,30 +52,40 @@ async function generateNames() {
 
                 if (data.names && data.names.length > 0) {
                     const newNames = data.names.filter(name => !previousNames.has(name));
+
                     uniqueNames.push(...newNames);
-                    uniqueNames = [...new Set(uniqueNames)];
+                    uniqueNames = [...new Set(uniqueNames)]; // Her ihtimale karşı tekrarları kaldır
                 }
+
                 attempts++;
             }
 
-            document.body.removeChild(loadingDiv);
+            document.body.removeChild(loadingDiv); // Loading animasyonunu kaldır
 
             if (uniqueNames.length > 0) {
-                resultsContainer.innerHTML = "";
-                titleText.innerHTML = `Generated names for "<b>${keywords}</b>":`;
+                resultsContainer.innerHTML = ""; // Önceki içeriği temizle
+                titleText.innerHTML = `Generated names for: <b>${keywords.join(", ")}</b>`;
 
                 uniqueNames.slice(0, 4).forEach(async (name, index) => {
-                    previousNames.add(name);
+                    previousNames.add(name); // İsmi kaydet
                     const card = document.createElement("div");
+
+                    // Dinamik olarak rastgele bir font al
                     const randomFont = await getRandomFont();
+
+                    // Fontu sayfaya yükle
                     const link = document.createElement("link");
                     link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}&display=swap`;
                     link.rel = "stylesheet";
                     document.head.appendChild(link);
+
+                    // Kartın stilini fonta göre değiştir
                     card.style.fontFamily = `"${randomFont}", sans-serif`;
                     card.className = "card";
                     card.innerText = name;
                     resultsContainer.appendChild(card);
+
+                    // 8 saniye sonra fade efekti ile kartları göster
                     setTimeout(() => {
                         card.classList.add("show");
                     }, 500 + index * 500);
@@ -141,9 +95,9 @@ async function generateNames() {
             }
         } catch (error) {
             console.error("API request error:", error);
-            document.body.removeChild(loadingDiv);
+            document.body.removeChild(loadingDiv); // Hata olsa bile loading kaldır
         }
-    }, 8000);
+    }, 8000); // ⏳ 8 saniye bekletme süresi
 }
 
 // Sayfa yüklendiğinde otomatik isim üret
