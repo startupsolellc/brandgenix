@@ -1,3 +1,5 @@
+/* Güncellenmiş styles.css */
+
 /* Google Fonts (Sadece Arayüz İçin) */
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;700&family=Montserrat:wght@400;700&display=swap');
 
@@ -20,17 +22,11 @@ button {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s;
 }
-
-}
-
-body {
-    text-align: center;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+button:hover {
+    opacity: 0.8;
 }
 
 /* Placeholder stilleri */
@@ -52,15 +48,6 @@ header {
     background: #dbe5f5;
     padding: 20px;
     text-align: center;
-}
-
-/* Buton Stilleri */
-button {
-    cursor: pointer;
-    transition: all 0.3s;
-}
-button:hover {
-    opacity: 0.8;
 }
 
 /* Footer Stilleri */
@@ -96,11 +83,11 @@ footer a:hover {
     text-align: center;
     font-size: 1.5rem;
     font-weight: 700;
-    min-height: 180px; /* Kart yüksekliği artırıldı */
+    min-height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;  /* Başlangıçta görünmez */
+    opacity: 0;
     transform: translateY(10px);
     transition: opacity 1s ease-in-out, transform 1s ease-in-out;
 }
@@ -130,8 +117,8 @@ footer a:hover {
     align-items: center;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.8); /* Hafif opak arkaplan */
-    z-index: 9999; /* Her şeyin önünde olsun */
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
 }
 
 /* Spinning Animasyonu */
@@ -147,4 +134,33 @@ footer a:hover {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+/* 🏷️ Etiket (Tag) Sistemi İçin CSS */
+.tag-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    background: white;
+    border-radius: 8px;
+    padding: 10px;
+    min-height: 50px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tag {
+    background: #2563eb;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    margin: 5px;
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+}
+
+.remove-tag {
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: bold;
 }
