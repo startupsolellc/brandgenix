@@ -1,5 +1,3 @@
-/* Güncellenmiş styles.css */
-
 /* Google Fonts (Sadece Arayüz İçin) */
 @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;700&family=Montserrat:wght@400;700&display=swap');
 
@@ -24,8 +22,17 @@ button {
     letter-spacing: 0.5px;
     cursor: pointer;
     transition: all 0.3s;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
 }
-button:hover {
+button:disabled {
+    background-color: #b0c4de;
+    cursor: not-allowed;
+}
+button:hover:not(:disabled) {
     opacity: 0.8;
 }
 
@@ -75,38 +82,28 @@ input::placeholder {
 .tag .remove:hover {
     color: #ff4b4b;
 }
-/* Sonuç Sayfası Header */
-header {
-    background: #dbe5f5;
-    padding: 20px;
-    text-align: center;
-}
 
-/* Footer Stilleri */
-footer {
-    margin-top: auto;
+/* Butonlar ve Input İçin Yeni Stil */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
     font-size: 16px;
-}
-footer a {
-    text-decoration: none;
-    margin: 0 10px;
-}
-footer a:hover {
-    color: #007bff;
+    border: none;
+    outline: none;
+    background: transparent;
 }
 
-/* ✅ Yeni Kart Grid Yapısı: 2x2 */
+/* Yeni Kart Grid Yapısı: 2x2 */
 #results-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 sütun */
-    grid-template-rows: repeat(2, auto);  /* 2 satır */
+    grid-template-columns: repeat(2, 1fr);
     gap: 30px;
     padding: 40px;
-    max-width: 900px; /* Genişlik artırıldı */
+    max-width: 900px;
     margin: 0 auto;
 }
 
-/* 📌 Kartları Daha Büyük Hale Getir */
+/* Kart Tasarımı */
 .card {
     background-color: white;
     border-radius: 16px;
@@ -124,75 +121,14 @@ footer a:hover {
     transition: opacity 1s ease-in-out, transform 1s ease-in-out;
 }
 
-/* 🌟 Kartlar göründüğünde animasyon */
 .card.show {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* 📌 Mobilde 1 sütun olacak */
+/* Mobilde 1 sütun olacak */
 @media (max-width: 768px) {
     #results-container {
         grid-template-columns: 1fr;
-        grid-template-rows: auto;
     }
-}
-
-/* 🔄 Spinning Gear Animasyonu (Tam Ortada) */
-.loading-container {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.8);
-    z-index: 9999;
-}
-
-/* Spinning Animasyonu */
-.spinner {
-    width: 100px;
-    height: 100px;
-    border: 10px solid rgba(0, 0, 0, 0.1);
-    border-top-color: #2563eb;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* 🏷️ Etiket (Tag) Sistemi İçin CSS */
-.tag-input-container {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    background: white;
-    border-radius: 8px;
-    padding: 10px;
-    min-height: 50px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.tag {
-    background: #2563eb;
-    color: white;
-    padding: 6px 12px;
-    border-radius: 16px;
-    margin: 5px;
-    display: flex;
-    align-items: center;
-    font-size: 14px;
-}
-
-.remove-tag {
-    margin-left: 8px;
-    cursor: pointer;
-    font-weight: bold;
 }
