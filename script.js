@@ -74,11 +74,23 @@ checkButtonState();
 
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
-    if (tags.length < 3) {
+    const storedKeywords = sessionStorage.getItem("keywords");
+    let keywords = [];
+    
+    if (storedKeywords) {
+        try {
+            keywords = JSON.parse(storedKeywords);
+        } catch (error) {
+            console.error("❌ Hata: sessionStorage içinde yanlış formatta veri var!", error);
+        }
+    }
+
+    if (!Array.isArray(keywords) || keywords.length < 3) {
         alert("Please enter at least 3 keywords!");
         return;
     }
-    sessionStorage.setItem("keywords", JSON.stringify(tags));
+
+    sessionStorage.setItem("keywords", JSON.stringify(keywords));
     window.location.href = "results.html";
 }
 
