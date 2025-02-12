@@ -1,8 +1,14 @@
 const fetch = require("node-fetch");
+const { verifyUser } = require("./firebase-auth"); // Firebase Kimlik Doğrulama
+
+const rateLimit = {}; // Kullanıcı limitlerini takip etmek için obje
+const DAILY_LIMIT_FREE = 10;
+const DAILY_LIMIT_GOOGLE = 20;
+const PREMIUM_LIMIT = Infinity;
 
 exports.handler = async function(event) {
     try {
-        const { keywords } = JSON.parse(event.body);
+        const { keywords, idToken } = JSON.parse(event.body);
         
         if (!keywords || keywords.trim() === '') {
             return {
@@ -11,6 +17,31 @@ exports.handler = async function(event) {
             };
         }
 
+        // Kullanıcı kimlik doğrulaması
+        const userUID = await verifyUser(idToken);
+        if (!userUID) {
+            return {
+                statusCode: 401,
+                body: JSON.stringify({ error: "Yetkilendirme başarısız! Lütfen tekrar giriş yapın." })
+            };
+        }
+
+        // Kullanıcının arama sınırını belirleme
+        const userType = userUID.startsWith("anon_") ? "guest" : "google";
+        const userLimit = userType === "google" ? DAILY_LIMIT_GOOGLE : DAILY_LIMIT_FREE;
+
+        // Rate Limiting kontrolü
+        if (!rateLimit[userUID]) {
+            rateLimit[userUID] = { count: 0, resetTime: Date.now() + 24 * 60 * 60 * 1000 };
+        }
+        if (rateLimit[userUID].count >= userLimit) {
+            return {
+                statusCode: 429,
+                body: JSON.stringify({ error: "Günlük limitinize ulaştınız!" })
+            };
+        }
+
+        // OpenAI API çağrısı
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -20,29 +51,30 @@ exports.handler = async function(event) {
             body: JSON.stringify({
                 model: "gpt-4o-mini",
                 messages: [
-                    { role: "system", content: "You are a helpful assistant that generates ONLY business name ideas. Do not provide explanations, descriptions, or numbers. Only return a list of 5 business names, separated by line breaks." },
-                    { role: "user", content: `Generate 5 unique business name ideas based on the keywords: ${keywords}. Only return names, no descriptions.` }
+                    { role: "system", content: "You are a branding expert generating ONLY unique business names." },
+                    { role: "user", content: `Generate 5 unique business name ideas based on these keywords: ${keywords}.` }
                 ],
                 max_tokens: 100,
-                temperature: 0.7
+                temperature: 1.0
             })
         });
 
         const data = await response.json();
-        console.log("📌 OpenAI API Yanıtı:", JSON.stringify(data, null, 2)); // Yanıtı konsola yazdır
-
-        if (!data.choices || !data.choices[0] || !data.choices[0].message || !data.choices[0].message.content) {
+        
+        if (!data.choices || !data.choices[0]?.message?.content) {
             return {
                 statusCode: 500,
                 body: JSON.stringify({ error: "OpenAI yanıtı beklenen formatta değil!" })
             };
         }
 
-        // Sadece isimleri almak için filtreleme
+        // Tekrar eden isimleri filtreleme
         const names = data.choices[0].message.content
-            .split("\n") // Satırlara böl
-            .map(name => name.replace(/^\d+\.\s*/g, "").trim()) // Numaralandırmayı temizle
-            .filter(name => name.length > 0); // Boş satırları kaldır
+            .split("\n")
+            .map(name => name.replace(/^\d+\.\s*/g, "").trim())
+            .filter(name => name.length > 0);
+
+        rateLimit[userUID].count++;
 
         return {
             statusCode: 200,
