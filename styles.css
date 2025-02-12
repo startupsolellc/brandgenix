@@ -20,10 +20,28 @@ button {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    padding: 12px 24px;
+    border-radius: 8px;
 }
 
+/* Firebase Giriş Butonları */
+.google-signin {
+    background-color: #DB4437;
+    color: white;
+}
+.google-signin:hover {
+    background-color: #C1351D;
 }
 
+.anonymous-signin {
+    background-color: #555;
+    color: white;
+}
+.anonymous-signin:hover {
+    background-color: #444;
+}
+
+/* Sayfa Düzeni */
 body {
     text-align: center;
     margin: 0;
@@ -54,15 +72,6 @@ header {
     text-align: center;
 }
 
-/* Buton Stilleri */
-button {
-    cursor: pointer;
-    transition: all 0.3s;
-}
-button:hover {
-    opacity: 0.8;
-}
-
 /* Footer Stilleri */
 footer {
     margin-top: auto;
@@ -79,11 +88,11 @@ footer a:hover {
 /* ✅ Yeni Kart Grid Yapısı: 2x2 */
 #results-container {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 sütun */
-    grid-template-rows: repeat(2, auto);  /* 2 satır */
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, auto);
     gap: 30px;
     padding: 40px;
-    max-width: 900px; /* Genişlik artırıldı */
+    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -96,11 +105,11 @@ footer a:hover {
     text-align: center;
     font-size: 1.5rem;
     font-weight: 700;
-    min-height: 180px; /* Kart yüksekliği artırıldı */
+    min-height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 0;  /* Başlangıçta görünmez */
+    opacity: 0;
     transform: translateY(10px);
     transition: opacity 1s ease-in-out, transform 1s ease-in-out;
 }
@@ -130,8 +139,8 @@ footer a:hover {
     align-items: center;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.8); /* Hafif opak arkaplan */
-    z-index: 9999; /* Her şeyin önünde olsun */
+    background: rgba(255, 255, 255, 0.8);
+    z-index: 9999;
 }
 
 /* Spinning Animasyonu */
@@ -148,4 +157,3 @@ footer a:hover {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
-
