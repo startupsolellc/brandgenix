@@ -98,9 +98,42 @@ async function generateNames() {
             return;
         }
         sessionStorage.setItem("generated", "true");
-    }
 
-    window.location.href = "results.html";
+        try {
+            const response = await fetch("/.netlify/functions/generate-name", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ keywords })
+            });
+
+            const data = await response.json();
+
+            if (data.names && data.names.length > 0) {
+                displayResults(data.names);
+            } else {
+                document.getElementById("results-title").innerText = "No names generated. Try again!";
+            }
+        } catch (error) {
+            console.error("❌ API İstek Hatası:", error);
+            document.getElementById("results-title").innerText = "Error generating names. Please try again!";
+        }
+    } else {
+        window.location.href = "results.html";
+    }
+}
+
+// Sonuçları ekrana yazdırma fonksiyonu
+function displayResults(names) {
+    const resultsContainer = document.getElementById("results-container");
+    resultsContainer.innerHTML = "";
+    document.getElementById("results-title").innerText = "Generated Names:";
+
+    names.forEach(name => {
+        const card = document.createElement("div");
+        card.className = "bg-white shadow-lg rounded-lg p-6 text-center text-lg font-bold";
+        card.innerText = name;
+        resultsContainer.appendChild(card);
+    });
 }
 
 // Sayfa yüklendiğinde otomatik isim üret
