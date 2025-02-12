@@ -1,32 +1,6 @@
-// Firebase zaten index.html içinde başlatıldı, tekrar tanımlamıyoruz.
-const auth = firebase.auth();
-const provider = new firebase.auth.GoogleAuthProvider();
-
-// Google ile giriş
-function signInWithGoogle() {
-  auth.signInWithPopup(provider)
-    .then((result) => {
-      const user = result.user;
-      sessionStorage.setItem("userUID", user.uid);
-      alert("Google ile giriş başarılı!");
-    })
-    .catch((error) => console.error("Google Giriş Hatası:", error));
-}
-
-// Misafir olarak giriş
-function signInAnonymouslyUser() {
-  auth.signInAnonymously()
-    .then((result) => {
-      const user = result.user;
-      sessionStorage.setItem("userUID", user.uid);
-      alert("Misafir olarak giriş yapıldı!");
-    })
-    .catch((error) => console.error("Anonim Giriş Hatası:", error));
-}
-
-// Kullanıcı UID'yi alıp backend'e göndermek için
-function getUserUID() {
-  return sessionStorage.getItem("userUID") || "guest";
+// Ana sayfaya yönlendirme fonksiyonu
+function goHome() {
+    window.location.href = "index.html";
 }
 
 // Önceden üretilen isimleri saklamak için değişken
@@ -51,7 +25,6 @@ async function getRandomFont() {
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
     const keywords = sessionStorage.getItem("keywords") || "Startup";
-    const userUID = getUserUID();
     const resultsContainer = document.getElementById("results-container");
     const titleText = document.getElementById("results-title");
 
@@ -71,7 +44,7 @@ async function generateNames() {
                 const response = await fetch("/.netlify/functions/generate-name", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ keywords, idToken: userUID })
+                    body: JSON.stringify({ keywords })
                 });
 
                 const data = await response.json();
@@ -124,11 +97,6 @@ async function generateNames() {
             document.body.removeChild(loadingDiv); // Hata olsa bile loading kaldır
         }
     }, 8000); // ⏳ 8 saniye bekletme süresi
-}
-
-// Ana sayfaya yönlendirme fonksiyonu
-function goHome() {
-    window.location.href = "index.html";
 }
 
 // Ana sayfada anahtar kelimeyi al ve yönlendir
