@@ -5,28 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StartupSole Name Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Firebase Tarayıcı Uyumlu Sürüm -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-
-<script>
-    // Firebase Config (DİKKAT: Netlify environment variables DOĞRUDAN kullanılamaz!)
-    const firebaseConfig = {
-        apiKey: "YOUR_FIREBASE_API_KEY",
-        authDomain: "YOUR_FIREBASE_AUTH_DOMAIN",
-        projectId: "YOUR_FIREBASE_PROJECT_ID",
-        storageBucket: "YOUR_FIREBASE_STORAGE_BUCKET",
-        messagingSenderId: "YOUR_FIREBASE_MESSAGING_SENDER_ID",
-        appId: "YOUR_FIREBASE_APP_ID",
-        measurementId: "YOUR_FIREBASE_MEASUREMENT_ID"
-    };
-
-    // Firebase Başlat
-    firebase.initializeApp(firebaseConfig);
-</script>
-
-
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
@@ -37,16 +15,6 @@
         <div class="text-center">
             <h1 class="text-4xl font-extrabold text-gray-800">StartupSole Name Generator</h1>
             <p class="text-gray-500 text-lg mt-2">Generate a short, brandable business name using artificial intelligence</p>
-        </div>
-
-        <!-- Firebase Giriş Butonları -->
-        <div class="flex space-x-4">
-            <button onclick="signInWithGoogle()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full">
-                Google ile Giriş Yap
-            </button>
-            <button onclick="signInAnonymouslyUser()" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full">
-                Misafir Olarak Devam Et
-            </button>
         </div>
 
         <!-- Arama Kutusu -->
@@ -72,6 +40,16 @@
         <p class="mt-4 text-sm">&copy; 2025 STARTUPSOLE LLC</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        function redirectToResults() {
+            const keywords = document.getElementById("keywords").value.trim();
+            if (keywords === "") {
+                alert("Please enter a keyword!");
+                return;
+            }
+            sessionStorage.setItem("keywords", keywords);
+            window.location.href = "results.html";
+        }
+    </script>
 </body>
 </html>
