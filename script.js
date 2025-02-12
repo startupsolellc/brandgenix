@@ -82,6 +82,7 @@ async function generateNames() {
             keywords = JSON.parse(storedKeywords);
         } catch (error) {
             console.error("❌ Hata: sessionStorage içinde yanlış formatta veri var!", error);
+            return;
         }
     }
 
@@ -91,10 +92,20 @@ async function generateNames() {
     }
 
     sessionStorage.setItem("keywords", JSON.stringify(keywords));
+
+    if (window.location.pathname.includes("results.html")) {
+        if (sessionStorage.getItem("generated") === "true") {
+            return;
+        }
+        sessionStorage.setItem("generated", "true");
+    }
+
     window.location.href = "results.html";
 }
 
 // Sayfa yüklendiğinde otomatik isim üret
 if (window.location.pathname.includes("results.html")) {
-    window.onload = generateNames;
+    window.onload = () => {
+        setTimeout(generateNames, 500);
+    };
 }
