@@ -74,6 +74,7 @@ checkButtonState();
 
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
+    console.log("🔍 generateNames() fonksiyonu çalıştı.");
     const storedKeywords = sessionStorage.getItem("keywords");
     let keywords = [];
     
@@ -87,14 +88,16 @@ async function generateNames() {
     }
 
     if (!Array.isArray(keywords) || keywords.length < 3) {
-        alert("Please enter at least 3 keywords!");
+        console.warn("⚠️ Uyarı: Yeterli anahtar kelime girilmedi!");
         return;
     }
 
+    console.log("📌 API'ye gönderilen anahtar kelimeler:", keywords);
     sessionStorage.setItem("keywords", JSON.stringify(keywords));
 
     if (window.location.pathname.includes("results.html")) {
         if (sessionStorage.getItem("generated") === "true") {
+            console.log("⏳ Daha önce çalıştığı için tekrar çağrılmadı.");
             return;
         }
         sessionStorage.setItem("generated", "true");
@@ -107,10 +110,13 @@ async function generateNames() {
             });
 
             const data = await response.json();
+            console.log("📡 API Yanıtı:", data);
 
             if (data.names && data.names.length > 0) {
+                console.log("✅ API başarılı çalıştı, sonuçları ekrana yazdırıyorum.");
                 displayResults(data.names);
             } else {
+                console.warn("❌ API herhangi bir isim üretmedi.");
                 document.getElementById("results-title").innerText = "No names generated. Try again!";
             }
         } catch (error) {
@@ -118,27 +124,30 @@ async function generateNames() {
             document.getElementById("results-title").innerText = "Error generating names. Please try again!";
         }
     } else {
+        console.log("➡️ Kullanıcı results.html sayfasına yönlendiriliyor.");
         window.location.href = "results.html";
     }
 }
 
 // Sonuçları ekrana yazdırma fonksiyonu
 function displayResults(names) {
+    console.log("📌 displayResults() fonksiyonu çalıştı, ekrana yazdırılıyor...");
     const resultsContainer = document.getElementById("results-container");
     resultsContainer.innerHTML = "";
     document.getElementById("results-title").innerText = "Generated Names:";
-
     names.forEach(name => {
         const card = document.createElement("div");
         card.className = "bg-white shadow-lg rounded-lg p-6 text-center text-lg font-bold";
         card.innerText = name;
         resultsContainer.appendChild(card);
     });
+    console.log("✅ Sonuçlar başarıyla eklendi.");
 }
 
 // Sayfa yüklendiğinde otomatik isim üret
 if (window.location.pathname.includes("results.html")) {
     window.onload = () => {
+        console.log("📌 results.html sayfası yüklendi, generateNames() çağrılıyor.");
         setTimeout(generateNames, 500);
     };
 }
