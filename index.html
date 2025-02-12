@@ -17,13 +17,17 @@
             <p class="text-gray-500 text-lg mt-2">Generate a short, brandable business name using artificial intelligence</p>
         </div>
 
-        <!-- Etiket Girişi Alanı -->
+        <!-- Arama Kutusu ve Etiket Sistemi -->
         <div class="w-full max-w-2xl">
-            <div class="tag-input-container">
-                <div id="tag-container"></div>
-                <input type="text" id="tag-input" placeholder="Enter keywords..." class="tag-input">
+            <div class="bg-white rounded-lg shadow-md p-4">
+                <div id="tag-container" class="flex flex-wrap gap-2 p-2 border-b"></div>
+                <input type="text" id="keyword-input" placeholder="Enter keywords..." 
+                    class="w-full text-gray-700 text-lg border-none focus:outline-none px-4 py-2" onkeypress="handleKeyPress(event)">
             </div>
-            <button onclick="redirectToResults()" id="generate-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full mt-3">Generate Name</button>
+            <button onclick="redirectToResults()" 
+                    class="mt-4 w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg">
+                Generate Name
+            </button>
         </div>
     </div>
 
@@ -37,6 +41,52 @@
         <p class="mt-4 text-sm">&copy; 2025 STARTUPSOLE LLC</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        let tags = [];
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                addTag();
+            }
+        }
+
+        function addTag() {
+            const input = document.getElementById("keyword-input");
+            let keyword = input.value.trim();
+
+            if (keyword !== "" && !tags.includes(keyword) && tags.length < 5) {
+                tags.push(keyword);
+                updateTagDisplay();
+                input.value = "";
+            }
+        }
+
+        function removeTag(tag) {
+            tags = tags.filter(t => t !== tag);
+            updateTagDisplay();
+        }
+
+        function updateTagDisplay() {
+            const tagContainer = document.getElementById("tag-container");
+            tagContainer.innerHTML = "";
+
+            tags.forEach(tag => {
+                const tagElement = document.createElement("div");
+                tagElement.className = "bg-blue-200 text-blue-800 rounded-full px-3 py-1 text-sm flex items-center";
+                tagElement.innerHTML = `${tag} <span class='ml-2 cursor-pointer' onclick='removeTag("${tag}")'>&times;</span>`;
+                tagContainer.appendChild(tagElement);
+            });
+        }
+
+        function redirectToResults() {
+            if (tags.length < 3) {
+                alert("Please enter at least 3 keywords!");
+                return;
+            }
+            sessionStorage.setItem("keywords", JSON.stringify(tags));
+            window.location.href = "results.html";
+        }
+    </script>
 </body>
 </html>
