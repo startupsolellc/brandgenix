@@ -72,7 +72,7 @@ function checkButtonState() {
 // Sayfa yüklendiğinde butonun durumu kontrol edilsin
 checkButtonState();
 
-// API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
+// API'den isim üretme ve sonuçları ekrana yazdırma (Debug İçerir)
 async function generateNames() {
     console.log("🔍 generateNames() fonksiyonu çalıştı.");
     const storedKeywords = sessionStorage.getItem("keywords");
@@ -103,12 +103,14 @@ async function generateNames() {
         sessionStorage.setItem("generated", "true");
 
         try {
+            console.log("🚀 API'ye istek gönderiliyor...");
             const response = await fetch("/.netlify/functions/generate-name", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ keywords })
             });
 
+            console.log("📩 API Yanıtı Alındı, işleniyor...");
             const data = await response.json();
             console.log("📡 API Yanıtı:", data);
 
