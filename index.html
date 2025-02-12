@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StartupSole Name Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
@@ -15,6 +17,16 @@
         <div class="text-center">
             <h1 class="text-4xl font-extrabold text-gray-800">StartupSole Name Generator</h1>
             <p class="text-gray-500 text-lg mt-2">Generate a short, brandable business name using artificial intelligence</p>
+        </div>
+
+        <!-- Firebase Giriş Butonları -->
+        <div class="flex space-x-4">
+            <button onclick="signInWithGoogle()" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full">
+                Google ile Giriş Yap
+            </button>
+            <button onclick="signInAnonymouslyUser()" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-full">
+                Misafir Olarak Devam Et
+            </button>
         </div>
 
         <!-- Arama Kutusu -->
@@ -40,16 +52,6 @@
         <p class="mt-4 text-sm">&copy; 2025 STARTUPSOLE LLC</p>
     </footer>
 
-    <script>
-        function redirectToResults() {
-            const keywords = document.getElementById("keywords").value.trim();
-            if (keywords === "") {
-                alert("Please enter a keyword!");
-                return;
-            }
-            sessionStorage.setItem("keywords", keywords);
-            window.location.href = "results.html";
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
