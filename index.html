@@ -7,9 +7,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
+    <script src="script.js" defer></script>
 </head>
 <body class="bg-gradient-to-b from-[#EAEFF7] to-[#F1F4F9] flex flex-col items-center min-h-screen">
     <div id="header-placeholder"></div> 
+    
     <!-- Merkezi İçerik -->
     <div class="max-w-4xl w-full mx-auto flex flex-col items-center justify-center flex-grow space-y-8">
         <div class="text-center">
@@ -47,77 +49,33 @@
         </div>
         
         <!-- Yeni Kategori Seçim Butonları -->
-<div class="w-full max-w-4xl text-center mt-8">
-    <p class="text-gray-700 text-lg mb-4">Not sure where to start? Random name generator in these categories:</p>
-    <div class="flex flex-wrap justify-center gap-2" id="category-buttons">
-        <button onclick="selectCategory('ARTS & CRAFTS')" class="category-button">ARTS & CRAFTS</button>
-        <button onclick="selectCategory('BEAUTY')" class="category-button">BEAUTY</button>
-        <button onclick="selectCategory('EDUCATION')" class="category-button">EDUCATION</button>
-        <button onclick="selectCategory('HOME')" class="category-button">HOME</button>
-        <button onclick="selectCategory('LUXURY')" class="category-button">LUXURY</button>
-        <button onclick="selectCategory('FASHION')" class="category-button">FASHION</button>
-        <button onclick="selectCategory('JEWELRY')" class="category-button">JEWELRY</button>
-        <button onclick="selectCategory('DESIGN')" class="category-button">DESIGN</button>
-        <button onclick="selectCategory('GAMING')" class="category-button">GAMING</button>
-        <button onclick="selectCategory('FINANCE')" class="category-button">FINANCE</button>
-        <button onclick="selectCategory('CLEANING')" class="category-button">CLEANING</button>
-        <button onclick="selectCategory('COMMUNICATION')" class="category-button">COMMUNICATION</button>
-        <button onclick="selectCategory('HEALTH')" class="category-button">HEALTH</button>
-        <button onclick="selectCategory('FOOD')" class="category-button">FOOD</button>
-        <button onclick="selectCategory('KIDS')" class="category-button">KIDS</button>
-        <button onclick="selectCategory('CANDLES')" class="category-button">CANDLES</button>
-        <button onclick="selectCategory('EVENTS')" class="category-button">EVENTS</button>
-        <button onclick="selectCategory('CLOTHING')" class="category-button">CLOTHING</button>
-        <button onclick="selectCategory('GARDEN')" class="category-button">GARDEN</button>
-        <button onclick="selectCategory('FITNESS')" class="category-button">FITNESS</button>
-    </div>
-</div>
-
+        <div class="w-full max-w-4xl text-center mt-8">
+            <p class="text-gray-700 text-lg mb-4">Not sure where to start? Random name generator in these categories:</p>
+            <div class="flex flex-wrap justify-center gap-2" id="category-buttons">
+                <button onclick="selectCategory('ARTS & CRAFTS')" class="category-button">ARTS & CRAFTS</button>
+                <button onclick="selectCategory('BEAUTY')" class="category-button">BEAUTY</button>
+                <button onclick="selectCategory('EDUCATION')" class="category-button">EDUCATION</button>
+                <button onclick="selectCategory('HOME')" class="category-button">HOME</button>
+                <button onclick="selectCategory('LUXURY')" class="category-button">LUXURY</button>
+                <button onclick="selectCategory('FASHION')" class="category-button">FASHION</button>
+                <button onclick="selectCategory('JEWELRY')" class="category-button">JEWELRY</button>
+                <button onclick="selectCategory('DESIGN')" class="category-button">DESIGN</button>
+                <button onclick="selectCategory('GAMING')" class="category-button">GAMING</button>
+                <button onclick="selectCategory('FINANCE')" class="category-button">FINANCE</button>
+                <button onclick="selectCategory('CLEANING')" class="category-button">CLEANING</button>
+                <button onclick="selectCategory('COMMUNICATION')" class="category-button">COMMUNICATION</button>
+                <button onclick="selectCategory('HEALTH')" class="category-button">HEALTH</button>
+                <button onclick="selectCategory('FOOD')" class="category-button">FOOD</button>
+                <button onclick="selectCategory('KIDS')" class="category-button">KIDS</button>
+                <button onclick="selectCategory('CANDLES')" class="category-button">CANDLES</button>
+                <button onclick="selectCategory('EVENTS')" class="category-button">EVENTS</button>
+                <button onclick="selectCategory('CLOTHING')" class="category-button">CLOTHING</button>
+                <button onclick="selectCategory('GARDEN')" class="category-button">GARDEN</button>
+                <button onclick="selectCategory('FITNESS')" class="category-button">FITNESS</button>
+            </div>
+        </div>
     </div>
 
     <div id="footer-placeholder"></div>
-
-    <script>
-        let tags = [];
-
-        function handleKeyDown(event) {
-            const input = document.getElementById("keywords-input");
-            const tagContainer = document.getElementById("tag-container");
-            const errorMessage = document.getElementById("error-message");
-            
-            if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                const keyword = input.value.trim();
-                
-                if (keyword && !tags.includes(keyword) && tags.length < 5) {
-                    tags.push(keyword);
-                    const tag = document.createElement("span");
-                    tag.className = "bg-blue-500 text-white px-3 py-1 rounded-full m-1 flex items-center";
-                    tag.innerHTML = `${keyword} <button class='ml-2 text-white' onclick='removeTag("${keyword}")'>×</button>`;
-                    tagContainer.insertBefore(tag, input);
-                    input.value = "";
-                }
-
-                if (tags.length >= 3) {
-                    errorMessage.classList.add("hidden");
-                }
-            }
-        }
-
-        function redirectToResults() {
-            if (tags.length < 3 || tags.length > 5) {
-                document.getElementById("error-message").classList.remove("hidden");
-                return;
-            }
-            sessionStorage.setItem("keywords", JSON.stringify(tags));
-            window.location.href = "results.html";
-        }
-
-        function selectCategory(category) {
-            sessionStorage.setItem("category", category);
-            sessionStorage.removeItem("keywords");
-            window.location.href = "results.html";
-        }
-    </script>
 </body>
 </html>
