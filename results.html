@@ -42,6 +42,12 @@
         <p class="mt-4 text-sm">&copy; 2025 STARTUPSOLE LLC</p>
     </footer>
 
+    <script>
+        window.onload = function () {
+            const keywords = JSON.parse(sessionStorage.getItem("keywords")) || ["Startup"];
+            document.getElementById("results-title").innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>":`;
+        };
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
