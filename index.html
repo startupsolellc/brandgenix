@@ -62,9 +62,41 @@
     </footer>
 
     <script>
-        function selectCategory(category) {
-            sessionStorage.setItem("category", category);
-            window.location.href = "results.html";
+        let tags = [];
+
+        function handleKeyDown(event) {
+            const input = document.getElementById("keywords-input");
+            const tagContainer = document.getElementById("tag-container");
+            const errorMessage = document.getElementById("error-message");
+            
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                const keyword = input.value.trim();
+                
+                if (keyword && !tags.includes(keyword) && tags.length < 5) {
+                    tags.push(keyword);
+                    const tag = document.createElement("span");
+                    tag.className = "bg-blue-500 text-white px-3 py-1 rounded-full m-1 flex items-center";
+                    tag.innerHTML = `${keyword} <button class='ml-2 text-white' onclick='removeTag("${keyword}")'>×</button>`;
+                    tagContainer.insertBefore(tag, input);
+                    input.value = "";
+                }
+
+                if (tags.length >= 3) {
+                    errorMessage.classList.add("hidden");
+                }
+            }
+        }
+
+        function removeTag(keyword) {
+            tags = tags.filter(tag => tag !== keyword);
+            document.getElementById("tag-container").innerHTML = '<input type="text" id="keywords-input" placeholder="Enter keywords..." class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4" onkeydown="handleKeyDown(event)">';
+            tags.forEach(tag => {
+                const newTag = document.createElement("span");
+                newTag.className = "bg-blue-500 text-white px-3 py-1 rounded-full m-1 flex items-center";
+                newTag.innerHTML = `${tag} <button class='ml-2 text-white' onclick='removeTag("${tag}")'>×</button>`;
+                document.getElementById("tag-container").insertBefore(newTag, document.getElementById("keywords-input"));
+            });
         }
     </script>
 </body>
