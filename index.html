@@ -25,6 +25,17 @@
             </div>
             <p id="error-message" class="text-red-500 text-sm mt-2 hidden">Enter between 3 and 5 keywords.</p>
             
+            <!-- Kategori Seçim Alanı -->
+            <div class="w-full flex justify-center mt-4">
+                <select id="category-select" class="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-full focus:outline-none">
+                    <option value="technology">Technology</option>
+                    <option value="ecommerce">E-Commerce</option>
+                    <option value="fashion">Fashion & Apparel</option>
+                    <option value="finance">Finance & Investment</option>
+                    <option value="health">Health & Wellness</option>
+                </select>
+            </div>
+            
             <!-- Butonu tam ortaya hizalamak için yeni bir div ekledik -->
             <div class="w-full flex justify-center mt-4">
                 <button onclick="redirectToResults()" 
@@ -33,7 +44,6 @@
                 </button>
             </div>
         </div>
-
 
     <footer class="mt-auto w-full py-6 bg-transparent text-center text-gray-600">
         <div class="space-x-4">
@@ -88,7 +98,9 @@
                 document.getElementById("error-message").classList.remove("hidden");
                 return;
             }
+            const selectedCategory = document.getElementById("category-select").value;
             sessionStorage.setItem("keywords", JSON.stringify(tags));
+            sessionStorage.setItem("category", selectedCategory);
             window.location.href = "results.html";
         }
     </script>
