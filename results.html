@@ -44,9 +44,14 @@
 
     <script>
         window.onload = function () {
-            const keywords = JSON.parse(sessionStorage.getItem("keywords")) || ["Startup"];
-            const category = sessionStorage.getItem("category") || "General";
-            document.getElementById("results-title").innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>" in category <b>${category}</b>:`;
+            const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
+            const category = sessionStorage.getItem("category") || null;
+            
+            if (category) {
+                document.getElementById("results-title").innerHTML = `Generated names for category <b>${category}</b>`;
+            } else if (keywords) {
+                document.getElementById("results-title").innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>"`;
+            }
         };
     </script>
     <script src="script.js"></script>
