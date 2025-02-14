@@ -26,6 +26,8 @@ async function getRandomFont() {
 async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
     const selectedCategory = sessionStorage.getItem("category") || null;
+    console.log("Selected Category:", selectedCategory); // Test için eklendi
+    console.log("Keywords:", keywords); // Test için eklendi
     const resultsContainer = document.getElementById("results-container");
     const titleText = document.getElementById("results-title");
 
@@ -98,6 +100,7 @@ async function generateNames() {
 }
 
 function selectCategory(category) {
+    console.log("Category Selected:", category); // Test için eklendi
     sessionStorage.setItem("category", category);
     sessionStorage.removeItem("keywords");
     window.location.href = "results.html";
@@ -108,6 +111,7 @@ function redirectToResults() {
         document.getElementById("error-message").classList.remove("hidden");
         return;
     }
+    console.log("Keywords Set:", tags); // Test için eklendi
     sessionStorage.setItem("keywords", JSON.stringify(tags));
     window.location.href = "results.html";
 }
