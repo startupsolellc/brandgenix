@@ -45,7 +45,8 @@
     <script>
         window.onload = function () {
             const keywords = JSON.parse(sessionStorage.getItem("keywords")) || ["Startup"];
-            document.getElementById("results-title").innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>":`;
+            const category = sessionStorage.getItem("category") || "General";
+            document.getElementById("results-title").innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>" in category <b>${category}</b>:`;
         };
     </script>
     <script src="script.js"></script>
