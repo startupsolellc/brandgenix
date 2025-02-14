@@ -17,16 +17,17 @@
             <p class="text-gray-500 text-lg mt-2">Generate a short, brandable business name using artificial intelligence</p>
         </div>
 
-        <!-- Arama Kutusu -->
+        <!-- Etiket Sistemi İçin Yeni Form Alanı -->
         <div class="w-full max-w-2xl">
-            <div class="flex items-center bg-white rounded-full shadow-md w-full p-3">
-                <input type="text" id="keywords" placeholder="Enter a keyword to spark creativity..." 
-                    class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4">
-                <button onclick="redirectToResults()" 
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">
-                    Generate Name
-                </button>
+            <div class="bg-white rounded-full shadow-md w-full p-3 flex flex-wrap items-center" id="tag-container">
+                <input type="text" id="keywords-input" placeholder="Enter keywords..." 
+                    class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4" onkeydown="handleKeyDown(event)">
             </div>
+            <p id="error-message" class="text-red-500 text-sm mt-2 hidden">Enter between 3 and 5 keywords.</p>
+            <button onclick="redirectToResults()" 
+                    class="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">
+                Generate Name
+            </button>
         </div>
     </div>
 
@@ -41,13 +42,49 @@
     </footer>
 
     <script>
+        let tags = [];
+
+        function handleKeyDown(event) {
+            const input = document.getElementById("keywords-input");
+            const tagContainer = document.getElementById("tag-container");
+            const errorMessage = document.getElementById("error-message");
+            
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                const keyword = input.value.trim();
+                
+                if (keyword && !tags.includes(keyword) && tags.length < 5) {
+                    tags.push(keyword);
+                    const tag = document.createElement("span");
+                    tag.className = "bg-blue-500 text-white px-3 py-1 rounded-full m-1 flex items-center";
+                    tag.innerHTML = `${keyword} <button class='ml-2 text-white' onclick='removeTag("${keyword}")'>×</button>`;
+                    tagContainer.insertBefore(tag, input);
+                    input.value = "";
+                }
+
+                if (tags.length >= 3) {
+                    errorMessage.classList.add("hidden");
+                }
+            }
+        }
+
+        function removeTag(keyword) {
+            tags = tags.filter(tag => tag !== keyword);
+            document.getElementById("tag-container").innerHTML = '<input type="text" id="keywords-input" placeholder="Enter keywords..." class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4" onkeydown="handleKeyDown(event)">';
+            tags.forEach(tag => {
+                const newTag = document.createElement("span");
+                newTag.className = "bg-blue-500 text-white px-3 py-1 rounded-full m-1 flex items-center";
+                newTag.innerHTML = `${tag} <button class='ml-2 text-white' onclick='removeTag("${tag}")'>×</button>`;
+                document.getElementById("tag-container").insertBefore(newTag, document.getElementById("keywords-input"));
+            });
+        }
+
         function redirectToResults() {
-            const keywords = document.getElementById("keywords").value.trim();
-            if (keywords === "") {
-                alert("Please enter a keyword!");
+            if (tags.length < 3 || tags.length > 5) {
+                document.getElementById("error-message").classList.remove("hidden");
                 return;
             }
-            sessionStorage.setItem("keywords", keywords);
+            sessionStorage.setItem("keywords", JSON.stringify(tags));
             window.location.href = "results.html";
         }
     </script>
