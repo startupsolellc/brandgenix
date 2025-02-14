@@ -44,63 +44,26 @@
                 </button>
             </div>
         </div>
+        
+        <!-- Yeni Kategori Seçim Butonları -->
+        <div class="w-full max-w-2xl text-center mt-8">
+            <p class="text-gray-700 text-lg mb-4">Not sure where to start? Random name generator in these categories:</p>
+            <div class="flex flex-wrap justify-center gap-2">
+                <button onclick="selectCategory('ARTS & CRAFTS')" class="inline-block rounded-full border-2 border-primary-100 px-6 py-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:border-primary-accent-200 hover:bg-secondary-50/50">ARTS & CRAFTS</button>
+                <button onclick="selectCategory('BEAUTY')" class="inline-block rounded-full border-2 border-primary-100 px-6 py-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:border-primary-accent-200 hover:bg-secondary-50/50">BEAUTY</button>
+                <button onclick="selectCategory('EDUCATION')" class="inline-block rounded-full border-2 border-primary-100 px-6 py-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:border-primary-accent-200 hover:bg-secondary-50/50">EDUCATION</button>
+                <!-- Diğer kategorileri buraya ekleyebilirsin -->
+            </div>
+        </div>
+    </div>
 
     <footer class="mt-auto w-full py-6 bg-transparent text-center text-gray-600">
-        <div class="space-x-4">
-            <a href="https://startupsole.com/" class="hover:text-blue-600">Anasayfa</a>
-            <a href="https://startupsole.com/llc-sirket-kurmak/" class="hover:text-blue-600">LLC Şirket Kurulum Rehberi</a>
-            <a href="https://startupsole.com/kullanim-sartlari/" class="hover:text-blue-600">Şartlar</a>
-            <a href="https://startupsole.com/yardim/" class="hover:text-blue-600">S.S.S</a>
-        </div>
         <p class="mt-4 text-sm">&copy; 2025 STARTUPSOLE LLC</p>
     </footer>
 
     <script>
-        let tags = [];
-
-        function handleKeyDown(event) {
-            const input = document.getElementById("keywords-input");
-            const tagContainer = document.getElementById("tag-container");
-            const errorMessage = document.getElementById("error-message");
-            
-            if (event.key === "Enter" || event.key === " ") {
-                event.preventDefault();
-                const keyword = input.value.trim();
-                
-                if (keyword && !tags.includes(keyword) && tags.length < 5) {
-                    tags.push(keyword);
-                    const tag = document.createElement("span");
-                    tag.className = "bg-blue-500 text-white px-3 py-1 rounded-full m-1 flex items-center";
-                    tag.innerHTML = `${keyword} <button class='ml-2 text-white' onclick='removeTag("${keyword}")'>×</button>`;
-                    tagContainer.insertBefore(tag, input);
-                    input.value = "";
-                }
-
-                if (tags.length >= 3) {
-                    errorMessage.classList.add("hidden");
-                }
-            }
-        }
-
-        function removeTag(keyword) {
-            tags = tags.filter(tag => tag !== keyword);
-            document.getElementById("tag-container").innerHTML = '<input type="text" id="keywords-input" placeholder="Enter keywords..." class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4" onkeydown="handleKeyDown(event)">';
-            tags.forEach(tag => {
-                const newTag = document.createElement("span");
-                newTag.className = "bg-blue-500 text-white px-3 py-1 rounded-full m-1 flex items-center";
-                newTag.innerHTML = `${tag} <button class='ml-2 text-white' onclick='removeTag("${tag}")'>×</button>`;
-                document.getElementById("tag-container").insertBefore(newTag, document.getElementById("keywords-input"));
-            });
-        }
-
-        function redirectToResults() {
-            if (tags.length < 3 || tags.length > 5) {
-                document.getElementById("error-message").classList.remove("hidden");
-                return;
-            }
-            const selectedCategory = document.getElementById("category-select").value;
-            sessionStorage.setItem("keywords", JSON.stringify(tags));
-            sessionStorage.setItem("category", selectedCategory);
+        function selectCategory(category) {
+            sessionStorage.setItem("category", category);
             window.location.href = "results.html";
         }
     </script>
