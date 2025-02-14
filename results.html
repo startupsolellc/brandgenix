@@ -44,15 +44,19 @@
 
     <script>
         window.onload = function () {
-            const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
-            const category = sessionStorage.getItem("category") || null;
-            
-            if (category) {
-                document.getElementById("results-title").innerHTML = `Generated names for category <b>${category}</b>`;
-            } else if (keywords) {
-                document.getElementById("results-title").innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>"`;
-            }
-        };
+    const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
+    const category = sessionStorage.getItem("category") || null;
+
+    // Eğer anahtar kelimeler girildiyse, kategori bilgisi tamamen yok sayılacak
+    if (keywords && keywords.length > 0) {
+        document.getElementById("results-title").innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>"`;
+    } else if (category) {
+        document.getElementById("results-title").innerHTML = `Generated names for category <b>${category}</b>`;
+    } else {
+        document.getElementById("results-title").innerHTML = "Generated Business Names";
+    }
+};
+
     </script>
     <script src="script.js"></script>
 </body>
