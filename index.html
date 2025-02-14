@@ -28,6 +28,7 @@
             <!-- Kategori Seçim Alanı -->
             <div class="w-full flex justify-center mt-4">
                 <select id="category-select" class="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-full focus:outline-none">
+                    <option value="">Select a category</option>
                     <option value="technology">Technology</option>
                     <option value="ecommerce">E-Commerce</option>
                     <option value="fashion">Fashion & Apparel</option>
@@ -48,10 +49,10 @@
         <!-- Yeni Kategori Seçim Butonları -->
         <div class="w-full max-w-2xl text-center mt-8">
             <p class="text-gray-700 text-lg mb-4">Not sure where to start? Random name generator in these categories:</p>
-            <div class="flex flex-wrap justify-center gap-2">
-                <button onclick="selectCategory('ARTS & CRAFTS')" class="inline-block rounded-full border-2 border-primary-100 px-6 py-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:border-primary-accent-200 hover:bg-secondary-50/50">ARTS & CRAFTS</button>
-                <button onclick="selectCategory('BEAUTY')" class="inline-block rounded-full border-2 border-primary-100 px-6 py-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:border-primary-accent-200 hover:bg-secondary-50/50">BEAUTY</button>
-                <button onclick="selectCategory('EDUCATION')" class="inline-block rounded-full border-2 border-primary-100 px-6 py-2 text-xs font-medium uppercase leading-normal text-primary-700 transition duration-150 ease-in-out hover:border-primary-accent-200 hover:bg-secondary-50/50">EDUCATION</button>
+            <div class="flex flex-wrap justify-center gap-2" id="category-buttons">
+                <button onclick="selectCategory('ARTS & CRAFTS')" class="category-button">ARTS & CRAFTS</button>
+                <button onclick="selectCategory('BEAUTY')" class="category-button">BEAUTY</button>
+                <button onclick="selectCategory('EDUCATION')" class="category-button">EDUCATION</button>
                 <!-- Diğer kategorileri buraya ekleyebilirsin -->
             </div>
         </div>
@@ -94,6 +95,12 @@
                 return;
             }
             sessionStorage.setItem("keywords", JSON.stringify(tags));
+            window.location.href = "results.html";
+        }
+
+        function selectCategory(category) {
+            sessionStorage.setItem("category", category);
+            sessionStorage.removeItem("keywords");
             window.location.href = "results.html";
         }
     </script>
