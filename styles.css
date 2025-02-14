@@ -207,11 +207,12 @@ header {
     background-color: white;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     padding: 16px 0;
+    width: 100%; /* Header tam genişlikte olacak */
 }
 
 .header-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: center; /* Logo ortada olacak */
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
@@ -225,36 +226,6 @@ header {
     text-align: center;
 }
 
-.header-nav {
-    display: flex;
-    gap: 20px;
-}
-
-.header-nav a {
-    text-decoration: none;
-    color: #374151;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-.header-nav a:hover {
-    color: #111827;
-}
-
-/* Mobil Menü */
-#mobile-menu-button {
-    display: none;
-}
-
-@media (max-width: 768px) {
-    .header-nav {
-        display: none;
-    }
-    #mobile-menu-button {
-        display: block;
-    }
-}
-
 /* ================= FOOTER STYLES ================= */
 footer {
     background-color: #F3F4F6;
@@ -264,3 +235,4 @@ footer {
     margin-top: 40px;
     font-size: 14px;
 }
+
