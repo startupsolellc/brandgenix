@@ -45,14 +45,15 @@
     <script>
     window.onload = function () {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
-    const category = sessionStorage.getItem("category") || null;
+    let category = sessionStorage.getItem("category") || null;
 
-    // Eğer eski kategori bilgisi varsa ve yeni arama keywords bazlıysa, kategori başlığını temizle
+    // Eğer eski kategori bilgisi varsa ve yeni arama sadece keywords bazlıysa, kategoriyi tamamen temizle
     if (keywords && sessionStorage.getItem("forceUpdate")) {
         sessionStorage.removeItem("category");
+        category = null; // Kategori değişkenini sıfırla
     }
 
-    if (category) {
+    if (category && category !== "") {
         document.getElementById("results-title").innerHTML = `Generated names for category <b>${category}</b>`;
     } else if (keywords) {
         document.getElementById("results-title").innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>"`;
@@ -61,7 +62,6 @@
     // Tarayıcı önbelleği tamamen temizlendiği için "forceUpdate" değişkenini kaldır
     sessionStorage.removeItem("forceUpdate");
 };
-
     </script>
     <script src="script.js"></script>
 </body>
