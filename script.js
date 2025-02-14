@@ -108,6 +108,7 @@ function redirectToResults() {
         document.getElementById("error-message").classList.remove("hidden");
         return;
     }
+    sessionStorage.removeItem("category"); // Kullanıcı manuel kelime girdiğinde eski kategori bilgisini temizle
     sessionStorage.setItem("keywords", JSON.stringify(tags));
     window.location.href = "results.html";
 }
