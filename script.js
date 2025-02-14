@@ -7,12 +7,6 @@ function goHome() {
 let previousNames = new Set();
 const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
 
-// Kullanıcı kelimelerini saklama
-let tags = [];
-const inputField = document.getElementById("keyword-input");
-const tagContainer = document.getElementById("tag-container");
-const generateButton = document.querySelector("button");
-
 // Netlify Functions üzerinden rastgele font çekme
 async function getRandomFont() {
     try {
@@ -28,128 +22,95 @@ async function getRandomFont() {
     return "Arial"; // Hata olursa varsayılan font
 }
 
-// Kullanıcıdan kelime ekleme
-function handleKeyPress(event) {
-    if (event.key === 'Enter' || event.type === 'blur') {
-        event.preventDefault();
-        addTag();
-    }
-}
-
-function addTag() {
-    let keyword = inputField.value.trim();
-    if (keyword !== "" && !tags.includes(keyword) && tags.length < 5) {
-        tags.push(keyword);
-        updateTagDisplay();
-        inputField.value = "";
-    } else if (tags.length >= 5) {
-        alert("You can add a maximum of 5 keywords.");
-    }
-    checkButtonState();
-}
-
-function removeTag(tag) {
-    tags = tags.filter(t => t !== tag);
-    updateTagDisplay();
-    checkButtonState();
-}
-
-function updateTagDisplay() {
-    tagContainer.innerHTML = "";
-    tags.forEach(tag => {
-        const tagElement = document.createElement("div");
-        tagElement.className = "tag";
-        tagElement.innerHTML = `${tag} <span class='remove' onclick='removeTag("${tag}")'>&times;</span>`;
-        tagContainer.appendChild(tagElement);
-    });
-}
-
-// Buton aktif/pasif durumu
-function checkButtonState() {
-    generateButton.disabled = tags.length < 3;
-}
-
-// Sayfa yüklendiğinde butonun durumu kontrol edilsin
-checkButtonState();
-
-// API'den isim üretme ve sonuçları ekrana yazdırma (Debug İçerir)
+// API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
-    console.log("🔍 generateNames() fonksiyonu çalıştı.");
-    const storedKeywords = sessionStorage.getItem("keywords");
-    let keywords = [];
-    
-    if (storedKeywords) {
+    const keywords = sessionStorage.getItem("keywords") || "Startup";
+    const resultsContainer = document.getElementById("results-container");
+    const titleText = document.getElementById("results-title");
+
+    // 🔄 Loading Animasyonu Ekle (Tam Ortada)
+    const loadingDiv = document.createElement("div");
+    loadingDiv.className = "loading-container";
+    loadingDiv.innerHTML = `<div class="spinner"></div>`;
+    document.body.appendChild(loadingDiv); // Sayfanın tamamına ekle
+
+    setTimeout(async () => {
         try {
-            keywords = JSON.parse(storedKeywords);
-        } catch (error) {
-            console.error("❌ Hata: sessionStorage içinde yanlış formatta veri var!", error);
-            return;
-        }
-    }
+            let uniqueNames = [];
+            let attempts = 0;
+            const maxAttempts = 5; // Maksimum 5 kez tekrar kontrol edecek
 
-    if (!Array.isArray(keywords) || keywords.length < 3) {
-        console.warn("⚠️ Uyarı: Yeterli anahtar kelime girilmedi!");
-        return;
-    }
+            while (uniqueNames.length < 4 && attempts < maxAttempts) {
+                const response = await fetch("/.netlify/functions/generate-name", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ keywords })
+                });
 
-    console.log("📌 API'ye gönderilen anahtar kelimeler:", keywords);
-    sessionStorage.setItem("keywords", JSON.stringify(keywords));
+                const data = await response.json();
 
-    if (window.location.pathname.includes("results.html")) {
-        if (sessionStorage.getItem("generated") === "true") {
-            console.log("⏳ Daha önce çalıştığı için tekrar çağrılmadı.");
-            return;
-        }
-        sessionStorage.setItem("generated", "true");
+                if (data.names && data.names.length > 0) {
+                    const newNames = data.names.filter(name => !previousNames.has(name));
 
-        try {
-            console.log("🚀 API'ye istek gönderiliyor...");
-            const response = await fetch("/.netlify/functions/generate-name", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ keywords })
-            });
+                    uniqueNames.push(...newNames);
+                    uniqueNames = [...new Set(uniqueNames)]; // Her ihtimale karşı tekrarları kaldır
+                }
 
-            console.log("📩 API Yanıtı Alındı, işleniyor...");
-            const data = await response.json();
-            console.log("📡 API Yanıtı:", data);
+                attempts++;
+            }
 
-            if (data.names && data.names.length > 0) {
-                console.log("✅ API başarılı çalıştı, sonuçları ekrana yazdırıyorum.");
-                displayResults(data.names);
+            document.body.removeChild(loadingDiv); // Loading animasyonunu kaldır
+
+            if (uniqueNames.length > 0) {
+                resultsContainer.innerHTML = ""; // Önceki içeriği temizle
+                titleText.innerHTML = `Generated names for "<b>${keywords}</b>":`;
+
+                uniqueNames.slice(0, 4).forEach(async (name, index) => {
+                    previousNames.add(name); // İsmi kaydet
+                    const card = document.createElement("div");
+
+                    // Dinamik olarak rastgele bir font al
+                    const randomFont = await getRandomFont();
+
+                    // Fontu sayfaya yükle
+                    const link = document.createElement("link");
+                    link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}&display=swap`;
+                    link.rel = "stylesheet";
+                    document.head.appendChild(link);
+
+                    // Kartın stilini fonta göre değiştir
+                    card.style.fontFamily = `"${randomFont}", sans-serif`;
+                    card.className = "card";
+                    card.innerText = name;
+                    resultsContainer.appendChild(card);
+
+                    // 8 saniye sonra fade efekti ile kartları göster
+                    setTimeout(() => {
+                        card.classList.add("show");
+                    }, 500 + index * 500);
+                });
             } else {
-                console.warn("❌ API herhangi bir isim üretmedi.");
-                document.getElementById("results-title").innerText = "No names generated. Try again!";
+                resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
             }
         } catch (error) {
-            console.error("❌ API İstek Hatası:", error);
-            document.getElementById("results-title").innerText = "Error generating names. Please try again!";
+            console.error("API request error:", error);
+            document.body.removeChild(loadingDiv); // Hata olsa bile loading kaldır
         }
-    } else {
-        console.log("➡️ Kullanıcı results.html sayfasına yönlendiriliyor.");
-        window.location.href = "results.html";
-    }
+    }, 8000); // ⏳ 8 saniye bekletme süresi
 }
 
-// Sonuçları ekrana yazdırma fonksiyonu
-function displayResults(names) {
-    console.log("📌 displayResults() fonksiyonu çalıştı, ekrana yazdırılıyor...");
-    const resultsContainer = document.getElementById("results-container");
-    resultsContainer.innerHTML = "";
-    document.getElementById("results-title").innerText = "Generated Names:";
-    names.forEach(name => {
-        const card = document.createElement("div");
-        card.className = "bg-white shadow-lg rounded-lg p-6 text-center text-lg font-bold";
-        card.innerText = name;
-        resultsContainer.appendChild(card);
-    });
-    console.log("✅ Sonuçlar başarıyla eklendi.");
-}
+// Ana sayfada anahtar kelimeyi al ve yönlendir
+document.getElementById("generate-button")?.addEventListener("click", function() {
+    const keywords = document.getElementById("keywords").value.trim();
+    if (keywords) {
+        sessionStorage.setItem("keywords", keywords);
+        window.location.href = "results.html";
+    } else {
+        alert("Please enter a keyword!");
+    }
+});
 
 // Sayfa yüklendiğinde otomatik isim üret
 if (window.location.pathname.includes("results.html")) {
-    window.onload = () => {
-        console.log("📌 results.html sayfası yüklendi, generateNames() çağrılıyor.");
-        setTimeout(generateNames, 500);
-    };
+    window.onload = generateNames;
 }
