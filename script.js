@@ -25,6 +25,7 @@ async function getRandomFont() {
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || ["Startup"];
+    const selectedCategory = sessionStorage.getItem("category") || "general";
     const resultsContainer = document.getElementById("results-container");
     const titleText = document.getElementById("results-title");
 
@@ -44,7 +45,7 @@ async function generateNames() {
                 const response = await fetch("/.netlify/functions/generate-name", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ keywords })
+                    body: JSON.stringify({ keywords, category: selectedCategory })
                 });
 
                 const data = await response.json();
@@ -64,7 +65,7 @@ async function generateNames() {
 
             if (uniqueNames.size > 0) {
                 resultsContainer.innerHTML = "";
-                titleText.innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>":`;
+                titleText.innerHTML = `Generated names for "<b>${keywords.join(", ")}</b>" in category <b>${selectedCategory}</b>:`;
 
                 [...uniqueNames].forEach(async (name, index) => {
                     const card = document.createElement("div");
@@ -98,7 +99,9 @@ function redirectToResults() {
         document.getElementById("error-message").classList.remove("hidden");
         return;
     }
+    const selectedCategory = document.getElementById("category-select").value;
     sessionStorage.setItem("keywords", JSON.stringify(tags));
+    sessionStorage.setItem("category", selectedCategory);
     window.location.href = "results.html";
 }
 
