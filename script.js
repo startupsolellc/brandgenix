@@ -108,12 +108,13 @@ function redirectToResults() {
         document.getElementById("error-message").classList.remove("hidden");
         return;
     }
+    
     sessionStorage.removeItem("category"); // Eski kategori bilgisini temizle
     sessionStorage.setItem("keywords", JSON.stringify(tags));
-    sessionStorage.setItem("forceUpdate", Date.now()); // Tarayıcı önbelleğini zorla temizlemek için ek bir güvenlik önlemi
-    window.location.href = "results.html";
-}
 
-if (window.location.pathname.includes("results.html")) {
-    window.onload = generateNames;
+    // Tarayıcı önbelleğini zorla temizlemek için ek bir güvenlik önlemi
+    sessionStorage.setItem("forceUpdate", Date.now()); 
+    sessionStorage.setItem("category", ""); // Kategoriyi tamamen sıfırla
+
+    window.location.href = "results.html";
 }
