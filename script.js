@@ -1,4 +1,4 @@
-// Ana sayfaya yönlendirme fonksiyonu
+// Ana sayfaya yönlendirme fonksiyonu 
 function goHome() {
     window.location.href = "index.html";
 }
@@ -27,7 +27,6 @@ async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
     const selectedCategory = sessionStorage.getItem("category") || null;
     const resultsContainer = document.getElementById("results-container");
-    const titleText = document.getElementById("results-title");
 
     // 🔄 Loading Animasyonu Ekle (Tam Ortada)
     const loadingDiv = document.createElement("div");
@@ -66,9 +65,6 @@ async function generateNames() {
 
             if (uniqueNames.size > 0) {
                 resultsContainer.innerHTML = "";
-                titleText.innerHTML = selectedCategory 
-                    ? `Generated names for category <b>${selectedCategory}</b>` 
-                    : `Generated names for "<b>${keywords.join(", ")}</b>"`;
 
                 [...uniqueNames].forEach(async (name, index) => {
                     const card = document.createElement("div");
