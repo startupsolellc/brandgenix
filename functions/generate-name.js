@@ -4,14 +4,16 @@ exports.handler = async function(event) {
     try {
         const { keywords, category } = JSON.parse(event.body);
         
-        if (!Array.isArray(keywords) || keywords.length === 0) {
+        if (!keywords && !category) {
             return {
                 statusCode: 400,
-                body: JSON.stringify({ error: "Lütfen en az üç anahtar kelime girin." })
+                body: JSON.stringify({ error: "Lütfen en az üç anahtar kelime girin veya bir kategori seçin." })
             };
         }
 
-        const categoryText = category ? `for a ${category} business` : "";
+        const promptContent = category 
+            ? `Generate 5 unique business name ideas for a ${category} business. Only return names, no descriptions.`
+            : `Generate 5 unique business name ideas based on the following keywords: ${keywords.join(", ")}. Only return names, no descriptions.`;
 
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
@@ -23,7 +25,7 @@ exports.handler = async function(event) {
                 model: "gpt-4o-mini",
                 messages: [
                     { role: "system", content: "You are a helpful assistant that generates ONLY business name ideas. Do not provide explanations, descriptions, or numbers. Only return a list of 5 business names, separated by line breaks." },
-                    { role: "user", content: `Generate 5 unique business name ideas ${categoryText} using the following keywords: ${keywords.join(", ")}. Only return names, no descriptions.` }
+                    { role: "user", content: promptContent }
                 ],
                 max_tokens: 100,
                 temperature: 0.7
