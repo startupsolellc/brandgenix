@@ -110,7 +110,7 @@ function redirectToResults() {
     }
     sessionStorage.removeItem("category"); // Eski kategori bilgisini temizle
     sessionStorage.setItem("keywords", JSON.stringify(tags));
-    sessionStorage.setItem("category", ""); // Kategoriyi tamamen sıfırla
+    sessionStorage.setItem("forceUpdate", Date.now()); // Tarayıcı önbelleğini zorla temizlemek için ek bir güvenlik önlemi
     window.location.href = "results.html";
 }
 
