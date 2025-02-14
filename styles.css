@@ -46,6 +46,50 @@ button:hover {
     border-color: #2563eb;
 }
 
+/* Hızlı Kategori Butonları İçin Yeni Tailwind Stilleri */
+.category-button {
+    display: inline-block;
+    border-radius: 9999px;
+    border: 2px solid #2563eb;
+    padding: 6px 24px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease-in-out;
+    color: #2563eb;
+    background-color: transparent;
+}
+
+.category-button:hover {
+    border-color: #1d4ed8;
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #1d4ed8;
+}
+
+.category-button:focus {
+    border-color: #1e40af;
+    background-color: rgba(37, 99, 235, 0.1);
+    color: #1e40af;
+    outline: none;
+}
+
+.category-button:active {
+    border-color: #1e3a8a;
+    color: #1e3a8a;
+}
+
+.category-button-dark {
+    color: #2563eb;
+    border-color: #1e3a8a;
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+.category-button-dark:hover {
+    background-color: #1e3a8a;
+    color: white;
+}
+
 /* Placeholder stilleri */
 input::placeholder {
     color: #aaa;
