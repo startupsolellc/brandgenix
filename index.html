@@ -77,46 +77,5 @@
     </div>
 
     <div id="footer-placeholder"></div>
-
-    <script>
-        let tags = [];
-        let maxTags = 5;
-
-        function handleKeyDown(event) {
-            if (event.key === "Enter") {
-                const input = event.target.value.trim();
-                if (input && tags.length < maxTags) {
-                    tags.push(input);
-                    event.target.value = "";
-                    renderTags();
-                }
-            }
-        }
-
-        function renderTags() {
-            const tagContainer = document.getElementById("tag-container");
-            tagContainer.innerHTML = "";
-            tags.forEach((tag, index) => {
-                const tagDiv = document.createElement("div");
-                tagDiv.className = "flex items-center bg-blue-100 text-blue-700 rounded-full py-1 px-3 mr-2 mt-2";
-                tagDiv.innerHTML = `${tag} <span onclick="removeTag(${index})" class="ml-2 cursor-pointer">X</span>`;
-                tagContainer.appendChild(tagDiv);
-            });
-        }
-
-        function removeTag(index) {
-            tags.splice(index, 1);
-            renderTags();
-        }
-
-        function redirectToResults() {
-            if (tags.length < 3 || tags.length > 5) {
-                document.getElementById("error-message").classList.remove("hidden");
-                return;
-            }
-            sessionStorage.setItem("keywords", JSON.stringify(tags));
-            window.location.href = "results.html";
-        }
-    </script>
 </body>
 </html>
