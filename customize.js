@@ -70,12 +70,22 @@ document.addEventListener("DOMContentLoaded", function () {
             fontSize: 50,
             fontFamily: "Arial",
             fill: "#000000",
-            selectable: true
+            selectable: true,
+            evented: true
         });
         canvas.add(icon);
         canvas.setActiveObject(icon);
         canvas.renderAll();
     };
+
+    // Tüm objelerin seçilebilir ve sürüklenebilir olmasını sağla
+    canvas.on('object:selected', function (e) {
+        e.target.set({
+            selectable: true,
+            evented: true
+        });
+        canvas.renderAll();
+    });
 
     // PNG İndirme
     document.getElementById("downloadBtn").addEventListener("click", function () {
