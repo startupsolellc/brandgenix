@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const tabs = document.querySelectorAll(".tab-button");
     const customizationOptions = document.getElementById("customization-options");
 
-    // Varsayılan olarak "Text" sekmesini aktif yap
     const defaultTab = tabs[0];
     defaultTab.classList.add("active");
     customizationOptions.innerHTML = getTabContent("Text");
@@ -22,6 +21,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 return `<div>
                     <label class='block text-gray-700'>Change Text Color:</label>
                     <input type='color' id='textColorPicker' class='mt-2 border p-2 rounded w-full' value='#000000' onchange='updateTextColor(this.value)'>
+                    <label class='block text-gray-700 mt-4'>Text Effects:</label>
+                    <div class='mt-2'>
+                        <input type='checkbox' id='boldToggle' onchange='toggleBold()'> Bold
+                        <input type='checkbox' id='shadowToggle' onchange='toggleShadow()'> Shadow
+                    </div>
+                    <label class='block text-gray-700 mt-4'>Letter Spacing:</label>
+                    <input type='range' id='letterSpacingSlider' class='mt-2 w-full' min='0' max='10' value='0' oninput='updateLetterSpacing(this.value)'>
+                    <label class='block text-gray-700 mt-4'>Stroke Width:</label>
+                    <input type='range' id='strokeWidthSlider' class='mt-2 w-full' min='0' max='5' value='0' oninput='updateStrokeWidth(this.value)'>
                 </div>`;
             case "Icons":
                 return `<div>
@@ -71,28 +79,21 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("preview-text").style.fontFamily = font;
     };
 
-    window.updateIcon = function (icon) {
-        let iconElement = document.getElementById("preview-icon");
-        if (!iconElement) {
-            iconElement = document.createElement("span");
-            iconElement.id = "preview-icon";
-            iconElement.className = "text-4xl mr-2";
-            document.getElementById("logo-preview").prepend(iconElement);
-        }
-        iconElement.innerHTML = icon;
+    window.toggleBold = function () {
+        let textElement = document.getElementById("preview-text");
+        textElement.style.fontWeight = document.getElementById("boldToggle").checked ? "bold" : "normal";
     };
 
-    window.updateIconColor = function (color) {
-        let iconElement = document.getElementById("preview-icon");
-        if (iconElement) {
-            iconElement.style.color = color;
-        }
+    window.toggleShadow = function () {
+        let textElement = document.getElementById("preview-text");
+        textElement.style.textShadow = document.getElementById("shadowToggle").checked ? "2px 2px 4px rgba(0, 0, 0, 0.3)" : "none";
     };
 
-    window.updateIconSize = function (size) {
-        let iconElement = document.getElementById("preview-icon");
-        if (iconElement) {
-            iconElement.style.fontSize = size + "px";
-        }
+    window.updateLetterSpacing = function (spacing) {
+        document.getElementById("preview-text").style.letterSpacing = spacing + "px";
+    };
+
+    window.updateStrokeWidth = function (width) {
+        document.getElementById("preview-text").style.webkitTextStroke = width + "px black";
     };
 });
