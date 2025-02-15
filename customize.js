@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function () {
     const canvas = new fabric.Canvas("canvas");
     
     // Varsayılan metin
@@ -11,50 +11,32 @@ document.addEventListener("DOMContentLoaded", async function () {
         selectable: true
     });
     canvas.add(text);
-    
-    const netlifyFontsApiUrl = "/.netlify/functions/get-fonts";
 
-    // Netlify Functions üzerinden rastgele font çekme
-    async function getFonts() {
-        try {
-            const response = await fetch(netlifyFontsApiUrl);
-            const data = await response.json();
-
-            if (data.fonts && data.fonts.length > 0) {
-                return data.fonts;
-            }
-        } catch (error) {
-            console.error("Netlify Fonts API request failed:", error);
-        }
-        return ["Arial"]; // Hata olursa varsayılan font
-    }
-
-    // Google Fonts'ı yükleme ve Fabric.js'e entegre etme
-    async function applyFont(font) {
-        const fontUrl = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, '+')}&display=swap`;
-        if (!document.querySelector(`link[href='${fontUrl}']`)) {
-            const link = document.createElement("link");
-            link.href = fontUrl;
-            link.rel = "stylesheet";
-            document.head.appendChild(link);
-        }
-
-        text.set({
-            fontFamily: font
-        });
-        canvas.renderAll();
-    }
+    // Lokal olarak kullanılacak 50 font
+    const localFonts = [
+        "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Georgia", "Times New Roman", "Courier New", "Impact", "Comic Sans MS",
+        "Lucida Console", "Garamond", "Palatino Linotype", "Book Antiqua", "Century Gothic", "Franklin Gothic Medium",
+        "Rockwell", "Copperplate Gothic Light", "Brush Script MT", "Calibri", "Candara", "Cambria", "Consolas", "Monaco",
+        "Geneva", "MS Sans Serif", "MS Serif", "Symbol", "Webdings", "Wingdings", "Lucida Sans", "Lucida Sans Unicode",
+        "Segoe UI", "Segoe Print", "Segoe Script", "Baskerville", "Big Caslon", "Charcoal", "Futura", "Optima", "Hoefler Text",
+        "Papyrus", "Didot", "Copperplate", "Marker Felt", "Noteworthy", "American Typewriter", "Brushstroke", "Snell Roundhand",
+        "Chalkboard SE", "Zapfino"
+    ];
 
     // Fontları dropdown'a yükleme
-    async function populateFontSelector() {
-        const fonts = await getFonts();
+    function populateFontSelector() {
         const fontSelector = document.getElementById("fontSelector");
-        fonts.forEach(font => {
+        localFonts.forEach(font => {
             const option = document.createElement("option");
             option.value = font;
             option.textContent = font;
             fontSelector.appendChild(option);
         });
+    }
+
+    function applyFont(font) {
+        text.set("fontFamily", font);
+        canvas.renderAll();
     }
 
     document.getElementById("fontSelector").addEventListener("change", function () {
@@ -91,5 +73,5 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.body.removeChild(link);
     });
 
-    await populateFontSelector(); // Fontları yükle
+    populateFontSelector(); // Fontları yükle
 });
