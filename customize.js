@@ -75,11 +75,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // İkon ekleme fonksiyonu (sürüklenebilir ikonlar)
     window.addIcon = function(iconText) {
-        const icon = new fabric.Text(iconText, {
+        const icon = new fabric.IText(iconText, {
             left: 100,
             top: 100,
             fontSize: 50,
-            fontFamily: "Arial",
+            fontFamily: "Material Symbols Outlined",
             fill: "#000000",
             selectable: true,
             evented: true
