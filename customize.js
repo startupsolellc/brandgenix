@@ -1,8 +1,19 @@
 document.addEventListener("DOMContentLoaded", function () {
     const canvas = new fabric.Canvas("canvas");
-    
+
+    // URL'den parametre okuma fonksiyonu
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        const results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+
+    // URL'den gelen isim
+    const nameFromUrl = getUrlParameter('name') || 'BrandGenix';
+
     // Varsayılan metin
-    const text = new fabric.Text("BrandGenix", {
+    const text = new fabric.Text(nameFromUrl, {
         left: 150,
         top: 150,
         fontSize: 50,
@@ -42,26 +53,26 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("fontSelector").addEventListener("change", function () {
         applyFont(this.value);
     });
-    
+
     document.getElementById("textColorPicker").addEventListener("input", function () {
         text.set("fill", this.value);
         canvas.renderAll();
     });
-    
+
     document.getElementById("boldToggle").addEventListener("click", function () {
         text.set("fontWeight", text.fontWeight === "bold" ? "normal" : "bold");
         canvas.renderAll();
     });
-    
+
     document.getElementById("shadowToggle").addEventListener("click", function () {
         text.set("shadow", text.shadow ? null : "2px 2px 4px rgba(0, 0, 0, 0.5)");
         canvas.renderAll();
     });
-    
+
     document.getElementById("bgColorPicker").addEventListener("input", function () {
         canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
     });
-    
+
     // İkon ekleme fonksiyonu (sürüklenebilir ikonlar)
     window.addIcon = function(iconText) {
         const icon = new fabric.Text(iconText, {
