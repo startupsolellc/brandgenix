@@ -122,12 +122,20 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.removeChild(link);
     });
 
-    // İkon butonlarına tıklama olayı ekleme
-    document.querySelectorAll('.icon-button').forEach(button => {
+    // İkonları dinamik olarak ekleme
+    const iconList = [
+        'home', 'star', 'favorite', 'settings', 'face', 'build', 'check_circle', 'delete', 'add_circle', 'camera_alt'
+    ];
+
+    const iconContainer = document.getElementById('iconList');
+    iconList.forEach(iconName => {
+        const button = document.createElement('button');
+        button.classList.add('icon-button', 'p-2', 'border', 'rounded', 'bg-gray-200', 'hover:bg-gray-300');
+        button.innerHTML = `<span class="material-symbols-outlined">${iconName}</span>`;
         button.addEventListener('click', function () {
-            const iconText = this.querySelector('.material-symbols-outlined').innerText;
-            addIcon(iconText);
+            addIcon(iconName);
         });
+        iconContainer.appendChild(button);
     });
 
     populateFontSelector(); // Fontları yükle
