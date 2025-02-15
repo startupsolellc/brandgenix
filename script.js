@@ -75,7 +75,7 @@ function removeTag(index) {
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
-    const selectedCategory = sessionStorage.getItem("category")) || null;
+    const selectedCategory = sessionStorage.getItem("category") || null; // Hata burada düzeltildi
     const resultsContainer = document.getElementById("results-container");
 
     // 🔄 Loading Animasyonu Ekle (Tam Ortada)
