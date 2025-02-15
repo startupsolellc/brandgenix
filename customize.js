@@ -62,6 +62,21 @@ document.addEventListener("DOMContentLoaded", function () {
         canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
     });
     
+    // İkon ekleme fonksiyonu (sürüklenebilir ikonlar)
+    window.addIcon = function(iconText) {
+        const icon = new fabric.Text(iconText, {
+            left: 100,
+            top: 100,
+            fontSize: 50,
+            fontFamily: "Arial",
+            fill: "#000000",
+            selectable: true
+        });
+        canvas.add(icon);
+        canvas.setActiveObject(icon);
+        canvas.renderAll();
+    };
+
     // PNG İndirme
     document.getElementById("downloadBtn").addEventListener("click", function () {
         const dataURL = canvas.toDataURL({ format: "png" });
