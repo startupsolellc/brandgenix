@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // İçeriği güncelle
             const selectedTab = this.innerText.trim();
             customizationOptions.innerHTML = getTabContent(selectedTab);
-            attachEventListeners(); // Renk seçicilerin çalışması için eventleri yeniden bağla
+            attachEventListeners(); // Renk seçicilerin ve diğer işlevlerin çalışması için yeniden bağla
         });
     });
 
@@ -40,6 +40,30 @@ document.addEventListener("DOMContentLoaded", function () {
                         <button class='effect-button bg-gray-200 px-4 py-2 rounded' onclick='decreaseSpacing()'>Decrease Spacing</button>
                     </div>
                 </div>`;
+            case "Icons":
+                return `<div>
+                    <label class='block text-gray-700'>Select an Icon:</label>
+                    <div class='grid grid-cols-5 gap-2 mt-2' id='iconList'>
+                        <button class='icon-button' onclick='updateIcon("⭐")'>⭐</button>
+                        <button class='icon-button' onclick='updateIcon("🔥")'>🔥</button>
+                        <button class='icon-button' onclick='updateIcon("💡")'>💡</button>
+                        <button class='icon-button' onclick='updateIcon("🚀")'>🚀</button>
+                        <button class='icon-button' onclick='updateIcon("💎")'>💎</button>
+                    </div>
+                </div>`;
+            case "Fonts":
+                return `<div>
+                    <label class='block text-gray-700'>Select Font:</label>
+                    <select id='fontSelector' class='mt-2 border p-2 rounded w-full' onchange='updateFont(this.value)'>
+                        <option value='Montserrat'>Montserrat</option>
+                        <option value='Jost'>Jost</option>
+                        <option value='Poppins'>Poppins</option>
+                        <option value='Roboto'>Roboto</option>
+                        <option value='Lora'>Lora</option>
+                    </select>
+                </div>`;
+            case "Layout":
+                return `<p class='text-gray-500'>Layout options will be added here.</p>`;
             case "Background":
                 return `<div>
                     <label class='block text-gray-700'>Change Background Color:</label>
@@ -68,36 +92,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     attachEventListeners(); // İlk yükleme sırasında eventleri bağla
 
-    // Metin Efektleri
-    window.toggleBold = function () {
-        let textElement = document.getElementById("preview-text");
-        textElement.style.fontWeight = textElement.style.fontWeight === "bold" ? "normal" : "bold";
-    };
-
-    window.toggleItalic = function () {
-        let textElement = document.getElementById("preview-text");
-        textElement.style.fontStyle = textElement.style.fontStyle === "italic" ? "normal" : "italic";
-    };
-
-    window.toggleUppercase = function () {
-        let textElement = document.getElementById("preview-text");
-        textElement.style.textTransform = textElement.style.textTransform === "uppercase" ? "none" : "uppercase";
-    };
-
-    window.toggleShadow = function () {
-        let textElement = document.getElementById("preview-text");
-        textElement.style.textShadow = textElement.style.textShadow ? "" : "2px 2px 4px rgba(0,0,0,0.3)";
-    };
-
-    window.increaseSpacing = function () {
-        let textElement = document.getElementById("preview-text");
-        let spacing = parseFloat(window.getComputedStyle(textElement).letterSpacing);
-        textElement.style.letterSpacing = (spacing + 1) + "px";
-    };
-
-    window.decreaseSpacing = function () {
-        let textElement = document.getElementById("preview-text");
-        let spacing = parseFloat(window.getComputedStyle(textElement).letterSpacing);
-        textElement.style.letterSpacing = (spacing - 1) + "px";
-    };
 });
