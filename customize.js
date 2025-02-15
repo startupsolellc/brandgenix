@@ -30,7 +30,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     <input type='color' id='textColorPicker' class='mt-2 border p-2 rounded w-full' value='#000000' onchange='updateTextColor(this.value)'>
                 </div>`;
             case "Icons":
-                return `<p class='text-gray-500'>Icon selection will be added here.</p>`;
+                return `<div>
+                    <label class='block text-gray-700'>Select an Icon:</label>
+                    <div class='grid grid-cols-5 gap-2 mt-2' id='iconList'>
+                        <button class='icon-button' onclick='updateIcon("⭐")'>⭐</button>
+                        <button class='icon-button' onclick='updateIcon("🔥")'>🔥</button>
+                        <button class='icon-button' onclick='updateIcon("💡")'>💡</button>
+                        <button class='icon-button' onclick='updateIcon("🚀")'>🚀</button>
+                        <button class='icon-button' onclick='updateIcon("💎")'>💎</button>
+                    </div>
+                    <label class='block text-gray-700 mt-4'>Change Icon Color:</label>
+                    <input type='color' id='iconColorPicker' class='mt-2 border p-2 rounded w-full' value='#000000' onchange='updateIconColor(this.value)'>
+                </div>`;
             case "Fonts":
                 return `<div>
                     <label class='block text-gray-700'>Select Font:</label>
@@ -67,5 +78,25 @@ document.addEventListener("DOMContentLoaded", function () {
     // Font değiştirme fonksiyonu
     window.updateFont = function (font) {
         document.getElementById("preview-text").style.fontFamily = font;
+    };
+
+    // İkon değiştirme fonksiyonu
+    window.updateIcon = function (icon) {
+        let iconElement = document.getElementById("preview-icon");
+        if (!iconElement) {
+            iconElement = document.createElement("span");
+            iconElement.id = "preview-icon";
+            iconElement.className = "text-4xl mr-2";
+            document.getElementById("logo-preview").prepend(iconElement);
+        }
+        iconElement.innerHTML = icon;
+    };
+
+    // İkon rengini değiştirme fonksiyonu
+    window.updateIconColor = function (color) {
+        let iconElement = document.getElementById("preview-icon");
+        if (iconElement) {
+            iconElement.style.color = color;
+        }
     };
 });
