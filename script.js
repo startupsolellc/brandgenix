@@ -1,4 +1,4 @@
-// Ana sayfaya yönlendirme fonksiyonu 
+// Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
 }
@@ -75,7 +75,7 @@ function removeTag(index) {
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
 async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
-    const selectedCategory = sessionStorage.getItem("category") || null;
+    const selectedCategory = sessionStorage.getItem("category")) || null;
     const resultsContainer = document.getElementById("results-container");
 
     // 🔄 Loading Animasyonu Ekle (Tam Ortada)
@@ -125,17 +125,19 @@ async function generateNames() {
                     document.head.appendChild(link);
 
                     card.style.fontFamily = `"${randomFont}", sans-serif`;
-                    card.className = "card";
+                    card.className = "card cursor-pointer transition duration-300 hover:shadow-lg";
                     card.innerText = name;
                     resultsContainer.appendChild(card);
+
+                    card.addEventListener("click", function () {
+                        const selectedName = this.innerText.trim();
+                        window.location.href = `/customize?name=${encodeURIComponent(selectedName)}`;
+                    });
 
                     setTimeout(() => {
                         card.classList.add("show");
                     }, 500 + index * 500);
                 });
-
-                // İsim kartlarına tıklama olayları ekleme
-                addCardClickEvents();
             } else {
                 resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
             }
@@ -186,15 +188,3 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.text())
         .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
-
-// İsim kartlarına tıklama olayları ekleme fonksiyonu
-function addCardClickEvents() {
-    const nameCards = document.querySelectorAll(".card"); // Tüm isim kartlarını seç
-
-    nameCards.forEach(card => {
-        card.addEventListener("click", function () {
-            const selectedName = this.innerText.trim(); // Seçilen ismi al
-            window.location.href = `/customize?name=${encodeURIComponent(selectedName)}`;
-        });
-    });
-}
