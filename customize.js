@@ -1,5 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const canvas = new fabric.Canvas("canvas");
+    const stage = new Konva.Stage({
+        container: 'container',
+        width: 600,
+        height: 400
+    });
+
+    const layer = new Konva.Layer();
+    stage.add(layer);
 
     // URL'den parametre okuma fonksiyonu
     function getUrlParameter(name) {
@@ -13,32 +20,33 @@ document.addEventListener("DOMContentLoaded", function () {
     const nameFromUrl = getUrlParameter('name') || 'BrandGenix';
 
     // Varsayılan metin
-    const text = new fabric.Text(nameFromUrl, {
-        left: 150,
-        top: 150,
+    const text = new Konva.Text({
+        x: 150,
+        y: 150,
+        text: nameFromUrl,
         fontSize: 50,
-        fontFamily: "Arial",
-        fill: "#000000",
-        selectable: true
+        fontFamily: 'Arial',
+        fill: '#000000',
+        draggable: true
     });
-    canvas.add(text);
+    layer.add(text);
 
     // Lokal olarak kullanılacak 50 font
     const localFonts = [
-        "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Georgia", "Times New Roman", "Courier New", "Impact", "Comic Sans MS",
-        "Lucida Console", "Garamond", "Palatino Linotype", "Book Antiqua", "Century Gothic", "Franklin Gothic Medium",
-        "Rockwell", "Copperplate Gothic Light", "Brush Script MT", "Calibri", "Candara", "Cambria", "Consolas", "Monaco",
-        "Geneva", "MS Sans Serif", "MS Serif", "Symbol", "Webdings", "Wingdings", "Lucida Sans", "Lucida Sans Unicode",
-        "Segoe UI", "Segoe Print", "Segoe Script", "Baskerville", "Big Caslon", "Charcoal", "Futura", "Optima", "Hoefler Text",
-        "Papyrus", "Didot", "Copperplate", "Marker Felt", "Noteworthy", "American Typewriter", "Brushstroke", "Snell Roundhand",
-        "Chalkboard SE", "Zapfino"
+        'Arial', 'Verdana', 'Tahoma', 'Trebuchet MS', 'Georgia', 'Times New Roman', 'Courier New', 'Impact', 'Comic Sans MS',
+        'Lucida Console', 'Garamond', 'Palatino Linotype', 'Book Antiqua', 'Century Gothic', 'Franklin Gothic Medium',
+        'Rockwell', 'Copperplate Gothic Light', 'Brush Script MT', 'Calibri', 'Candara', 'Cambria', 'Consolas', 'Monaco',
+        'Geneva', 'MS Sans Serif', 'MS Serif', 'Symbol', 'Webdings', 'Wingdings', 'Lucida Sans', 'Lucida Sans Unicode',
+        'Segoe UI', 'Segoe Print', 'Segoe Script', 'Baskerville', 'Big Caslon', 'Charcoal', 'Futura', 'Optima', 'Hoefler Text',
+        'Papyrus', 'Didot', 'Copperplate', 'Marker Felt', 'Noteworthy', 'American Typewriter', 'Brushstroke', 'Snell Roundhand',
+        'Chalkboard SE', 'Zapfino'
     ];
 
     // Fontları dropdown'a yükleme
     function populateFontSelector() {
-        const fontSelector = document.getElementById("fontSelector");
+        const fontSelector = document.getElementById('fontSelector');
         localFonts.forEach(font => {
-            const option = document.createElement("option");
+            const option = document.createElement('option');
             option.value = font;
             option.textContent = font;
             fontSelector.appendChild(option);
@@ -46,77 +54,73 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function applyFont(font) {
-        text.set("fontFamily", font);
-        canvas.renderAll();
+        text.fontFamily(font);
+        layer.draw();
     }
 
-    document.getElementById("fontSelector").addEventListener("change", function () {
+    document.getElementById('fontSelector').addEventListener('change', function () {
         applyFont(this.value);
     });
 
-    document.getElementById("textColorPicker").addEventListener("input", function () {
-        text.set("fill", this.value);
-        canvas.renderAll();
+    document.getElementById('textColorPicker').addEventListener('input', function () {
+        text.fill(this.value);
+        layer.draw();
     });
 
-    document.getElementById("boldToggle").addEventListener("click", function () {
-        text.set("fontWeight", text.fontWeight === "bold" ? "normal" : "bold");
-        canvas.renderAll();
+    document.getElementById('boldToggle').addEventListener('click', function () {
+        text.fontStyle(text.fontStyle() === 'bold' ? 'normal' : 'bold');
+        layer.draw();
     });
 
-    document.getElementById("shadowToggle").addEventListener("click", function () {
-        text.set("shadow", text.shadow ? null : "2px 2px 4px rgba(0, 0, 0, 0.5)");
-        canvas.renderAll();
+    document.getElementById('shadowToggle').addEventListener('click', function () {
+        if (text.shadowEnabled()) {
+            text.shadowEnabled(false);
+        } else {
+            text.shadowColor('black');
+            text.shadowBlur(10);
+            text.shadowOffset({ x: 5, y: 5 });
+            text.shadowOpacity(0.6);
+            text.shadowEnabled(true);
+        }
+        layer.draw();
     });
 
-    document.getElementById("bgColorPicker").addEventListener("input", function () {
-        canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
+    document.getElementById('bgColorPicker').addEventListener('input', function () {
+        stage.container().style.backgroundColor = this.value;
     });
 
     // İkon ekleme fonksiyonu (sürüklenebilir ikonlar)
     window.addIcon = function(iconText) {
-        const icon = new fabric.IText(iconText, {
-            left: 100,
-            top: 100,
+        const icon = new Konva.Text({
+            x: 100,
+            y: 100,
+            text: iconText,
             fontSize: 50,
-            fontFamily: "Material Symbols Outlined",
-            fill: "#000000",
-            selectable: true,
-            evented: true
+            fontFamily: 'Material Symbols Outlined',
+            fill: '#000000',
+            draggable: true
         });
-        canvas.add(icon);
-        canvas.setActiveObject(icon);
-        canvas.renderAll();
+        layer.add(icon);
+        layer.draw();
     };
 
-    // Tüm objelerin seçilebilir ve sürüklenebilir olmasını sağla
-    canvas.on('object:selected', function (e) {
-        e.target.set({
-            selectable: true,
-            evented: true
-        });
-        canvas.renderAll();
-    });
-
     // PNG İndirme
-    document.getElementById("downloadBtn").addEventListener("click", function () {
-        const dataURL = canvas.toDataURL({ format: "png" });
-        const link = document.createElement("a");
+    document.getElementById('downloadBtn').addEventListener('click', function () {
+        const dataURL = stage.toDataURL();
+        const link = document.createElement('a');
         link.href = dataURL;
-        link.download = "brandgenix-design.png";
+        link.download = 'brandgenix-design.png';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     });
 
     // SVG İndirme
-    document.getElementById("downloadSvgBtn").addEventListener("click", function () {
-        const svgData = canvas.toSVG();
-        const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
-        const svgUrl = URL.createObjectURL(svgBlob);
-        const link = document.createElement("a");
-        link.href = svgUrl;
-        link.download = "brandgenix-design.svg";
+    document.getElementById('downloadSvgBtn').addEventListener('click', function () {
+        const dataURL = stage.toDataURL({ mimeType: 'image/svg+xml' });
+        const link = document.createElement('a');
+        link.href = dataURL;
+        link.download = 'brandgenix-design.svg';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -147,11 +151,12 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    document.getElementById("moreIconsBtn").addEventListener('click', function () {
+    document.getElementById('moreIconsBtn').addEventListener('click', function () {
         populateIcons(allIcons);
         this.style.display = 'none';
     });
 
     populateIcons(initialIcons);
     populateFontSelector();
+    layer.draw();
 });
