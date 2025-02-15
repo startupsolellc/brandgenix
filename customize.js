@@ -139,9 +139,8 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('load', function () {
         const json = localStorage.getItem('canvasState');
         if (json) {
-            const obj = JSON.parse(json);
             stage.destroyChildren();
-            Konva.Node.create(obj, stage);
+            Konva.Node.create(JSON.parse(json), stage);
         }
     });
 
