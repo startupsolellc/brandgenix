@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
- <div id="header-placeholder"></div>   
 <body class="bg-gradient-to-b from-[#EAEFF7] to-[#F1F4F9] flex flex-col items-center min-h-screen">
-
+    
+    <div id="header-placeholder"></div>   
+    
     <!-- Create new names button (Header) -->
     <header class="w-full bg-[#EAEFF7] py-4 text-center">
         <button onclick="goHome()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-full">
@@ -23,16 +24,18 @@
 
     <!-- Sonuç Kartları -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-8 w-full max-w-6xl" id="results-container">
-        <!-- Kartlar buraya eklenecek -->
+        <!-- Kartlar burada oluşturulacak -->
     </div>
-
+    
     <!-- Yeni İsimler Üretme Butonu -->
     <div class="mt-6">
         <button onclick="generateNames()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full flex items-center">
             🔄 Create More
         </button>
     </div>
+    
     <div id="footer-placeholder"></div>
+    
     <script src="script.js"></script>
 </body>
 </html>
