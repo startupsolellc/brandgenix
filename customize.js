@@ -122,5 +122,13 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.removeChild(link);
     });
 
+    // İkon butonlarına tıklama olayı ekleme
+    document.querySelectorAll('.icon-button').forEach(button => {
+        button.addEventListener('click', function () {
+            const iconText = this.querySelector('.material-symbols-outlined').innerText;
+            addIcon(iconText);
+        });
+    });
+
     populateFontSelector(); // Fontları yükle
 });
