@@ -7,6 +7,9 @@ function goHome() {
 let previousNames = new Set();
 const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
 
+// Etiketleri saklamak için değişken
+let tags = [];
+
 // Netlify Functions üzerinden rastgele font çekme
 async function getRandomFont() {
     try {
@@ -20,6 +23,53 @@ async function getRandomFont() {
         console.error("Netlify Fonts API request failed:", error);
     }
     return "Arial"; // Hata olursa varsayılan font
+}
+
+// Etiket ekleme fonksiyonu
+function handleKeyDown(event) {
+    const input = event.target;
+    const tagContainer = document.getElementById("tag-container");
+    const errorMessage = document.getElementById("error-message");
+
+    if (event.key === "Enter" && input.value.trim() !== "") {
+        event.preventDefault();
+
+        if (tags.length >= 5) {
+            errorMessage.classList.remove("hidden");
+            return;
+        }
+
+        tags.push(input.value.trim());
+        input.value = "";
+        errorMessage.classList.add("hidden");
+
+        updateTags(tagContainer);
+    }
+}
+
+// Etiketleri güncelleme fonksiyonu
+function updateTags(container) {
+    container.innerHTML = "";
+    tags.forEach((tag, index) => {
+        const tagElement = document.createElement("div");
+        tagElement.className = "tag bg-blue-500 text-white rounded-full px-3 py-1 flex items-center";
+        tagElement.innerHTML = `${tag} <button class="ml-2" onclick="removeTag(${index})">X</button>`;
+        container.appendChild(tagElement);
+    });
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "keywords-input";
+    input.placeholder = "Enter keywords...";
+    input.className = "flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4";
+    input.onkeydown = handleKeyDown;
+    container.appendChild(input);
+}
+
+// Etiket kaldırma fonksiyonu
+function removeTag(index) {
+    tags.splice(index, 1);
+    updateTags(document.getElementById("tag-container"));
 }
 
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
@@ -93,21 +143,43 @@ async function generateNames() {
     }, 8000);
 }
 
+// Kategori seçimi için fonksiyon
 function selectCategory(category) {
     sessionStorage.setItem("category", category);
     sessionStorage.removeItem("keywords");
     window.location.href = "results.html";
 }
 
+// Sonuç sayfasına yönlendirme
 function redirectToResults() {
-    if (tags.length < 3 || tags.length > 5) {
+    const selectedCategory = document.getElementById("category-select").value;
+
+    if (tags.length >= 3 && tags.length <= 5) {
+        sessionStorage.setItem("keywords", JSON.stringify(tags));
+        sessionStorage.removeItem("category");
+    } else if (selectedCategory) {
+        sessionStorage.setItem("category", selectedCategory);
+        sessionStorage.removeItem("keywords");
+    } else {
         document.getElementById("error-message").classList.remove("hidden");
         return;
     }
-    sessionStorage.setItem("keywords", JSON.stringify(tags));
+
     window.location.href = "results.html";
 }
 
+// Sayfa yüklendiğinde sonuçları üret
 if (window.location.pathname.includes("results.html")) {
     window.onload = generateNames;
 }
+
+// Header ve Footer'ı yükleme fonksiyonu
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("header.html")
+        .then(response => response.text())
+        .then(data => document.getElementById("header-placeholder").innerHTML = data);
+
+    fetch("footer.html")
+        .then(response => response.text())
+        .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+});
