@@ -133,6 +133,9 @@ async function generateNames() {
                         card.classList.add("show");
                     }, 500 + index * 500);
                 });
+
+                // İsim kartlarına tıklama olayları ekleme
+                addCardClickEvents();
             } else {
                 resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
             }
@@ -184,8 +187,8 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
 
-// İsim kartlarına tıklama olayları ekleme
-document.addEventListener("DOMContentLoaded", function () {
+// İsim kartlarına tıklama olayları ekleme fonksiyonu
+function addCardClickEvents() {
     const nameCards = document.querySelectorAll(".card"); // Tüm isim kartlarını seç
 
     nameCards.forEach(card => {
@@ -194,4 +197,4 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = `/customize?name=${encodeURIComponent(selectedName)}`;
         });
     });
-});
+}
