@@ -183,3 +183,15 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.text())
         .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
+
+// İsim kartlarına tıklama olayları ekleme
+document.addEventListener("DOMContentLoaded", function () {
+    const nameCards = document.querySelectorAll(".card"); // Tüm isim kartlarını seç
+
+    nameCards.forEach(card => {
+        card.addEventListener("click", function () {
+            const selectedName = this.innerText.trim(); // Seçilen ismi al
+            window.location.href = `/customize?name=${encodeURIComponent(selectedName)}`;
+        });
+    });
+});
