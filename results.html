@@ -3,28 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Results</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <title>Generated Names - StartupSole</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
-<body class="bg-gray-100 p-6">
-    <h1 class="text-2xl font-bold mb-6">Select a Name</h1>
-    <div class="grid grid-cols-3 gap-4">
-        <!-- Example cards -->
-        <div class="p-4 bg-white rounded shadow cursor-pointer" onclick="selectName('BrandGenix')">
-            <h2 class="text-xl font-bold">BrandGenix</h2>
-        </div>
-        <div class="p-4 bg-white rounded shadow cursor-pointer" onclick="selectName('TechCorp')">
-            <h2 class="text-xl font-bold">TechCorp</h2>
-        </div>
-        <div class="p-4 bg-white rounded shadow cursor-pointer" onclick="selectName('InnoSolutions')">
-            <h2 class="text-xl font-bold">InnoSolutions</h2>
+<body class="bg-gradient-to-b from-[#EAEFF7] to-[#F1F4F9] flex flex-col items-center min-h-screen">
+    
+    <div id="header-placeholder"></div>   
+    
+    <!-- Create new names button (Header) -->
+    <header class="w-full bg-[#EAEFF7] py-4 text-center">
+        <button onclick="goHome()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-full">
+            ↩ Create New Names
+        </button>
+    </header>
+
+    <!-- Açıklama Başlığı -->
+    <h2 id="results-title" class="text-lg font-semibold mt-6 text-gray-800 text-center mx-auto px-4">Discover Unique Business Name Ideas for Your Selection</h2>
+
+    <!-- Sonuç Kartları -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-8 w-full max-w-6xl" id="results-container">
+        <!-- Kartlar burada oluşturulacak -->
+        <div class="card cursor-pointer transition duration-300 hover:shadow-lg">
+            BrandGenix
         </div>
     </div>
-
-    <script>
-        function selectName(name) {
-            window.location.href = `customize.html?name=${name}`;
-        }
-    </script>
+    
+    <!-- Yeni İsimler Üretme Butonu -->
+    <div class="mt-6">
+        <button onclick="generateNames()" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full flex items-center">
+            🔄 Create More
+        </button>
+    </div>
+    
+    <div id="footer-placeholder"></div>
+    
+    <script src="script.js"></script>
 </body>
 </html>
