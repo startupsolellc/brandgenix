@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         top: 150,
         fontSize: 50,
         fontFamily: "Arial",
-        fill: "#000000"
+        fill: "#000000",
+        selectable: true // Sürüklenebilir hale getirildi
     });
     canvas.add(text);
     
@@ -37,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.head.appendChild(link);
 
         text.set("fontFamily", font);
+        text.set("selectable", true);
         canvas.renderAll();
     }
 
@@ -86,6 +88,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             selectable: true // Sürükleme ve düzenleme için aktif
         });
         canvas.add(icon);
+        canvas.setActiveObject(icon);
         canvas.renderAll();
     };
 
@@ -96,6 +99,16 @@ document.addEventListener("DOMContentLoaded", async function () {
             activeObject.set("fill", this.value);
             canvas.renderAll();
         }
+    });
+    
+    // Sürükleme ve yeniden boyutlandırma etkinleştirme
+    canvas.on("object:selected", function (e) {
+        e.target.set({
+            cornerStyle: "circle",
+            cornerSize: 10,
+            transparentCorners: false
+        });
+        canvas.renderAll();
     });
     
     // PNG İndirme
