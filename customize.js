@@ -9,19 +9,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     tabs.forEach(tab => {
         tab.addEventListener("click", function () {
-            // Önce tüm tablardan "active" sınıfını kaldır
             tabs.forEach(t => t.classList.remove("active"));
-            
-            // Seçilen tabı aktif yap
             this.classList.add("active");
-            
-            // İçeriği güncelle
             const selectedTab = this.innerText.trim();
             customizationOptions.innerHTML = getTabContent(selectedTab);
         });
     });
 
-    // Sekmeye göre içeriği döndüren fonksiyon
     function getTabContent(tabName) {
         switch (tabName) {
             case "Text":
@@ -41,6 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                     <label class='block text-gray-700 mt-4'>Change Icon Color:</label>
                     <input type='color' id='iconColorPicker' class='mt-2 border p-2 rounded w-full' value='#000000' onchange='updateIconColor(this.value)'>
+                    <label class='block text-gray-700 mt-4'>Change Icon Size:</label>
+                    <input type='range' id='iconSizeSlider' class='mt-2 w-full' min='16' max='100' value='40' oninput='updateIconSize(this.value)'>
                 </div>`;
             case "Fonts":
                 return `<div>
@@ -53,8 +49,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         <option value='Lora'>Lora</option>
                     </select>
                 </div>`;
-            case "Layout":
-                return `<p class='text-gray-500'>Layout options will be added here.</p>`;
             case "Background":
                 return `<div>
                     <label class='block text-gray-700'>Change Background Color:</label>
@@ -65,22 +59,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Metin rengini değiştirme fonksiyonu
     window.updateTextColor = function (color) {
         document.getElementById("preview-text").style.color = color;
     };
 
-    // Arka plan rengini değiştirme fonksiyonu
     window.updateBgColor = function (color) {
         document.getElementById("logo-preview").style.backgroundColor = color;
     };
 
-    // Font değiştirme fonksiyonu
     window.updateFont = function (font) {
         document.getElementById("preview-text").style.fontFamily = font;
     };
 
-    // İkon değiştirme fonksiyonu
     window.updateIcon = function (icon) {
         let iconElement = document.getElementById("preview-icon");
         if (!iconElement) {
@@ -92,11 +82,17 @@ document.addEventListener("DOMContentLoaded", function () {
         iconElement.innerHTML = icon;
     };
 
-    // İkon rengini değiştirme fonksiyonu
     window.updateIconColor = function (color) {
         let iconElement = document.getElementById("preview-icon");
         if (iconElement) {
             iconElement.style.color = color;
+        }
+    };
+
+    window.updateIconSize = function (size) {
+        let iconElement = document.getElementById("preview-icon");
+        if (iconElement) {
+            iconElement.style.fontSize = size + "px";
         }
     };
 });
