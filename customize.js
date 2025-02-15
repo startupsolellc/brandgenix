@@ -28,6 +28,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 return `<div>
                     <label class='block text-gray-700'>Change Text Color:</label>
                     <input type='color' id='textColorPicker' class='mt-2 border p-2 rounded w-full' value='#000000' onchange='updateTextColor(this.value)'>
+                    
+                    <label class='block text-gray-700 mt-4'>Text Effects:</label>
+                    <div class='flex flex-wrap gap-2 mt-2'>
+                        <button class='effect-button bg-gray-200 px-4 py-2 rounded' onclick='toggleBold()'>Bold</button>
+                        <button class='effect-button bg-gray-200 px-4 py-2 rounded' onclick='toggleItalic()'>Italic</button>
+                        <button class='effect-button bg-gray-200 px-4 py-2 rounded' onclick='toggleUppercase()'>Uppercase</button>
+                        <button class='effect-button bg-gray-200 px-4 py-2 rounded' onclick='toggleShadow()'>Shadow</button>
+                        <button class='effect-button bg-gray-200 px-4 py-2 rounded' onclick='increaseSpacing()'>Increase Spacing</button>
+                        <button class='effect-button bg-gray-200 px-4 py-2 rounded' onclick='decreaseSpacing()'>Decrease Spacing</button>
+                    </div>
                 </div>`;
             case "Icons":
                 return `<div>
@@ -65,38 +75,36 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Metin rengini değiştirme fonksiyonu
-    window.updateTextColor = function (color) {
-        document.getElementById("preview-text").style.color = color;
+    // Metin Efektleri
+    window.toggleBold = function () {
+        let textElement = document.getElementById("preview-text");
+        textElement.style.fontWeight = textElement.style.fontWeight === "bold" ? "normal" : "bold";
     };
 
-    // Arka plan rengini değiştirme fonksiyonu
-    window.updateBgColor = function (color) {
-        document.getElementById("logo-preview").style.backgroundColor = color;
+    window.toggleItalic = function () {
+        let textElement = document.getElementById("preview-text");
+        textElement.style.fontStyle = textElement.style.fontStyle === "italic" ? "normal" : "italic";
     };
 
-    // Font değiştirme fonksiyonu
-    window.updateFont = function (font) {
-        document.getElementById("preview-text").style.fontFamily = font;
+    window.toggleUppercase = function () {
+        let textElement = document.getElementById("preview-text");
+        textElement.style.textTransform = textElement.style.textTransform === "uppercase" ? "none" : "uppercase";
     };
 
-    // İkon değiştirme fonksiyonu
-    window.updateIcon = function (icon) {
-        let iconElement = document.getElementById("preview-icon");
-        if (!iconElement) {
-            iconElement = document.createElement("span");
-            iconElement.id = "preview-icon";
-            iconElement.className = "text-4xl mr-2";
-            document.getElementById("logo-preview").prepend(iconElement);
-        }
-        iconElement.innerHTML = icon;
+    window.toggleShadow = function () {
+        let textElement = document.getElementById("preview-text");
+        textElement.style.textShadow = textElement.style.textShadow ? "" : "2px 2px 4px rgba(0,0,0,0.3)";
     };
 
-    // İkon rengini değiştirme fonksiyonu
-    window.updateIconColor = function (color) {
-        let iconElement = document.getElementById("preview-icon");
-        if (iconElement) {
-            iconElement.style.color = color;
-        }
+    window.increaseSpacing = function () {
+        let textElement = document.getElementById("preview-text");
+        let spacing = parseFloat(window.getComputedStyle(textElement).letterSpacing);
+        textElement.style.letterSpacing = (spacing + 1) + "px";
+    };
+
+    window.decreaseSpacing = function () {
+        let textElement = document.getElementById("preview-text");
+        let spacing = parseFloat(window.getComputedStyle(textElement).letterSpacing);
+        textElement.style.letterSpacing = (spacing - 1) + "px";
     };
 });
