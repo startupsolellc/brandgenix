@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customize Your Name - BrandGenix</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="customize.js"></script>
+    <script src="customize.js" defer></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
@@ -19,11 +19,11 @@
         <div class="w-1/4 bg-white shadow-md rounded-lg p-4">
             <h2 class="text-xl font-bold text-gray-800 mb-4">Customize Options</h2>
             <ul class="space-y-3">
-                <li><button class="tab-button w-full text-left py-2 px-4 bg-gray-200 hover:bg-gray-300 rounded">Text</button></li>
-                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Icons</button></li>
-                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Fonts</button></li>
-                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Layout</button></li>
-                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Background</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 bg-gray-200 hover:bg-gray-300 rounded" data-tab="Text">Text</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded" data-tab="Icons">Icons</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded" data-tab="Fonts">Fonts</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded" data-tab="Layout">Layout</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded" data-tab="Background">Background</button></li>
             </ul>
         </div>
 
@@ -50,6 +50,6 @@
     
     <div id="footer-placeholder"></div>
     
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
 </body>
 </html>
