@@ -132,10 +132,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Toolbar buttons
-    document.getElementById("resetBtn").addEventListener("click", function () {
-        canvas.clear();
-    });
-
     document.getElementById("undoBtn").addEventListener("click", function () {
         // Implement undo functionality
     });
@@ -151,17 +147,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    document.getElementById("moveUpBtn").addEventListener("click", function () {
+    document.getElementById("opacityBtn").addEventListener("click", function () {
         const activeObject = canvas.getActiveObject();
         if (activeObject) {
-            canvas.bringForward(activeObject);
-        }
-    });
-
-    document.getElementById("moveDownBtn").addEventListener("click", function () {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            canvas.sendBackwards(activeObject);
+            activeObject.set('opacity', activeObject.opacity === 1 ? 0.5 : 1);
+            canvas.renderAll();
         }
     });
 
