@@ -75,9 +75,14 @@ async function generateNames() {
                     document.head.appendChild(link);
 
                     card.style.fontFamily = `"${randomFont}", sans-serif`;
-                    card.className = "card";
+                    card.className = "card cursor-pointer transition duration-300 hover:shadow-lg";
                     card.innerText = name;
                     resultsContainer.appendChild(card);
+
+                    card.addEventListener("click", function () {
+                        const selectedName = this.innerText.trim();
+                        window.location.href = `/customize?name=${encodeURIComponent(selectedName)}`;
+                    });
 
                     setTimeout(() => {
                         card.classList.add("show");
@@ -113,7 +118,6 @@ if (window.location.pathname.includes("results.html")) {
 }
 
 // Header ve Footer'ı yükleme fonksiyonu
-
 document.addEventListener("DOMContentLoaded", function () {
     fetch("header.html")
         .then(response => response.text())
