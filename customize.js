@@ -109,5 +109,18 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.removeChild(link);
     });
 
+    // SVG İndirme
+    document.getElementById("downloadSvgBtn").addEventListener("click", function () {
+        const svgData = canvas.toSVG();
+        const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" });
+        const svgUrl = URL.createObjectURL(svgBlob);
+        const link = document.createElement("a");
+        link.href = svgUrl;
+        link.download = "brandgenix-design.svg";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
     populateFontSelector(); // Fontları yükle
 });
