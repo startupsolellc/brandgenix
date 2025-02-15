@@ -75,16 +75,30 @@ document.addEventListener("DOMContentLoaded", async function () {
         canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
     });
     
-    window.addIcon = function(icon) {
-        const iconText = new fabric.Text(icon, {
-            left: text.left - 50,
-            top: text.top,
-            fontSize: 50
+    // İkon ekleme fonksiyonu (Material Symbols desteği)
+    window.addIcon = function(iconName) {
+        const icon = new fabric.Text(iconName, {
+            fontFamily: "Material Symbols Outlined",
+            fontSize: 60,
+            left: 100,
+            top: 100,
+            fill: "#000000",
+            selectable: true // Sürükleme ve düzenleme için aktif
         });
-        canvas.add(iconText);
+        canvas.add(icon);
         canvas.renderAll();
     };
+
+    // İkon rengi değiştirme
+    document.getElementById("iconColorPicker").addEventListener("input", function () {
+        const activeObject = canvas.getActiveObject();
+        if (activeObject && activeObject.type === "text") {
+            activeObject.set("fill", this.value);
+            canvas.renderAll();
+        }
+    });
     
+    // PNG İndirme
     document.getElementById("downloadBtn").addEventListener("click", function () {
         const dataURL = canvas.toDataURL({ format: "png" });
         const link = document.createElement("a");
