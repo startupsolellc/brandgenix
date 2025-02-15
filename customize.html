@@ -4,52 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customize Your Design</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/konva/8.3.6/konva.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 </head>
 <body class="bg-gray-100">
-    <div class="flex h-screen">
-        <!-- Sidebar for customization options -->
-        <div class="w-1/4 bg-white p-6 shadow-lg">
-            <h2 class="text-lg font-bold mb-4">Customize Your Design</h2>
-            
-            <label class="block text-gray-700">Text Color</label>
-            <input type="color" id="textColorPicker" class="w-full mt-2">
-            
-            <label class="block text-gray-700 mt-4">Select Font</label>
-            <select id="fontSelector" class="w-full mt-2 border p-2">
-                <option value="Arial">Arial</option>
-                <option value="Poppins">Poppins</option>
-                <option value="Montserrat">Montserrat</option>
-                <option value="Lora">Lora</option>
-            </select>
-            
-            <label class="block text-gray-700 mt-4">Text Effects</label>
-            <div class="flex gap-2 mt-2">
-                <button id="boldToggle" class="px-2 py-1 bg-gray-300">B</button>
-                <button id="shadowToggle" class="px-2 py-1 bg-gray-300">Shadow</button>
+    <div class="flex flex-col h-screen">
+        <!-- Toolbar (Top Bar) -->
+        <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
+            <div>
+                <button id="resetBtn" class="mr-2">Reset</button>
+                <button id="undoBtn" class="mr-2">Undo</button>
+                <button id="redoBtn" class="mr-2">Redo</button>
+                <button id="deleteBtn">Delete</button>
             </div>
-            
-            <label class="block text-gray-700 mt-4">Background Color</label>
-            <input type="color" id="bgColorPicker" class="w-full mt-2">
-            
-            <label class="block text-gray-700 mt-4">Select an Icon</label>
-            <div id="iconList" class="grid grid-cols-6 gap-2 mt-2">
-                <!-- Icons will be dynamically populated here by JavaScript -->
+            <div>
+                <button id="moveUpBtn" class="mr-2">Move Up</button>
+                <button id="moveDownBtn" class="mr-2">Move Down</button>
+                <button id="flipBtn" class="mr-2">Flip</button>
+                <button id="duplicateBtn">Duplicate</button>
             </div>
-            <button id="moreIconsBtn" class="mt-6 w-full bg-gray-600 text-white py-2">More Icons</button>
-            
-            <button id="downloadBtn" class="mt-6 w-full bg-blue-600 text-white py-2">Download PNG</button>
-            <button id="downloadSvgBtn" class="mt-6 w-full bg-green-600 text-white py-2">Download SVG</button>
         </div>
-        
-        <!-- Main Preview Area -->
-        <div class="flex-1 flex items-center justify-center bg-gray-200">
-            <div id="container" style="width: 600px; height: 400px; border: 1px solid black;"></div>
+
+        <div class="flex flex-1">
+            <!-- Main Preview Area -->
+            <div class="flex-1 flex items-center justify-center bg-gray-200">
+                <canvas id="canvas" width="800" height="600" class="border"></canvas>
+            </div>
+
+            <!-- Sidebar for customization options -->
+            <div class="w-1/4 bg-white p-6 shadow-lg">
+                <div class="flex justify-around mb-4">
+                    <button data-tab="text" class="tab-button">Text</button>
+                    <button data-tab="layout" class="tab-button">Layout</button>
+                    <button data-tab="background" class="tab-button">Background</button>
+                    <button data-tab="icon" class="tab-button">Icon</button>
+                </div>
+
+                <div id="textTab" class="tab-content">
+                    <label class="block text-gray-700">Text Color</label>
+                    <input type="color" id="textColorPicker" class="w-full mt-2">
+                    
+                    <label class="block text-gray-700 mt-4">Select Font</label>
+                    <select id="fontSelector" class="w-full mt-2 border p-2">
+                        <option value="Arial">Arial</option>
+                        <option value="Poppins">Poppins</option>
+                        <option value="Montserrat">Montserrat</option>
+                        <option value="Lora">Lora</option>
+                    </select>
+                    
+                    <label class="block text-gray-700 mt-4">Text Effects</label>
+                    <div class="flex gap-2 mt-2">
+                        <button id="boldToggle" class="px-2 py-1 bg-gray-300">B</button>
+                        <button id="shadowToggle" class="px-2 py-1 bg-gray-300">Shadow</button>
+                    </div>
+                </div>
+
+                <div id="layoutTab" class="tab-content hidden">
+                    <h3 class="text-gray-700">Layout Templates</h3>
+                    <!-- Add layout templates here -->
+                </div>
+
+                <div id="backgroundTab" class="tab-content hidden">
+                    <label class="block text-gray-700">Background Color</label>
+                    <input type="color" id="bgColorPicker" class="w-full mt-2">
+                </div>
+
+                <div id="iconTab" class="tab-content hidden">
+                    <label class="block text-gray-700 mt-4">Select an Icon</label>
+                    <div id="iconList" class="grid grid-cols-6 gap-2 mt-2">
+                        <!-- Icons will be dynamically populated here by JavaScript -->
+                    </div>
+                    <button id="moreIconsBtn" class="mt-6 w-full bg-gray-600 text-white py-2">More Icons</button>
+                </div>
+
+                <button id="downloadBtn" class="mt-6 w-full bg-blue-600 text-white py-2">Download PNG</button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex justify-between items-center p-4 bg-gray-100 border-t">
+            <button id="saveProgressBtn" class="bg-blue-500 text-white p-2">Save Progress</button>
+            <button id="downloadSvgBtn" class="bg-green-500 text-white p-2">Download SVG</button>
         </div>
     </div>
-    
+
     <script src="customize.js"></script>
 </body>
 </html>
