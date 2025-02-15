@@ -136,13 +136,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Load Progress
-    window.onload = function () {
+    window.addEventListener('load', function () {
         const json = localStorage.getItem('canvasState');
         if (json) {
+            const obj = JSON.parse(json);
             stage.destroyChildren();
-            Konva.Node.create(JSON.parse(json), 'canvas');
+            Konva.Node.create(obj, stage);
         }
-    };
+    });
 
     // Toolbar buttons
     document.getElementById('undoBtn').addEventListener('click', function () {
