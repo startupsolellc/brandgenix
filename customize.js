@@ -31,11 +31,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Google Fonts'ı yükleme ve Fabric.js'e entegre etme
     async function applyFont(font) {
-        const fontUrl = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, '+')}&display=swap`;
-        const link = document.createElement("link");
-        link.href = fontUrl;
-        link.rel = "stylesheet";
-        document.head.appendChild(link);
+        if (!document.querySelector(`link[href*='${font.replace(/ /g, "+")}']`)) {
+            const fontUrl = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, '+')}&display=swap`;
+            const link = document.createElement("link");
+            link.href = fontUrl;
+            link.rel = "stylesheet";
+            document.head.appendChild(link);
+        }
 
         text.set("fontFamily", font);
         text.set("selectable", true);
