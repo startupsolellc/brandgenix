@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const width = 800;
     const height = 600;
     const stage = new Konva.Stage({
-        container: 'canvas',
+        container: 'canvas', // HTML element id
         width: width,
         height: height,
     });
