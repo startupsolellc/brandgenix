@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Customize Your Design</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/konva@8.2.0/konva.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
@@ -28,7 +28,10 @@
         <div class="flex flex-1">
             <!-- Main Preview Area -->
             <div class="flex-1 flex items-center justify-center bg-gray-200">
-                <canvas id="canvas" width="800" height="600" class="border"></canvas>
+                <div id="canvas-container" class="relative">
+                    <div id="canvas-grid" class="absolute inset-0 z-0"></div>
+                    <div id="canvas" class="relative z-10"></div>
+                </div>
             </div>
 
             <!-- Sidebar for customization options -->
