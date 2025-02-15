@@ -3,53 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customize Your Name - BrandGenix</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="customize.js"></script>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" type="image/png" href="img/favicon.png">
+    <title>Customize Your Name</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
-<body class="bg-gray-100 flex flex-col min-h-screen">
-    
-    <div id="header-placeholder"></div>
-    
-    <div class="flex flex-grow w-full max-w-7xl mx-auto p-6 gap-6">
-        
-        <!-- Sol Sidebar (TabsList) -->
-        <div class="w-1/4 bg-white shadow-md rounded-lg p-4">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Customize Options</h2>
-            <ul class="space-y-3">
-                <li><button class="tab-button w-full text-left py-2 px-4 bg-gray-200 hover:bg-gray-300 rounded">Text</button></li>
-                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Icons</button></li>
-                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Fonts</button></li>
-                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Layout</button></li>
-                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Background</button></li>
-            </ul>
-        </div>
-
-        <!-- Özelleştirme Alanı (ProjectContentWrapper) -->
-        <div class="w-1/3 bg-white shadow-md rounded-lg p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Edit Your Name</h2>
-            <p class="text-gray-600 mb-2">Choose customization options:</p>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar for customization options -->
+        <div class="w-1/4 bg-white p-6 shadow-lg">
+            <h2 class="text-lg font-bold mb-4">Customize Your Name</h2>
             
-            <div id="customization-options">
-                <p class="text-gray-500">(Options will appear here based on selected tab)</p>
+            <label class="block text-gray-700">Text Color</label>
+            <input type="color" id="textColorPicker" class="w-full mt-2">
+            
+            <label class="block text-gray-700 mt-4">Select Font</label>
+            <select id="fontSelector" class="w-full mt-2 border p-2">
+                <option value="Arial">Arial</option>
+                <option value="Poppins">Poppins</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Lora">Lora</option>
+            </select>
+            
+            <label class="block text-gray-700 mt-4">Text Effects</label>
+            <div class="flex gap-2 mt-2">
+                <button id="boldToggle" class="px-2 py-1 bg-gray-300">B</button>
+                <button id="shadowToggle" class="px-2 py-1 bg-gray-300">Shadow</button>
             </div>
+            
+            <label class="block text-gray-700 mt-4">Background Color</label>
+            <input type="color" id="bgColorPicker" class="w-full mt-2">
+            
+            <label class="block text-gray-700 mt-4">Select an Icon</label>
+            <div class="flex gap-2 mt-2">
+                <button class="icon-button" onclick="addIcon('⭐')">⭐</button>
+                <button class="icon-button" onclick="addIcon('🔥')">🔥</button>
+                <button class="icon-button" onclick="addIcon('💡')">💡</button>
+            </div>
+            
+            <button id="downloadBtn" class="mt-6 w-full bg-blue-600 text-white py-2">Download PNG</button>
         </div>
         
-        <!-- Logo Önizleme Alanı (CanvasComponent) -->
-        <div class="w-1/3 bg-white shadow-md rounded-lg p-6 flex flex-col items-center">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">Live Preview</h2>
-            <div class="w-full h-64 bg-gray-300 flex items-center justify-center rounded-lg" id="logo-preview">
-                <span class="text-3xl font-bold" id="preview-icon"></span>
-                <span class="text-3xl font-bold" id="preview-text">BrandGenix</span>
-            </div>
+        <!-- Main Preview Area -->
+        <div class="flex-1 flex items-center justify-center bg-gray-200">
+            <canvas id="canvas" width="600" height="400" class="border"></canvas>
         </div>
-        
     </div>
     
-    <div id="footer-placeholder"></div>
-    
-    <script src="script.js"></script>
+    <script src="customize.js"></script>
 </body>
 </html>
