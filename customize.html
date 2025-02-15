@@ -1,41 +1,53 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customize Your Name and Brand - BrandGenix</title>
+    <title>Customize Your Name - BrandGenix</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
-<body class="bg-gradient-to-b from-[#EAEFF7] to-[#F1F4F9] flex flex-col items-center min-h-screen">
+<body class="bg-gray-100 flex flex-col min-h-screen">
     
-    <div id="header-placeholder"></div>   
+    <div id="header-placeholder"></div>
     
-    <div class="max-w-4xl w-full mx-auto flex flex-col items-center justify-center flex-grow space-y-8 mt-10">
-        <h1 class="text-3xl font-extrabold text-gray-800" id="custom-name">Loading...</h1>
+    <div class="flex flex-grow w-full max-w-7xl mx-auto p-6 gap-6">
         
-        <p class="text-gray-500 text-lg">Customize your selected business name.</p>
+        <!-- Sol Sidebar (TabsList) -->
+        <div class="w-1/4 bg-white shadow-md rounded-lg p-4">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Customize Options</h2>
+            <ul class="space-y-3">
+                <li><button class="tab-button w-full text-left py-2 px-4 bg-gray-200 hover:bg-gray-300 rounded">Text</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Icons</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Palettes</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Layout</button></li>
+                <li><button class="tab-button w-full text-left py-2 px-4 hover:bg-gray-300 rounded">Background</button></li>
+            </ul>
+        </div>
 
-        <button onclick="goBack()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-full">
-            ↩ Back to Results
-        </button>
+        <!-- Özelleştirme Alanı (ProjectContentWrapper) -->
+        <div class="w-1/3 bg-white shadow-md rounded-lg p-6">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Edit Your Name</h2>
+            <p class="text-gray-600 mb-2">Choose customization options:</p>
+            
+            <div id="customization-options">
+                <p class="text-gray-500">(Options will appear here based on selected tab)</p>
+            </div>
+        </div>
+        
+        <!-- Logo Önizleme Alanı (CanvasComponent) -->
+        <div class="w-1/3 bg-white shadow-md rounded-lg p-6 flex flex-col items-center">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Live Preview</h2>
+            <div class="w-full h-64 bg-gray-300 flex items-center justify-center rounded-lg" id="logo-preview">
+                <span class="text-3xl font-bold" id="preview-text">BrandGenix</span>
+            </div>
+        </div>
+        
     </div>
     
     <div id="footer-placeholder"></div>
     
-    <script>
-        // Seçilen ismi URL'den al ve sayfaya yazdır
-        document.addEventListener("DOMContentLoaded", function () {
-            const params = new URLSearchParams(window.location.search);
-            const name = params.get("name") || "Unknown Name";
-            document.getElementById("custom-name").innerText = name;
-        });
-
-        function goBack() {
-            window.history.back();
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
