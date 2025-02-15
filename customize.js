@@ -123,20 +123,35 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // İkonları dinamik olarak ekleme
-    const iconList = [
-        'home', 'star', 'favorite', 'settings', 'face', 'build', 'check_circle', 'delete', 'add_circle', 'camera_alt'
+    const allIcons = [
+        'home', 'star', 'favorite', 'settings', 'face', 'build', 'check_circle', 'delete', 'add_circle', 'camera_alt',
+        'alarm', 'archive', 'autorenew', 'battery_full', 'block', 'bluetooth', 'book', 'bookmark', 'calendar_today', 'call',
+        'chat', 'cloud', 'code', 'credit_card', 'dashboard', 'directions', 'done', 'download', 'email', 'event',
+        'exit_to_app', 'explore', 'extension', 'favorite_border', 'file_copy', 'filter_list', 'fingerprint', 'flag', 'flight',
+        'folder', 'forum', 'gps_fixed', 'grade', 'group', 'help', 'highlight', 'history', 'home_work', 'hourglass_empty'
     ];
 
+    const initialIcons = allIcons.slice(0, 12);
     const iconContainer = document.getElementById('iconList');
-    iconList.forEach(iconName => {
-        const button = document.createElement('button');
-        button.classList.add('icon-button', 'p-2', 'border', 'rounded', 'bg-gray-200', 'hover:bg-gray-300');
-        button.innerHTML = `<span class="material-symbols-outlined">${iconName}</span>`;
-        button.addEventListener('click', function () {
-            addIcon(iconName);
+
+    function populateIcons(icons) {
+        iconContainer.innerHTML = '';
+        icons.forEach(iconName => {
+            const button = document.createElement('button');
+            button.classList.add('icon-button', 'p-2', 'border', 'rounded', 'bg-gray-200', 'hover:bg-gray-300');
+            button.innerHTML = `<span class="material-symbols-outlined">${iconName}</span>`;
+            button.addEventListener('click', function () {
+                addIcon(iconName);
+            });
+            iconContainer.appendChild(button);
         });
-        iconContainer.appendChild(button);
+    }
+
+    document.getElementById("moreIconsBtn").addEventListener('click', function () {
+        populateIcons(allIcons);
+        this.style.display = 'none';
     });
 
-    populateFontSelector(); // Fontları yükle
+    populateIcons(initialIcons);
+    populateFontSelector();
 });
