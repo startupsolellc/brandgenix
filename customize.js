@@ -1,40 +1,58 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const canvas = new fabric.Canvas("canvas");
-    
+    const width = 800;
+    const height = 600;
+    const stage = new Konva.Stage({
+        container: 'canvas',
+        width: width,
+        height: height,
+    });
+
+    const layer = new Konva.Layer();
+    stage.add(layer);
+
     // Draw grid
     const gridSize = 20;
-    for (let i = 0; i < (canvas.width / gridSize); i++) {
-        canvas.add(new fabric.Line([i * gridSize, 0, i * gridSize, canvas.height], { stroke: '#ccc', selectable: false }));
-        canvas.add(new fabric.Line([0, i * gridSize, canvas.width, i * gridSize], { stroke: '#ccc', selectable: false }));
+    for (let i = 0; i < width / gridSize; i++) {
+        layer.add(new Konva.Line({
+            points: [i * gridSize, 0, i * gridSize, height],
+            stroke: '#ccc',
+            strokeWidth: 0.5,
+        }));
+        layer.add(new Konva.Line({
+            points: [0, i * gridSize, width, i * gridSize],
+            stroke: '#ccc',
+            strokeWidth: 0.5,
+        }));
     }
 
-    // Adding default text
-    const text = new fabric.Text("BrandGenix", {
-        left: 150,
-        top: 150,
+    // Add default text
+    const text = new Konva.Text({
+        x: 150,
+        y: 150,
+        text: 'BrandGenix',
         fontSize: 50,
-        fontFamily: "Arial",
-        fill: "#000000",
-        selectable: true
+        fontFamily: 'Arial',
+        fill: '#000',
+        draggable: true,
     });
-    canvas.add(text);
-
-    // Local fonts
-    const localFonts = [
-        "Arial", "Verdana", "Tahoma", "Trebuchet MS", "Georgia", "Times New Roman", "Courier New", "Impact", "Comic Sans MS",
-        "Lucida Console", "Garamond", "Palatino Linotype", "Book Antiqua", "Century Gothic", "Franklin Gothic Medium",
-        "Rockwell", "Copperplate Gothic Light", "Brush Script MT", "Calibri", "Candara", "Cambria", "Consolas", "Monaco",
-        "Geneva", "MS Sans Serif", "MS Serif", "Symbol", "Webdings", "Wingdings", "Lucida Sans", "Lucida Sans Unicode",
-        "Segoe UI", "Segoe Print", "Segoe Script", "Baskerville", "Big Caslon", "Charcoal", "Futura", "Optima", "Hoefler Text",
-        "Papyrus", "Didot", "Copperplate", "Marker Felt", "Noteworthy", "American Typewriter", "Brushstroke", "Snell Roundhand",
-        "Chalkboard SE", "Zapfino"
-    ];
+    layer.add(text);
+    layer.draw();
 
     // Populate font selector
+    const localFonts = [
+        'Arial', 'Verdana', 'Tahoma', 'Trebuchet MS', 'Georgia', 'Times New Roman', 'Courier New', 'Impact', 'Comic Sans MS',
+        'Lucida Console', 'Garamond', 'Palatino Linotype', 'Book Antiqua', 'Century Gothic', 'Franklin Gothic Medium',
+        'Rockwell', 'Copperplate Gothic Light', 'Brush Script MT', 'Calibri', 'Candara', 'Cambria', 'Consolas', 'Monaco',
+        'Geneva', 'MS Sans Serif', 'MS Serif', 'Symbol', 'Webdings', 'Wingdings', 'Lucida Sans', 'Lucida Sans Unicode',
+        'Segoe UI', 'Segoe Print', 'Segoe Script', 'Baskerville', 'Big Caslon', 'Charcoal', 'Futura', 'Optima', 'Hoefler Text',
+        'Papyrus', 'Didot', 'Copperplate', 'Marker Felt', 'Noteworthy', 'American Typewriter', 'Brushstroke', 'Snell Roundhand',
+        'Chalkboard SE', 'Zapfino'
+    ];
+
     function populateFontSelector() {
-        const fontSelector = document.getElementById("fontSelector");
+        const fontSelector = document.getElementById('fontSelector');
         localFonts.forEach(font => {
-            const option = document.createElement("option");
+            const option = document.createElement('option');
             option.value = font;
             option.textContent = font;
             fontSelector.appendChild(option);
@@ -42,134 +60,128 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function applyFont(font) {
-        text.set("fontFamily", font);
-        canvas.renderAll();
+        text.fontFamily(font);
+        layer.draw();
     }
 
-    document.getElementById("fontSelector").addEventListener("change", function () {
+    document.getElementById('fontSelector').addEventListener('change', function () {
         applyFont(this.value);
     });
 
-    document.getElementById("textColorPicker").addEventListener("input", function () {
-        text.set("fill", this.value);
-        canvas.renderAll();
+    document.getElementById('textColorPicker').addEventListener('input', function () {
+        text.fill(this.value);
+        layer.draw();
     });
 
-    document.getElementById("boldToggle").addEventListener("click", function () {
-        text.set("fontWeight", text.fontWeight === "bold" ? "normal" : "bold");
-        canvas.renderAll();
+    document.getElementById('boldToggle').addEventListener('click', function () {
+        text.fontStyle(text.fontStyle() === 'bold' ? 'normal' : 'bold');
+        layer.draw();
     });
 
-    document.getElementById("shadowToggle").addEventListener("click", function () {
-        text.set("shadow", text.shadow ? null : "2px 2px 4px rgba(0, 0, 0, 0.5)");
-        canvas.renderAll();
+    document.getElementById('shadowToggle').addEventListener('click', function () {
+        text.shadowColor(text.shadowColor() ? '' : 'black');
+        text.shadowBlur(text.shadowBlur() ? 0 : 10);
+        layer.draw();
     });
 
-    document.getElementById("bgColorPicker").addEventListener("input", function () {
-        canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
+    document.getElementById('bgColorPicker').addEventListener('input', function () {
+        layer.getStage().container().style.backgroundColor = this.value;
     });
 
     // Add icon function
-    window.addIcon = function(iconText) {
-        const icon = new fabric.Text(iconText, {
-            left: 100,
-            top: 100,
+    window.addIcon = function (iconText) {
+        const icon = new Konva.Text({
+            x: 100,
+            y: 100,
+            text: iconText,
             fontSize: 50,
-            fontFamily: "Material Symbols Outlined",
-            fill: "#000000",
-            selectable: true,
-            evented: true
+            fontFamily: 'Material Symbols Outlined',
+            fill: '#000',
+            draggable: true,
         });
-        canvas.add(icon);
-        canvas.setActiveObject(icon);
-        canvas.renderAll();
+        layer.add(icon);
+        layer.draw();
     };
 
-    // Enable selection and dragging of all objects
-    canvas.on('object:selected', function (e) {
-        e.target.set({
-            selectable: true,
-            evented: true
-        });
-        canvas.renderAll();
-    });
-
     // PNG Download
-    document.getElementById("downloadBtn").addEventListener("click", function () {
-        const dataURL = canvas.toDataURL({ format: "png" });
-        const link = document.createElement("a");
+    document.getElementById('downloadBtn').addEventListener('click', function () {
+        const dataURL = stage.toDataURL();
+        const link = document.createElement('a');
         link.href = dataURL;
-        link.download = "brandgenix-design.png";
+        link.download = 'brandgenix-design.png';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     });
 
     // SVG Download
-    document.getElementById("downloadSvgBtn").addEventListener("click", function () {
-        const dataURL = canvas.toSVG();
-        const link = document.createElement("a");
+    document.getElementById('downloadSvgBtn').addEventListener('click', function () {
+        const dataURL = stage.toDataURL({ mimeType: 'image/svg+xml' });
+        const link = document.createElement('a');
         link.href = dataURL;
-        link.download = "brandgenix-design.svg";
+        link.download = 'brandgenix-design.svg';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     });
 
     // Save Progress
-    document.getElementById("saveProgressBtn").addEventListener("click", function () {
-        const json = JSON.stringify(canvas);
-        localStorage.setItem("canvasState", json);
-        alert("Progress saved!");
+    document.getElementById('saveProgressBtn').addEventListener('click', function () {
+        const json = stage.toJSON();
+        localStorage.setItem('canvasState', json);
+        alert('Progress saved!');
     });
 
     // Load Progress
     window.onload = function () {
-        const json = localStorage.getItem("canvasState");
+        const json = localStorage.getItem('canvasState');
         if (json) {
-            canvas.loadFromJSON(json, canvas.renderAll.bind(canvas));
+            stage.destroyChildren();
+            Konva.Node.create(JSON.parse(json), 'canvas');
         }
-    }
+    };
 
     // Toolbar buttons
-    document.getElementById("undoBtn").addEventListener("click", function () {
+    document.getElementById('undoBtn').addEventListener('click', function () {
         // Implement undo functionality
     });
 
-    document.getElementById("redoBtn").addEventListener("click", function () {
+    document.getElementById('redoBtn').addEventListener('click', function () {
         // Implement redo functionality
     });
 
-    document.getElementById("deleteBtn").addEventListener("click", function () {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            canvas.remove(activeObject);
+    document.getElementById('deleteBtn').addEventListener('click', function () {
+        const selected = stage.findOne('.selected');
+        if (selected) {
+            selected.destroy();
+            layer.draw();
         }
     });
 
-    document.getElementById("opacityBtn").addEventListener("click", function () {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            activeObject.set('opacity', activeObject.opacity === 1 ? 0.5 : 1);
-            canvas.renderAll();
+    document.getElementById('opacityBtn').addEventListener('click', function () {
+        const selected = stage.findOne('.selected');
+        if (selected) {
+            selected.opacity(selected.opacity() === 1 ? 0.5 : 1);
+            layer.draw();
         }
     });
 
-    document.getElementById("flipBtn").addEventListener("click", function () {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            activeObject.set('flipX', !activeObject.flipX);
-            canvas.renderAll();
+    document.getElementById('flipBtn').addEventListener('click', function () {
+        const selected = stage.findOne('.selected');
+        if (selected) {
+            selected.scaleX(selected.scaleX() * -1);
+            layer.draw();
         }
     });
 
-    document.getElementById("duplicateBtn").addEventListener("click", function () {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            const clone = fabric.util.object.clone(activeObject);
-            clone.set({ left: activeObject.left + 10, top: activeObject.top + 10 });
-            canvas.add(clone);
-            canvas.renderAll();
+    document.getElementById('duplicateBtn').addEventListener('click', function () {
+        const selected = stage.findOne('.selected');
+        if (selected) {
+            const clone = selected.clone();
+            clone.x(clone.x() + 20);
+            clone.y(clone.y() + 20);
+            layer.add(clone);
+            layer.draw();
         }
     });
 
