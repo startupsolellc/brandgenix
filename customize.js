@@ -67,26 +67,37 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    window.updateTextColor = function (color) {
-        document.getElementById("preview-text").style.color = color;
+    window.updateIcon = function (icon) {
+        let iconElement = document.getElementById("preview-icon");
+        if (!iconElement) {
+            iconElement = document.createElement("span");
+            iconElement.id = "preview-icon";
+            iconElement.className = "text-4xl mr-2";
+            document.getElementById("logo-preview").prepend(iconElement);
+        }
+        iconElement.innerHTML = icon;
     };
 
-    window.updateBgColor = function (color) {
-        document.getElementById("logo-preview").style.backgroundColor = color;
+    window.updateIconColor = function (color) {
+        let iconElement = document.getElementById("preview-icon");
+        if (iconElement) {
+            iconElement.style.color = color;
+        }
     };
 
-    window.updateFont = function (font) {
-        document.getElementById("preview-text").style.fontFamily = font;
+    window.updateIconSize = function (size) {
+        let iconElement = document.getElementById("preview-icon");
+        if (iconElement) {
+            iconElement.style.fontSize = size + "px";
+        }
     };
 
     window.toggleBold = function () {
-        let textElement = document.getElementById("preview-text");
-        textElement.style.fontWeight = document.getElementById("boldToggle").checked ? "bold" : "normal";
+        document.getElementById("preview-text").style.fontWeight = document.getElementById("boldToggle").checked ? "bold" : "normal";
     };
 
     window.toggleShadow = function () {
-        let textElement = document.getElementById("preview-text");
-        textElement.style.textShadow = document.getElementById("shadowToggle").checked ? "2px 2px 4px rgba(0, 0, 0, 0.3)" : "none";
+        document.getElementById("preview-text").style.textShadow = document.getElementById("shadowToggle").checked ? "2px 2px 4px rgba(0, 0, 0, 0.3)" : "none";
     };
 
     window.updateLetterSpacing = function (spacing) {
