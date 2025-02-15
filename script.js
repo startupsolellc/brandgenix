@@ -105,18 +105,13 @@ function handleKeyDown(event) {
     if (event.key === "Enter") {
         event.preventDefault();
         const input = document.getElementById("keywords-input");
-        const tagContainer = document.getElementById("tag-container");
-        const errorMessage = document.getElementById("error-message");
-
-        let keyword = input.value.trim();
-
+        const keyword = input.value.trim();
         if (keyword !== "" && !tags.includes(keyword) && tags.length < 5) {
             tags.push(keyword);
             updateTagUI();
             input.value = "";
         }
-
-        validateTags(); // Minimum 3 etiket kontrolü
+        validateTags();
     }
 }
 
@@ -129,7 +124,6 @@ function removeTag(keyword) {
 function updateTagUI() {
     const tagContainer = document.getElementById("tag-container");
     tagContainer.innerHTML = '<input type="text" id="keywords-input" placeholder="Enter keywords..." class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4" onkeydown="handleKeyDown(event)">';
-    
     tags.forEach(tag => {
         const tagElement = document.createElement("span");
         tagElement.className = "bg-blue-500 text-white px-3 py-1 rounded-full text-sm mr-2 mb-2";
@@ -140,15 +134,26 @@ function updateTagUI() {
 
 function validateTags() {
     const errorMessage = document.getElementById("error-message");
-    const generateButton = document.querySelector("button[onclick='redirectToResults()']");
-    
     if (tags.length < 3 || tags.length > 5) {
         errorMessage.classList.remove("hidden");
-        generateButton.disabled = true;
     } else {
         errorMessage.classList.add("hidden");
-        generateButton.disabled = false;
     }
+}
+
+function selectCategory(category) {
+    sessionStorage.setItem("category", category);
+    sessionStorage.removeItem("keywords");
+    window.location.href = "results.html";
+}
+
+function redirectToResults() {
+    if (tags.length < 3 || tags.length > 5) {
+        document.getElementById("error-message").classList.remove("hidden");
+        return;
+    }
+    sessionStorage.setItem("keywords", JSON.stringify(tags));
+    window.location.href = "results.html";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
