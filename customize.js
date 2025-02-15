@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         fontSize: 50,
         fontFamily: "Arial",
         fill: "#000000",
-        selectable: true // Sürüklenebilir hale getirildi
+        selectable: true
     });
     canvas.add(text);
     
@@ -75,40 +75,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     
     document.getElementById("bgColorPicker").addEventListener("input", function () {
         canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
-    });
-    
-    // İkon ekleme fonksiyonu (Material Symbols desteği)
-    window.addIcon = function(iconName) {
-        const icon = new fabric.Text(iconName, {
-            fontFamily: "Material Symbols Outlined",
-            fontSize: 60,
-            left: 100,
-            top: 100,
-            fill: "#000000",
-            selectable: true // Sürükleme ve düzenleme için aktif
-        });
-        canvas.add(icon);
-        canvas.setActiveObject(icon);
-        canvas.renderAll();
-    };
-
-    // İkon rengi değiştirme
-    document.getElementById("iconColorPicker").addEventListener("input", function () {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject && activeObject.type === "text") {
-            activeObject.set("fill", this.value);
-            canvas.renderAll();
-        }
-    });
-    
-    // Sürükleme ve yeniden boyutlandırma etkinleştirme
-    canvas.on("object:selected", function (e) {
-        e.target.set({
-            cornerStyle: "circle",
-            cornerSize: 10,
-            transparentCorners: false
-        });
-        canvas.renderAll();
     });
     
     // PNG İndirme
