@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const canvas = new fabric.Canvas("canvas");
     
     // Varsayılan metin
@@ -11,36 +11,70 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     canvas.add(text);
     
-    // Metin rengi değiştirici
+    const netlifyFontsApiUrl = "/.netlify/functions/get-fonts";
+
+    // Netlify Functions üzerinden rastgele font çekme
+    async function getFonts() {
+        try {
+            const response = await fetch(netlifyFontsApiUrl);
+            const data = await response.json();
+
+            if (data.fonts && data.fonts.length > 0) {
+                return data.fonts;
+            }
+        } catch (error) {
+            console.error("Netlify Fonts API request failed:", error);
+        }
+        return ["Arial"]; // Hata olursa varsayılan font
+    }
+
+    // Google Fonts'ı yükleme ve Fabric.js'e entegre etme
+    async function applyFont(font) {
+        const fontUrl = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, '+')}&display=swap`;
+        const link = document.createElement("link");
+        link.href = fontUrl;
+        link.rel = "stylesheet";
+        document.head.appendChild(link);
+
+        text.set("fontFamily", font);
+        canvas.renderAll();
+    }
+
+    // Fontları dropdown'a yükleme
+    async function populateFontSelector() {
+        const fonts = await getFonts();
+        const fontSelector = document.getElementById("fontSelector");
+        fonts.forEach(font => {
+            const option = document.createElement("option");
+            option.value = font;
+            option.textContent = font;
+            fontSelector.appendChild(option);
+        });
+    }
+
+    document.getElementById("fontSelector").addEventListener("change", function () {
+        applyFont(this.value);
+    });
+    
     document.getElementById("textColorPicker").addEventListener("input", function () {
         text.set("fill", this.value);
         canvas.renderAll();
     });
     
-    // Font değiştirici
-    document.getElementById("fontSelector").addEventListener("change", function () {
-        text.set("fontFamily", this.value);
-        canvas.renderAll();
-    });
-    
-    // Kalınlık toggler
     document.getElementById("boldToggle").addEventListener("click", function () {
         text.set("fontWeight", text.fontWeight === "bold" ? "normal" : "bold");
         canvas.renderAll();
     });
     
-    // Gölge toggler
     document.getElementById("shadowToggle").addEventListener("click", function () {
         text.set("shadow", text.shadow ? null : "2px 2px 4px rgba(0, 0, 0, 0.5)");
         canvas.renderAll();
     });
     
-    // Arka plan rengi değiştirici
     document.getElementById("bgColorPicker").addEventListener("input", function () {
         canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
     });
     
-    // İkon ekleyici
     window.addIcon = function(icon) {
         const iconText = new fabric.Text(icon, {
             left: text.left - 50,
@@ -51,7 +85,6 @@ document.addEventListener("DOMContentLoaded", function () {
         canvas.renderAll();
     };
     
-    // PNG İndirme
     document.getElementById("downloadBtn").addEventListener("click", function () {
         const dataURL = canvas.toDataURL({ format: "png" });
         const link = document.createElement("a");
@@ -61,4 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
         link.click();
         document.body.removeChild(link);
     });
+
+    await populateFontSelector(); // Fontları yükle
 });
