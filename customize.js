@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name') || 'BrandGenix';
+
     const width = 800;
     const height = 600;
     const stage = new Konva.Stage({
@@ -29,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const text = new Konva.Text({
         x: 150,
         y: 150,
-        text: 'BrandGenix',
+        text: name,
         fontSize: 50,
         fontFamily: 'Arial',
         fill: '#000',
