@@ -7,9 +7,6 @@ function goHome() {
 let previousNames = new Set();
 const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
 
-// Etiketler için boş bir dizi oluştur
-let tags = [];
-
 // Netlify Functions üzerinden rastgele font çekme
 async function getRandomFont() {
     try {
@@ -78,14 +75,9 @@ async function generateNames() {
                     document.head.appendChild(link);
 
                     card.style.fontFamily = `"${randomFont}", sans-serif`;
-                    card.className = "card cursor-pointer transition duration-300 hover:shadow-lg";
+                    card.className = "card";
                     card.innerText = name;
                     resultsContainer.appendChild(card);
-
-                    card.addEventListener("click", function () {
-                        const selectedName = this.innerText.trim();
-                        window.location.href = `/customize?name=${encodeURIComponent(selectedName)}`;
-                    });
 
                     setTimeout(() => {
                         card.classList.add("show");
@@ -99,46 +91,6 @@ async function generateNames() {
             document.body.removeChild(loadingDiv);
         }
     }, 8000);
-}
-
-function handleKeyDown(event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        const input = document.getElementById("keywords-input");
-        const keyword = input.value.trim();
-        if (keyword !== "" && !tags.includes(keyword) && tags.length < 5) {
-            tags.push(keyword);
-            updateTagUI();
-            input.value = "";
-        }
-        validateTags();
-    }
-}
-
-function removeTag(keyword) {
-    tags = tags.filter(tag => tag !== keyword);
-    updateTagUI();
-    validateTags();
-}
-
-function updateTagUI() {
-    const tagContainer = document.getElementById("tag-container");
-    tagContainer.innerHTML = '<input type="text" id="keywords-input" placeholder="Enter keywords..." class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4" onkeydown="handleKeyDown(event)">';
-    tags.forEach(tag => {
-        const tagElement = document.createElement("span");
-        tagElement.className = "bg-blue-500 text-white px-3 py-1 rounded-full text-sm mr-2 mb-2";
-        tagElement.innerHTML = `${tag} <button onclick="removeTag('${tag}')" class="ml-1 text-white">&times;</button>`;
-        tagContainer.insertBefore(tagElement, document.getElementById("keywords-input"));
-    });
-}
-
-function validateTags() {
-    const errorMessage = document.getElementById("error-message");
-    if (tags.length < 3 || tags.length > 5) {
-        errorMessage.classList.remove("hidden");
-    } else {
-        errorMessage.classList.add("hidden");
-    }
 }
 
 function selectCategory(category) {
@@ -156,6 +108,18 @@ function redirectToResults() {
     window.location.href = "results.html";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    validateTags();
+if (window.location.pathname.includes("results.html")) {
+    window.onload = generateNames;
+}
+
+// Header ve Footer'ı yükleme fonksiyonu
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("header.html")
+        .then(response => response.text())
+        .then(data => document.getElementById("header-placeholder").innerHTML = data);
+
+    fetch("footer.html")
+        .then(response => response.text())
+        .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
