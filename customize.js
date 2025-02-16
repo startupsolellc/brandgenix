@@ -18,17 +18,21 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     const layer = new Konva.Layer();
+    const gridLayer = new Konva.Layer();
+    const backgroundLayer = new Konva.Layer();
+    stage.add(backgroundLayer);
+    stage.add(gridLayer);
     stage.add(layer);
 
     // Draw grid
     const gridSize = 20;
     for (let i = 0; i < width / gridSize; i++) {
-        layer.add(new Konva.Line({
+        gridLayer.add(new Konva.Line({
             points: [i * gridSize, 0, i * gridSize, height],
             stroke: '#ccc',
             strokeWidth: 0.5,
         }));
-        layer.add(new Konva.Line({
+        gridLayer.add(new Konva.Line({
             points: [0, i * gridSize, width, i * gridSize],
             stroke: '#ccc',
             strokeWidth: 0.5,
@@ -55,6 +59,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
     layer.add(text);
     layer.draw();
+
+    // Background Rect
+    const backgroundRect = new Konva.Rect({
+        x: 0,
+        y: 0,
+        width: width,
+        height: height,
+        fill: '#ffffff',
+    });
+    backgroundLayer.add(backgroundRect);
+    backgroundLayer.draw();
 
     // Track history for undo and redo
     let history = [];
@@ -132,11 +147,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         };
     }
 
-    document.getElementById('fontSelector').addEventListener('change', function () {
-        const selectedFont = this.value;
-        document.getElementById('applyFontBtn').onclick = function () {
-            applyFont(selectedFont);
-        };
+    document.getElementById('applyFontBtn').addEventListener('click', function () {
+        const selectedFont = document.getElementById('fontSelector').value;
+        applyFont(selectedFont);
     });
 
     document.getElementById('textColorPicker').addEventListener('input', function () {
@@ -159,7 +172,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     document.getElementById('bgColorPicker').addEventListener('input', function () {
-        layer.getStage().container().style.backgroundColor = this.value;
+        backgroundRect.fill(this.value);
+        backgroundLayer.draw();
         saveHistory();
     });
 
@@ -197,4 +211,53 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     loadGoogleFonts(); // Load Google Fonts
+
+    // PNG Download
+    document.getElementById('downloadBtn').addEventListener('click', function () {
+        gridLayer.hide();
+        stage.toDataURL({
+            callback: function(dataURL) {
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = 'brandgenix-design.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                gridLayer.show();
+            }
+        });
+    });
+
+    // SVG Download
+    document.getElementById('downloadSvgBtn').addEventListener('click', function () {
+        gridLayer.hide();
+        stage.toDataURL({
+            mimeType: 'image/svg+xml',
+            callback: function(dataURL) {
+                const link = document.createElement('a');
+                link.href = dataURL;
+                link.download = 'brandgenix-design.svg';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                gridLayer.show();
+            }
+        });
+    });
+
+    // Save Progress
+    document.getElementById('saveProgressBtn').addEventListener('click', function () {
+        const json = stage.toJSON();
+        localStorage.setItem('canvasState', json);
+        alert('Progress saved!');
+    });
+
+    // Load Progress
+    window.addEventListener('load', function () {
+        const json = localStorage.getItem('canvasState');
+        if (json) {
+            stage.destroyChildren();
+            Konva.Node.create(JSON.parse(json), stage);
+        }
+    });
 });
