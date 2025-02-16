@@ -177,24 +177,21 @@ document.addEventListener("DOMContentLoaded", async function () {
         saveHistory();
     });
 
-    // Filters
-    document.getElementById('applyGrayscale').addEventListener('click', function () {
-        text.filters([Konva.Filters.Grayscale]);
-        text.cache();
+    // Format
+    document.getElementById('fontSizeInput').addEventListener('input', function () {
+        text.fontSize(this.value);
         layer.draw();
         saveHistory();
     });
 
-    document.getElementById('applySepia').addEventListener('click', function () {
-        text.filters([Konva.Filters.Sepia]);
-        text.cache();
+    document.getElementById('lineHeightInput').addEventListener('input', function () {
+        text.lineHeight(this.value);
         layer.draw();
         saveHistory();
     });
 
-    document.getElementById('applyInvert').addEventListener('click', function () {
-        text.filters([Konva.Filters.Invert]);
-        text.cache();
+    document.getElementById('rotationInput').addEventListener('input', function () {
+        text.rotation(this.value);
         layer.draw();
         saveHistory();
     });
