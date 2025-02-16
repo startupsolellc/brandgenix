@@ -274,4 +274,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    populateFont ▋
+    populateFontSelector(); // Load fonts
+});
