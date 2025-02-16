@@ -1,6 +1,12 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    const name = localStorage.getItem('selectedName') || 'BrandGenix';
-    const fontFamily = localStorage.getItem('selectedFontFamily') || 'Arial';
+    const name = localStorage.getItem('selectedName');
+    const fontFamily = localStorage.getItem('selectedFontFamily');
+
+    if (!name || !fontFamily) {
+        alert("No name or font selected. Redirecting to results page.");
+        window.location.href = "results.html";
+        return;
+    }
 
     const width = 800;
     const height = 600;
@@ -36,7 +42,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.head.appendChild(link);
     }
 
-    // Add default text
+    // Add selected text
     const text = new Konva.Text({
         x: 150,
         y: 150,
