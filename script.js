@@ -131,7 +131,8 @@ async function generateNames() {
 
                     card.addEventListener("click", function () {
                         const selectedName = this.innerText.trim();
-                        window.location.href = `/customize?name=${encodeURIComponent(selectedName)}`;
+                        const selectedFont = randomFont; // Font bilgisini de al
+                        window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}`;
                     });
 
                     setTimeout(() => {
