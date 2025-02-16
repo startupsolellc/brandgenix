@@ -286,6 +286,5 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    populateFontSelector(); // Load fonts
     loadGoogleFonts(); // Load Google Fonts
 });
