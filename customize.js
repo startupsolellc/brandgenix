@@ -232,15 +232,19 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    // SVG Download
-    document.getElementById('downloadSvgBtn').addEventListener('click', function () {
+    // WebP Download
+    document.getElementById('downloadWebpBtn').addEventListener('click', function () {
+        const scaleFactor = 2; // Çözünürlüğü artırmak için ölçek faktörü
         gridLayer.hide();
         stage.toDataURL({
-            mimeType: 'image/svg+xml',
+            mimeType: 'image/webp',
+            width: width * scaleFactor,
+            height: height * scaleFactor,
+            pixelRatio: scaleFactor,
             callback: function(dataURL) {
                 const link = document.createElement('a');
                 link.href = dataURL;
-                link.download = 'brandgenix-design.svg';
+                link.download = 'brandgenix-design.webp';
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link);
