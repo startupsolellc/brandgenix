@@ -3,92 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customize Your Design</title>
-    <script src="https://cdn.jsdelivr.net/npm/konva@8.2.0/konva.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <link id="googleFontsLink" rel="stylesheet" href="" />
+    <title>Customize Your Design - StartupSole</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="img/favicon.png">
 </head>
-<body class="bg-gray-100">
-    <div class="flex flex-col h-screen">
-        <!-- Toolbar (Top Bar) -->
-        <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
-            <div>
-                <button id="undoBtn" class="mr-2">Undo</button>
-                <button id="redoBtn" class="mr-2">Redo</button>
-            </div>
-            <div>
-                <button id="opacityBtn" class="mr-2">Opacity</button>
-                <button id="flipBtn" class="mr-2">Flip</button>
-                <button id="duplicateBtn">Duplicate</button>
-            </div>
+<body>
+    <div id="header-placeholder"></div>
+    <div class="container mx-auto py-8">
+        <div class="flex justify-between">
+            <h1 class="text-3xl font-bold">Customize Your Design</h1>
+            <button id="saveProgressBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full">
+                Save Progress
+            </button>
         </div>
-
-        <div class="flex flex-1">
-            <!-- Main Preview Area -->
-            <div class="flex-1 flex items-center justify-center bg-gray-200">
-                <div id="canvas-container" class="relative">
-                    <div id="canvas-grid" class="absolute inset-0 z-0"></div>
-                    <div id="canvas" class="relative z-10"></div>
-                </div>
+        <div class="mt-6 flex">
+            <div class="w-2/3">
+                <div id="canvas" class="border border-gray-300"></div>
             </div>
-
-            <!-- Sidebar for customization options -->
-            <div class="w-1/4 bg-white p-6 shadow-lg">
-                <div class="flex justify-around mb-4">
-                    <button data-tab="text" class="tab-button">Text</button>
-                    <button data-tab="filters" class="tab-button">Filters</button>
-                    <button data-tab="background" class="tab-button">Background</button>
-                    <button data-tab="icon" class="tab-button">Icon</button>
-                </div>
-
-                <div id="textTab" class="tab-content">
-                    <label class="block text-gray-700">Text Color</label>
-                    <input type="color" id="textColorPicker" class="w-full mt-2">
-                    
-                    <label class="block text-gray-700 mt-4">Select Font</label>
-                    <select id="fontSelector" class="w-full mt-2 border p-2">
-                        <!-- Google Fonts will be populated here by JavaScript -->
+            <div class="w-1/3 pl-6">
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="fontSelector">
+                        Font
+                    </label>
+                    <select id="fontSelector" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
                     </select>
-                    
-                    <label class="block text-gray-700 mt-4">Text Effects</label>
-                    <div class="flex gap-2 mt-2">
-                        <button id="boldToggle" class="px-2 py-1 bg-gray-300">B</button>
-                        <button id="shadowToggle" class="px-2 py-1 bg-gray-300">Shadow</button>
+                    <button id="applyFontBtn" class="mt-2 bg-blue-600 text-white font-bold py-2 px-4 rounded-full">
+                        Apply Font
+                    </button>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="textColorPicker">
+                        Text Color
+                    </label>
+                    <input type="color" id="textColorPicker" class="w-full h-10 p-1 border border-gray-400 rounded">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="bgColorPicker">
+                        Background Color
+                    </label>
+                    <input type="color" id="bgColorPicker" class="w-full h-10 p-1 border border-gray-400 rounded">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        Text Effects
+                    </label>
+                    <button id="boldToggle" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Toggle Bold
+                    </button>
+                    <button id="shadowToggle" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Toggle Shadow
+                    </button>
+                    <button id="applyGrayscale" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Apply Grayscale
+                    </button>
+                    <button id="applySepia" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Apply Sepia
+                    </button>
+                    <button id="applyInvert" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Apply Invert
+                    </button>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        Actions
+                    </label>
+                    <button id="undoBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Undo
+                    </button>
+                    <button id="redoBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Redo
+                    </button>
+                    <button id="duplicateBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Duplicate
+                    </button>
+                    <button id="opacityBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Toggle Opacity
+                    </button>
+                    <button id="flipBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Flip
+                    </button>
+                    <button id="downloadBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Download PNG
+                    </button>
+                    <button id="downloadSvgBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        Download SVG
+                    </button>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        Add Icons
+                    </label>
+                    <button id="moreIconsBtn" class="bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-2">
+                        More Icons
+                    </button>
+                    <div id="iconList" class="flex flex-wrap">
+                        <!-- Icons will be loaded here -->
                     </div>
-                </div>
-
-                <div id="filtersTab" class="tab-content hidden">
-                    <h3 class="text-gray-700">Filters</h3>
-                    <button id="applyGrayscale" class="mt-2 w-full bg-gray-600 text-white py-2">Grayscale</button>
-                    <button id="applySepia" class="mt-2 w-full bg-gray-600 text-white py-2">Sepia</button>
-                    <button id="applyInvert" class="mt-2 w-full bg-gray-600 text-white py-2">Invert</button>
-                </div>
-
-                <div id="backgroundTab" class="tab-content hidden">
-                    <label class="block text-gray-700">Background Color</label>
-                    <input type="color" id="bgColorPicker" class="w-full mt-2">
-                </div>
-
-                <div id="iconTab" class="tab-content hidden">
-                    <label class="block text-gray-700 mt-4">Select an Icon</label>
-                    <div id="iconList" class="grid grid-cols-6 gap-2 mt-2">
-                        <!-- Icons will be dynamically populated here by JavaScript -->
-                    </div>
-                    <button id="moreIconsBtn" class="mt-6 w-full bg-gray-600 text-white py-2">More Icons</button>
                 </div>
             </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="flex justify-between items-center p-4 bg-gray-100 border-t">
-            <button id="saveProgressBtn" class="bg-blue-500 text-white p-2">Save Progress</button>
-            <button id="downloadBtn" class="bg-blue-600 text-white p-2">Download PNG</button>
-            <button id="downloadSvgBtn" class="bg-green-500 text-white p-2">Download SVG</button>
         </div>
     </div>
-
+    <div id="footer-placeholder"></div>
     <script src="customize.js"></script>
 </body>
 </html>
