@@ -82,45 +82,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    document.getElementById('undoBtn').addEventListener('click', function () {
-        undo();
-    });
-
-    document.getElementById('redoBtn').addEventListener('click', function () {
-        redo();
-    });
+    // Removed event listeners for Undo, Redo, Opacity, Flip, Duplicate
 
     saveHistory(); // initial save
 
-    document.getElementById('opacityBtn').addEventListener('click', function () {
-        const selected = stage.find('.selected')[0];
-        if (selected) {
-            selected.opacity(selected.opacity() === 1 ? 0.5 : 1);
-            layer.draw();
-            saveHistory();
-        }
-    });
+    // Removed opacity button event listener
 
-    document.getElementById('flipBtn').addEventListener('click', function () {
-        const selected = stage.find('.selected')[0];
-        if (selected) {
-            selected.scaleX(selected.scaleX() * -1);
-            layer.draw();
-            saveHistory();
-        }
-    });
+    // Removed flip button event listener
 
-    document.getElementById('duplicateBtn').addEventListener('click', function () {
-        const selected = stage.find('.selected')[0];
-        if (selected) {
-            const clone = selected.clone();
-            clone.x(clone.x() + 20);
-            clone.y(clone.y() + 20);
-            layer.add(clone);
-            layer.draw();
-            saveHistory();
-        }
-    });
+    // Removed duplicate button event listener
 
     // Populate font selector with Google Fonts
     async function loadGoogleFonts() {
