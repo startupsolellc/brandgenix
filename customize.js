@@ -131,13 +131,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Load selected font from localStorage
         if (fontFamily) {
-            const link = document.createElement('link');
-            link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, '+')}&display=swap`;
-            link.rel = 'stylesheet';
-            document.head.appendChild(link);
-
-            text.fontFamily(fontFamily);
-            layer.draw();
+            document.getElementById('fontSelector').value = fontFamily;
+            applyFont(fontFamily);
         }
     }
 
