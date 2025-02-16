@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    // Get selected name and font from localStorage
-    const name = localStorage.getItem('selectedName');
-    const fontFamily = localStorage.getItem('selectedFontFamily');
+    const urlParams = new URLSearchParams(window.location.search);
+    const name = urlParams.get('name');
+    const fontFamily = urlParams.get('font');
 
     if (!name || !fontFamily) {
         alert("No name or font selected. Redirecting to results page.");
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }));
     }
 
-    // Load selected font from localStorage
+    // Load selected font from URL parameters
     if (fontFamily) {
         const link = document.createElement('link');
         link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, '+')}&display=swap`;
@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             fontSelector.appendChild(option);
         });
 
-        // Load selected font from localStorage
+        // Load selected font from URL parameters
         if (fontFamily) {
             document.getElementById('fontSelector').value = fontFamily;
             applyFont(fontFamily);
