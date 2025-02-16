@@ -8,12 +8,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
-    <link rel="stylesheet" href="styles.css">
     <link id="googleFontsLink" rel="stylesheet" href="" />
 </head>
 <body class="bg-gray-100">
-     <div id="header-placeholder"></div> 
     <div class="flex flex-col h-screen">
+        <!-- Toolbar (Top Bar) -->
+        <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
+            <div>
+                <button id="undoBtn" class="mr-2">Undo</button>
+                <button id="redoBtn" class="mr-2">Redo</button>
+            </div>
+            <div>
+                <button id="opacityBtn" class="mr-2">Opacity</button>
+                <button id="flipBtn" class="mr-2">Flip</button>
+                <button id="duplicateBtn">Duplicate</button>
+            </div>
+        </div>
 
         <div class="flex flex-1">
             <!-- Main Preview Area -->
@@ -119,6 +129,5 @@
         // Initialize the page by fetching Google Fonts
         fetchGoogleFonts();
     </script>
-    <div id="footer-placeholder"></div>
 </body>
 </html>
