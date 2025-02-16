@@ -1,6 +1,7 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get('name') || 'BrandGenix';
+    const fontFamily = urlParams.get('fontFamily') || 'Arial';
 
     const width = 800;
     const height = 600;
@@ -34,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
         y: 150,
         text: name,
         fontSize: 50,
-        fontFamily: 'Arial',
+        fontFamily: fontFamily,
         fill: '#000',
         draggable: true,
     });
@@ -107,28 +108,39 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Populate font selector
-    const localFonts = [
-        'Arial', 'Verdana', 'Tahoma', 'Trebuchet MS', 'Georgia', 'Times New Roman', 'Courier New', 'Impact', 'Comic Sans MS',
-        'Lucida Console', 'Garamond', 'Palatino Linotype', 'Book Antiqua', 'Century Gothic', 'Franklin Gothic Medium',
-        'Rockwell', 'Copperplate Gothic Light', 'Brush Script MT', 'Calibri', 'Candara', 'Cambria', 'Consolas', 'Monaco',
-        'Geneva', 'MS Sans Serif', 'MS Serif', 'Symbol', 'Webdings', 'Wingdings', 'Lucida Sans', 'Lucida Sans Unicode',
-        'Segoe UI', 'Segoe Print', 'Segoe Script', 'Baskerville', 'Big Caslon', 'Charcoal', 'Futura', 'Optima', 'Hoefler Text',
-        'Papyrus', 'Didot', 'Copperplate', 'Marker Felt', 'Noteworthy', 'American Typewriter', 'Brushstroke', 'Snell Roundhand',
-        'Chalkboard SE', 'Zapfino'
-    ];
+    // Populate font selector with Google Fonts
+    async function loadGoogleFonts() {
+        const apiKey = 'YOUR_GOOGLE_FONTS_API_KEY';
+        const response = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`);
+        const data = await response.json();
+        const fonts = data.items.map(font => font.family);
 
-    function populateFontSelector() {
         const fontSelector = document.getElementById('fontSelector');
-        localFonts.forEach(font => {
+        fonts.forEach(font => {
             const option = document.createElement('option');
             option.value = font;
             option.textContent = font;
             fontSelector.appendChild(option);
         });
+
+        // Load selected font from URL
+        if (fontFamily) {
+            const link = document.createElement('link');
+            link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, '+')}&display=swap`;
+            link.rel = 'stylesheet';
+            document.head.appendChild(link);
+
+            text.fontFamily(fontFamily);
+            layer.draw();
+        }
     }
 
     function applyFont(font) {
+        const link = document.createElement('link');
+        link.href = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, '+')}&display=swap`;
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+
         text.fontFamily(font);
         layer.draw();
         saveHistory();
@@ -275,4 +287,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     populateFontSelector(); // Load fonts
+    loadGoogleFonts(); // Load Google Fonts
 });
