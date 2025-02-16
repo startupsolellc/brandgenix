@@ -164,7 +164,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     document.getElementById('fontSelector').addEventListener('change', function () {
         const selectedFont = this.value;
-        applyFont(selectedFont);
+        document.getElementById('applyFontBtn').onclick = function () {
+            applyFont(selectedFont);
+        };
     });
 
     document.getElementById('textColorPicker').addEventListener('input', function () {
