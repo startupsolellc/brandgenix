@@ -41,6 +41,72 @@ document.addEventListener("DOMContentLoaded", function () {
     layer.add(text);
     layer.draw();
 
+    // Track history for undo and redo
+    let history = [];
+    let historyStep = -1;
+
+    function saveHistory() {
+        history = history.slice(0, historyStep + 1);
+        history.push(stage.toJSON());
+        historyStep++;
+    }
+
+    function undo() {
+        if (historyStep > 0) {
+            historyStep--;
+            stage.destroyChildren();
+            Konva.Node.create(JSON.parse(history[historyStep]), stage);
+        }
+    }
+
+    function redo() {
+        if (historyStep < history.length - 1) {
+            historyStep++;
+            stage.destroyChildren();
+            Konva.Node.create(JSON.parse(history[historyStep]), stage);
+        }
+    }
+
+    document.getElementById('undoBtn').addEventListener('click', function () {
+        undo();
+    });
+
+    document.getElementById('redoBtn').addEventListener('click', function () {
+        redo();
+    });
+
+    saveHistory(); // initial save
+
+    document.getElementById('opacityBtn').addEventListener('click', function () {
+        const selected = stage.findOne('.selected');
+        if (selected) {
+            selected.opacity(selected.opacity() === 1 ? 0.5 : 1);
+            layer.draw();
+            saveHistory();
+        }
+    });
+
+    document.getElementById('flipBtn').addEventListener('click', function () {
+        const selected = stage.findOne('.selected');
+        if (selected) {
+            selected.scaleX(selected.scaleX() * -1);
+            layer.draw();
+            saveHistory();
+        }
+    });
+
+    document.getElementById('duplicateBtn').addEventListener('click', function () {
+        const selected = stage.findOne('.selected');
+        if (selected) {
+            const clone = selected.clone();
+            clone.x(clone.x() + 20);
+            clone.y(clone.y() + 20);
+            layer.add(clone);
+            layer.draw();
+            saveHistory();
+        }
+    });
+
     // Populate font selector
     const localFonts = [
         'Arial', 'Verdana', 'Tahoma', 'Trebuchet MS', 'Georgia', 'Times New Roman', 'Courier New', 'Impact', 'Comic Sans MS',
@@ -65,6 +131,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function applyFont(font) {
         text.fontFamily(font);
         layer.draw();
+        saveHistory();
     }
 
     document.getElementById('fontSelector').addEventListener('change', function () {
@@ -74,21 +141,25 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById('textColorPicker').addEventListener('input', function () {
         text.fill(this.value);
         layer.draw();
+        saveHistory();
     });
 
     document.getElementById('boldToggle').addEventListener('click', function () {
         text.fontStyle(text.fontStyle() === 'bold' ? 'normal' : 'bold');
         layer.draw();
+        saveHistory();
     });
 
     document.getElementById('shadowToggle').addEventListener('click', function () {
         text.shadowColor(text.shadowColor() ? '' : 'black');
         text.shadowBlur(text.shadowBlur() ? 0 : 10);
         layer.draw();
+        saveHistory();
     });
 
     document.getElementById('bgColorPicker').addEventListener('input', function () {
         layer.getStage().container().style.backgroundColor = this.value;
+        saveHistory();
     });
 
     // Add icon function
@@ -104,7 +175,33 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         layer.add(icon);
         layer.draw();
+        saveHistory();
     };
+
+    // Load Google Material Icons
+    function loadMaterialIcons() {
+        const iconList = document.getElementById('iconList');
+        iconList.innerHTML = ''; // Clear existing icons
+
+        const materialIcons = [
+            'home', 'star', 'favorite', 'search', 'settings', 'info', 'warning', 'help', 'check', 'close'
+            // Add more icons as needed
+        ];
+
+        materialIcons.forEach(icon => {
+            const iconElement = document.createElement('span');
+            iconElement.className = 'material-symbols-outlined cursor-pointer';
+            iconElement.textContent = icon;
+            iconElement.addEventListener('click', function () {
+                window.addIcon(icon);
+            });
+            iconList.appendChild(iconElement);
+        });
+    }
+
+    document.getElementById('moreIconsBtn').addEventListener('click', function () {
+        loadMaterialIcons();
+    });
 
     // PNG Download
     document.getElementById('downloadBtn').addEventListener('click', function () {
@@ -144,48 +241,26 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Toolbar buttons
-    document.getElementById('undoBtn').addEventListener('click', function () {
-        // Implement undo functionality
+    // Filters
+    document.getElementById('applyGrayscale').addEventListener('click', function () {
+        text.filters([Konva.Filters.Grayscale]);
+        text.cache();
+        layer.draw();
+        saveHistory();
     });
 
-    document.getElementById('redoBtn').addEventListener('click', function () {
-        // Implement redo functionality
+    document.getElementById('applySepia').addEventListener('click', function () {
+        text.filters([Konva.Filters.Sepia]);
+        text.cache();
+        layer.draw();
+        saveHistory();
     });
 
-    document.getElementById('deleteBtn').addEventListener('click', function () {
-        const selected = stage.findOne('.selected');
-        if (selected) {
-            selected.destroy();
-            layer.draw();
-        }
-    });
-
-    document.getElementById('opacityBtn').addEventListener('click', function () {
-        const selected = stage.findOne('.selected');
-        if (selected) {
-            selected.opacity(selected.opacity() === 1 ? 0.5 : 1);
-            layer.draw();
-        }
-    });
-
-    document.getElementById('flipBtn').addEventListener('click', function () {
-        const selected = stage.findOne('.selected');
-        if (selected) {
-            selected.scaleX(selected.scaleX() * -1);
-            layer.draw();
-        }
-    });
-
-    document.getElementById('duplicateBtn').addEventListener('click', function () {
-        const selected = stage.findOne('.selected');
-        if (selected) {
-            const clone = selected.clone();
-            clone.x(clone.x() + 20);
-            clone.y(clone.y() + 20);
-            layer.add(clone);
-            layer.draw();
-        }
+    document.getElementById('applyInvert').addEventListener('click', function () {
+        text.filters([Konva.Filters.Invert]);
+        text.cache();
+        layer.draw();
+        saveHistory();
     });
 
     // Tab functionality
