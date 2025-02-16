@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", async function () {
+    // Get selected name and font from localStorage
     const name = localStorage.getItem('selectedName');
     const fontFamily = localStorage.getItem('selectedFontFamily');
 
