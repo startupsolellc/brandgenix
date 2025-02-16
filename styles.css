@@ -282,5 +282,5 @@ footer {
 }
 /* Custimize html canvas alanı yükseklik azaltma */
 .reduced-height {
-    height: 80%; /* Yüksekliği %20 oranında azaltmak için %80 olarak ayarla */
+    height: 60%; /* Yüksekliği %40 oranında azaltmak için %80 olarak ayarla */
 }
