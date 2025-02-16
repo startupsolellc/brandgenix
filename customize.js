@@ -144,14 +144,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function applyFont(font) {
+        // Remove existing font link if any
+        const existingLink = document.querySelector('link[rel="stylesheet"][href*="fonts.googleapis.com"]');
+        if (existingLink) {
+            document.head.removeChild(existingLink);
+        }
+
         const link = document.createElement('link');
         link.href = `https://fonts.googleapis.com/css2?family=${font.replace(/ /g, '+')}&display=swap`;
         link.rel = 'stylesheet';
         document.head.appendChild(link);
 
-        text.fontFamily(font);
-        layer.draw();
-        saveHistory();
+        link.onload = () => {
+            text.fontFamily(font);
+            layer.batchDraw();
+            saveHistory();
+        };
     }
 
     document.getElementById('fontSelector').addEventListener('change', function () {
