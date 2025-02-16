@@ -9,8 +9,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    const width = 800;
-    const height = 600;
+    const width = 800; // Mevcut canvas genişliği
+    const height = 600; // Mevcut canvas yüksekliği
     const stage = new Konva.Stage({
         container: 'canvas', // HTML element id
         width: width,
@@ -214,8 +214,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // PNG Download
     document.getElementById('downloadBtn').addEventListener('click', function () {
+        const scaleFactor = 2; // Çözünürlüğü artırmak için ölçek faktörü
         gridLayer.hide();
         stage.toDataURL({
+            width: width * scaleFactor,
+            height: height * scaleFactor,
+            pixelRatio: scaleFactor,
             callback: function(dataURL) {
                 const link = document.createElement('a');
                 link.href = dataURL;
