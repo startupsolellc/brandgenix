@@ -280,7 +280,3 @@ footer {
     font-weight: bold;
     color: #333;
 }
-/* Custimize html canvas alanı yükseklik azaltma */
-.reduced-height {
-    height: 60%; /* Yüksekliği %40 oranında azaltmak için %80 olarak ayarla */
-}
