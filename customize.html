@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customize Your Design</title>
+    <title>Customize Your Brand Design</title>
     <script src="https://cdn.jsdelivr.net/npm/konva@8.2.0/konva.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
+    <link rel="icon" type="image/png" href="img/favicon.png">
     <link id="googleFontsLink" rel="stylesheet" href="" />
 </head>
 <body class="bg-gray-100">
     <div class="flex flex-col h-screen">
-        <!-- Toolbar (Top Bar) -->
+        <div id="header-placeholder"></div> 
         <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
             <div>
                 <!-- Removed buttons: Undo, Redo -->
@@ -117,5 +118,6 @@
         // Initialize the page by fetching Google Fonts
         fetchGoogleFonts();
     </script>
+    <div id="footer-placeholder"></div>
 </body>
 </html>
