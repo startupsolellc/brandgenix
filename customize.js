@@ -1,7 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const name = urlParams.get('name') || 'BrandGenix';
-    const fontFamily = urlParams.get('fontFamily') || 'Arial';
+    const name = localStorage.getItem('selectedName') || 'BrandGenix';
+    const fontFamily = localStorage.getItem('selectedFontFamily') || 'Arial';
 
     const width = 800;
     const height = 600;
@@ -27,6 +26,14 @@ document.addEventListener("DOMContentLoaded", async function () {
             stroke: '#ccc',
             strokeWidth: 0.5,
         }));
+    }
+
+    // Load selected font from localStorage
+    if (fontFamily) {
+        const link = document.createElement('link');
+        link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, '+')}&display=swap`;
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
     }
 
     // Add default text
@@ -110,10 +117,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Populate font selector with Google Fonts
     async function loadGoogleFonts() {
-        const apiKey = 'YOUR_GOOGLE_FONTS_API_KEY';
-        const response = await fetch(`https://www.googleapis.com/webfonts/v1/webfonts?key=${apiKey}`);
+        const response = await fetch('/.netlify/functions/get-fonts');
         const data = await response.json();
-        const fonts = data.items.map(font => font.family);
+        const fonts = data.fonts;
 
         const fontSelector = document.getElementById('fontSelector');
         fonts.forEach(font => {
@@ -123,7 +129,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             fontSelector.appendChild(option);
         });
 
-        // Load selected font from URL
+        // Load selected font from localStorage
         if (fontFamily) {
             const link = document.createElement('link');
             link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, '+')}&display=swap`;
