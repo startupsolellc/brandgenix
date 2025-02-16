@@ -16,7 +16,6 @@
             <div>
                 <button id="undoBtn" class="mr-2">Undo</button>
                 <button id="redoBtn" class="mr-2">Redo</button>
-                <button id="deleteBtn">Delete</button>
             </div>
             <div>
                 <button id="opacityBtn" class="mr-2">Opacity</button>
@@ -38,7 +37,7 @@
             <div class="w-1/4 bg-white p-6 shadow-lg">
                 <div class="flex justify-around mb-4">
                     <button data-tab="text" class="tab-button">Text</button>
-                    <button data-tab="layout" class="tab-button">Layout</button>
+                    <button data-tab="filters" class="tab-button">Filters</button>
                     <button data-tab="background" class="tab-button">Background</button>
                     <button data-tab="icon" class="tab-button">Icon</button>
                 </div>
@@ -62,9 +61,11 @@
                     </div>
                 </div>
 
-                <div id="layoutTab" class="tab-content hidden">
-                    <h3 class="text-gray-700">Layout Templates</h3>
-                    <!-- Add layout templates here -->
+                <div id="filtersTab" class="tab-content hidden">
+                    <h3 class="text-gray-700">Filters</h3>
+                    <button id="applyGrayscale" class="mt-2 w-full bg-gray-600 text-white py-2">Grayscale</button>
+                    <button id="applySepia" class="mt-2 w-full bg-gray-600 text-white py-2">Sepia</button>
+                    <button id="applyInvert" class="mt-2 w-full bg-gray-600 text-white py-2">Invert</button>
                 </div>
 
                 <div id="backgroundTab" class="tab-content hidden">
@@ -79,14 +80,13 @@
                     </div>
                     <button id="moreIconsBtn" class="mt-6 w-full bg-gray-600 text-white py-2">More Icons</button>
                 </div>
-
-                <button id="downloadBtn" class="mt-6 w-full bg-blue-600 text-white py-2">Download PNG</button>
             </div>
         </div>
 
         <!-- Footer -->
         <div class="flex justify-between items-center p-4 bg-gray-100 border-t">
             <button id="saveProgressBtn" class="bg-blue-500 text-white p-2">Save Progress</button>
+            <button id="downloadBtn" class="bg-blue-600 text-white p-2">Download PNG</button>
             <button id="downloadSvgBtn" class="bg-green-500 text-white p-2">Download SVG</button>
         </div>
     </div>
