@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", function () {
     saveHistory(); // initial save
 
     document.getElementById('opacityBtn').addEventListener('click', function () {
-        const selected = stage.findOne('.selected');
+        const selected = stage.find('.selected')[0];
         if (selected) {
             selected.opacity(selected.opacity() === 1 ? 0.5 : 1);
             layer.draw();
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById('flipBtn').addEventListener('click', function () {
-        const selected = stage.findOne('.selected');
+        const selected = stage.find('.selected')[0];
         if (selected) {
             selected.scaleX(selected.scaleX() * -1);
             layer.draw();
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById('duplicateBtn').addEventListener('click', function () {
-        const selected = stage.findOne('.selected');
+        const selected = stage.find('.selected')[0];
         if (selected) {
             const clone = selected.clone();
             clone.x(clone.x() + 20);
@@ -274,5 +274,4 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    populateFontSelector(); // Load fonts
-});
+    populateFont ▋
