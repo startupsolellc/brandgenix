@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="script.js" defer></script>
 </head>
-<body class="bg-gray-100">
+<body>
     <div id="header-placeholder"></div> 
     <div class="flex flex-col h-screen">
         <div class="flex justify-between items-center p-4 bg-gray-100 border-b">
@@ -27,7 +27,7 @@
     
         <div class="flex flex-1">
             <!-- Main Preview Area -->
-            <div class="flex-1 flex items-center justify-center reduced-height" style="background-color: #EBF0F7;">
+            <div class="flex-1 flex items-center justify-center reduced-height" id="main-preview">
                 <div id="canvas-container" class="relative">
                     <div id="canvas-grid" class="absolute inset-0 z-0"></div>
                     <div id="canvas" class="relative z-10"></div>
@@ -124,6 +124,13 @@
 
         // Initialize the page by fetching Google Fonts
         fetchGoogleFonts();
+
+        // Extract URL parameters and apply background color
+        const urlParams = new URLSearchParams(window.location.search);
+        const bgColor = urlParams.get('bgColor');
+        if (bgColor) {
+            document.getElementById('main-preview').style.backgroundColor = bgColor;
+        }
     </script>
     <div id="footer-placeholder"></div>
 </body>
