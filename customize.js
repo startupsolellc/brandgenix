@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // PNG Download
     document.getElementById('downloadBtn').addEventListener('click', function () {
-        const scaleFactor = 2; // Çözünürlüğü artırmak için ölçek faktörü
+        const scaleFactor = 1; // Çözünürlüğü artırmak için ölçek faktörü
         gridLayer.hide();
         stage.toDataURL({
             width: width * scaleFactor,
@@ -231,7 +231,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // WebP Download
     document.getElementById('downloadWebpBtn').addEventListener('click', function () {
-        const scaleFactor = 2; // Çözünürlüğü artırmak için ölçek faktörü
+        const scaleFactor = 1; // Çözünürlüğü artırmak için ölçek faktörü
         gridLayer.hide();
         stage.toDataURL({
             mimeType: 'image/webp',
