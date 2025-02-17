@@ -1,3 +1,18 @@
+import { setupAuthUI } from "./functions/firebase-auth.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupAuthUI();
+
+    // Header ve Footer'ı yükleme
+    fetch("header.html")
+        .then(response => response.text())
+        .then(data => document.getElementById("header-placeholder").innerHTML = data);
+
+    fetch("footer.html")
+        .then(response => response.text())
+        .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+});
+
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
@@ -217,22 +232,4 @@ document.addEventListener("DOMContentLoaded", function () {
     if (generateNewButton) {
         generateNewButton.addEventListener("click", generateNames);
     }
-});
-
-// Header ve Footer'ı yükleme fonksiyonu
-document.addEventListener("DOMContentLoaded", function () {
-    fetch("header.html")
-        .then(response => response.text())
-        .then(data => document.getElementById("header-placeholder").innerHTML = data);
-
-    fetch("footer.html")
-        .then(response => response.text())
-        .then(data => document.getElementById("footer-placeholder").innerHTML = data);
-});
-
-// Firebase Authentication Kodu
-import { setupAuthUI } from "./functions/auth.js";
-
-document.addEventListener("DOMContentLoaded", () => {
-    setupAuthUI();
 });
