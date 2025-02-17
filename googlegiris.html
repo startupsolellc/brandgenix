@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login</title>
+</head>
+<body>
+    <button id="google-login">Google ile Giriş Yap</button>
+    <button id="google-logout" style="display: none;">Çıkış Yap</button>
+    <p id="user-info">Giriş yapılmadı</p>
+
+    <script type="module">
+        import { googleLogin, googleLogout, getUser, onAuthChange } from "./functions/firebase-auth.js";
+
+        // Kullanıcı oturum durumunu dinle
+        onAuthChange((user) => {
+            const userInfo = document.getElementById("user-info");
+            const loginBtn = document.getElementById("google-login");
+            const logoutBtn = document.getElementById("google-logout");
+
+            if (user) {
+                userInfo.innerText = `Hoşgeldin, ${user.displayName}`;
+                loginBtn.style.display = "none";
+                logoutBtn.style.display = "block";
+            } else {
+                userInfo.innerText = "Giriş yapılmadı";
+                loginBtn.style.display = "block";
+                logoutBtn.style.display = "none";
+            }
+        });
+
+        // Giriş Butonu
+        document.getElementById("google-login").addEventListener("click", () => {
+            googleLogin((user) => {
+                console.log("Giriş Başarılı:", user);
+            });
+        });
+
+        // Çıkış Butonu
+        document.getElementById("google-logout").addEventListener("click", () => {
+            googleLogout(() => {
+                console.log("Çıkış Yapıldı");
+            });
+        });
+    </script>
+</body>
+</html>
