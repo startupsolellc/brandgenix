@@ -87,3 +87,4 @@ export function setupAuthUI() {
 
 window.googleLogin = googleLogin;
 window.googleLogout = googleLogout;
+console.log(window.getUser);
