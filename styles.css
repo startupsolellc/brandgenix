@@ -145,7 +145,7 @@ footer a:hover {
     padding: 40px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
-    font-size: 1.5rem;
+    font-size: 3rem;
     font-weight: 700;
     min-height: 180px;
     display: flex;
@@ -154,6 +154,7 @@ footer a:hover {
     opacity: 0;
     transform: translateY(10px);
     transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+    text-shadow: 1px 1px 3px rgb(0 0 0 / 20%);
 }
 
 /* 🌟 Kartlar göründüğünde animasyon */
