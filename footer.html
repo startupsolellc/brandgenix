@@ -2,4 +2,11 @@
     <div class="container mx-auto">
         © 2025 BrandGenix. All Rights Reserved.
     </div>
+    
+    <!-- Auth Google JavaScript -->
+    <script src="/functions/env.js"></script>
+    <script type="module">
+        import { setupAuthUI } from "./functions/auth.js";
+        document.addEventListener("DOMContentLoaded", setupAuthUI);
+    </script>
 </footer>
