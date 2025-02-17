@@ -11,7 +11,15 @@ const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions
 let tags = [];
 
 // Rastgele renk paleti
-const colorPalette = ["#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2"];
+const colorPalette = [
+    "#D4AF37", "#B5A642", "#C0C0C0", "#A9A9A9", "#708090", "#778899", "#B0C4DE", "#4682B4",
+    "#5F9EA0", "#7B68EE", "#6A5ACD", "#4169E1", "#1E90FF", "#6495ED", "#2E8B57", "#228B22",
+    "#8FBC8F", "#66CDAA", "#20B2AA", "#008080", "#556B2F", "#6B8E23", "#BDB76B", "#DAA520",
+    "#CD853F", "#8B4513", "#A0522D", "#D2691E", "#BC8F8F", "#F4A460", "#C3B091", "#D2B48C",
+    "#DEB887", "#A52A2A", "#8B0000", "#800000", "#B22222", "#DC143C", "#E9967A", "#FA8072",
+    "#FF8C00", "#FF7F50", "#FFA07A", "#F08080", "#D3D3D3", "#C0C0C0", "#A9A9A9", "#696969",
+    "#808080", "#333333"
+];
 
 // Rastgele renk seçme fonksiyonu
 function getRandomColor() {
