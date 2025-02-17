@@ -26,12 +26,14 @@ button {
 button:hover {
     opacity: 0.8;
 }
+
 /* Ana Sayfa İçin Genişletilmiş İçerik Alanı */
 .home-container {
     max-width: 72rem; /* max-w-4xl eşdeğeri */
     width: 100%;
     margin: 0 auto;
 }
+
 /* Kategori Seçim Alanı Stili */
 #category-select {
     width: 100%;
@@ -127,7 +129,7 @@ footer a:hover {
     color: #007bff;
 }
 
-/* ✅ Yeni Kart Grid Yapısı: 2x2 */
+/* Yeni Kart Grid Yapısı: 2x2 */
 #results-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -138,7 +140,7 @@ footer a:hover {
     margin: 0 auto;
 }
 
-/* 📌 Kartları Daha Büyük Hale Getir */
+/* Kartları Daha Büyük Hale Getir */
 .card {
     background-color: white;
     border-radius: 16px;
@@ -157,13 +159,13 @@ footer a:hover {
     text-shadow: 1px 1px 3px rgb(0 0 0 / 20%);
 }
 
-/* 🌟 Kartlar göründüğünde animasyon */
+/* Kartlar göründüğünde animasyon */
 .card.show {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* 📌 Mobilde 1 sütun olacak */
+/* Mobilde 1 sütun olacak */
 @media (max-width: 768px) {
     #results-container {
         grid-template-columns: 1fr;
@@ -171,7 +173,7 @@ footer a:hover {
     }
 }
 
-/* 🔄 Spinning Gear Animasyonu (Tam Ortada) */
+/* Spinning Gear Animasyonu (Tam Ortada) */
 .loading-container {
     position: fixed;
     top: 50%;
@@ -281,7 +283,7 @@ footer {
     color: #333;
 }
 
-/* Arka Plan Animasyon
+/* Arka Plan Animasyon */
 @keyframes gradientBG {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -293,3 +295,17 @@ footer {
     animation: gradientBG 6s ease infinite;
 }
 
+/* Auth Button ve Lang Switcher için stil */
+#auth-button, #lang-switcher {
+    background-color: #2563eb;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#auth-button:hover, #lang-switcher:hover {
+    background-color: #1e40af;
+}
