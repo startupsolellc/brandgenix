@@ -25,12 +25,14 @@
         </div>
 
         <!-- Firebase Giriş Test -->
-<button onclick="import('../functions/firebase-auth.js').then(module => module.googleLogin())" 
+<button onclick="import('/functions/firebase-auth.js').then(module => module.googleLogin())" 
         class="bg-red-500 text-white px-4 py-2 rounded">
     Google ile Giriş Yap
+</button>
+
     <!-- Firebase Çıkış Test -->
 </button>
-<button onclick="import('../functions/firebase-auth.js').then(module => module.googleLogout())" 
+<button onclick="import('/functions/firebase-auth.js').then(module => module.googleLogout())" 
         class="bg-gray-500 text-white px-4 py-2 rounded">
     Çıkış Yap
 </button>
