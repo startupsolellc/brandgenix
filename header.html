@@ -7,3 +7,11 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 </style>
+<button onclick="import('./firebase-auth.js').then(module => module.googleLogin())" 
+        class="bg-red-500 text-white px-4 py-2 rounded">
+    Google ile Giriş Yap
+</button>
+<button onclick="import('./firebase-auth.js').then(module => module.googleLogout())" 
+        class="bg-gray-500 text-white px-4 py-2 rounded">
+    Çıkış Yap
+</button>
