@@ -99,13 +99,22 @@ function removeTag(index) {
     updateTags(document.getElementById("tag-container"));
 }
 
+// Kartı PNG olarak indirme fonksiyonu
+function downloadCardAsPng(card) {
+    html2canvas(card).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'card.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+}
+
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font + Rastgele Renk)
 async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
-    const selectedCategory = sessionStorage.getItem("category") || null; // Hata burada düzeltildi
+    const selectedCategory = sessionStorage.getItem("category") || null; 
     const resultsContainer = document.getElementById("results-container");
 
-    // 🔄 Loading Animasyonu Ekle (Tam Ortada)
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "loading-container";
     loadingDiv.innerHTML = `<div class="spinner"></div>`;
@@ -157,14 +166,24 @@ async function generateNames() {
                     card.style.backgroundColor = randomColor;
                     card.style.color = contrastColor;
                     card.className = "card cursor-pointer transition duration-300 hover:shadow-lg";
-                    card.innerText = name;
+                    card.innerHTML = `
+                        <div>${name}</div>
+                        <div class="buttons flex justify-between mt-2">
+                            <button class="download-button bg-green-500 text-white px-2 py-1 rounded">DOWNLOAD</button>
+                            <button class="edit-button bg-blue-500 text-white px-2 py-1 rounded">EDIT</button>
+                        </div>
+                    `;
                     resultsContainer.appendChild(card);
 
-                    card.addEventListener("click", function () {
-                        const selectedName = this.innerText.trim();
-                        const selectedFont = randomFont; // Font bilgisini de al
-                        const selectedBgColor = randomColor; // Background rengini al
+                    card.querySelector(".edit-button").addEventListener("click", function () {
+                        const selectedName = name.trim();
+                        const selectedFont = randomFont; 
+                        const selectedBgColor = randomColor; 
                         window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}&bgColor=${encodeURIComponent(selectedBgColor)}`;
+                    });
+
+                    card.querySelector(".download-button").addEventListener("click", function () {
+                        downloadCardAsPng(card);
                     });
 
                     setTimeout(() => {
