@@ -69,3 +69,35 @@ document.addEventListener("DOMContentLoaded", function () {
     window.googleLogout = googleLogout;
     updateAuthButton(JSON.parse(localStorage.getItem("user")));
 });
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("✅ Sayfa yüklendi!");
+
+    function bindAuthButton() {
+        const authButton = document.getElementById("auth-button");
+
+        if (authButton) {
+            console.log("✅ Buton bulundu!", authButton);
+
+            authButton.addEventListener("click", function () {
+                console.log("🎯 Butona tıklandı!");
+
+                const user = JSON.parse(localStorage.getItem("user"));
+
+                if (user) {
+                    console.log("🔴 Çıkış yapılıyor...");
+                    googleLogout();
+                } else {
+                    console.log("🟢 Giriş yapılıyor...");
+                    googleLogin();
+                }
+            });
+        } else {
+            console.error("❌ auth-button bulunamadı! Buton HTML içinde tanımlı mı?");
+        }
+    }
+
+    // Buton event'ini ekleyelim
+    setTimeout(bindAuthButton, 1000);
+});
