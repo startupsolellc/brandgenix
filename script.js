@@ -163,7 +163,8 @@ async function generateNames() {
                     card.addEventListener("click", function () {
                         const selectedName = this.innerText.trim();
                         const selectedFont = randomFont; // Font bilgisini de al
-                        window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}`;
+                        const selectedBgColor = randomColor; // Background rengini al
+                        window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}&bgColor=${encodeURIComponent(selectedBgColor)}`;
                     });
 
                     setTimeout(() => {
