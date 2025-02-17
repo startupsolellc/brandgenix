@@ -84,3 +84,6 @@ export function setupAuthUI() {
     const user = getUser();
     updateAuthButton(user);
 }
+
+window.googleLogin = googleLogin;
+window.googleLogout = googleLogout;
