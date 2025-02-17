@@ -27,6 +27,7 @@ export function googleLogin() {
         .then((result) => {
             console.log("Giriş Başarılı:", result.user);
             localStorage.setItem("user", JSON.stringify(result.user));
+            updateAuthButton(result.user);
             return result.user;
         })
         .catch(error => {
@@ -40,6 +41,7 @@ export function googleLogout() {
         .then(() => {
             console.log("Çıkış Yapıldı");
             localStorage.removeItem("user");
+            updateAuthButton(null);
         })
         .catch(error => {
             console.error("Çıkış Hatası:", error);
@@ -49,4 +51,36 @@ export function googleLogout() {
 // Kullanıcıyı Alma Fonksiyonu
 export function getUser() {
     return JSON.parse(localStorage.getItem("user"));
+}
+
+// Auth Button Güncelleme Fonksiyonu
+function updateAuthButton(user) {
+    const authButton = document.getElementById("auth-button");
+    if (user) {
+        authButton.textContent = "Çıkış Yap";
+        authButton.classList.remove("bg-blue-500");
+        authButton.classList.add("bg-red-500");
+        authButton.onclick = googleLogout;
+    } else {
+        authButton.textContent = "Google ile Giriş Yap";
+        authButton.classList.remove("bg-red-500");
+        authButton.classList.add("bg-blue-500");
+        authButton.onclick = googleLogin;
+    }
+}
+
+// Dil Değiştirici Tıklama Olayı
+document.getElementById("lang-switcher").addEventListener("click", () => {
+    const langSwitcher = document.getElementById("lang-switcher");
+    if (langSwitcher.textContent === "EN") {
+        langSwitcher.textContent = "TR";
+    } else {
+        langSwitcher.textContent = "EN";
+    }
+});
+
+// Sayfa Yüklendiğinde Auth Button Güncelle
+export function setupAuthUI() {
+    const user = getUser();
+    updateAuthButton(user);
 }
