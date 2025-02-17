@@ -10,6 +10,14 @@ const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions
 // Etiketleri saklamak için değişken
 let tags = [];
 
+// Rastgele renk paleti
+const colorPalette = ["#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2"];
+
+// Rastgele renk seçme fonksiyonu
+function getRandomColor() {
+    return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+}
+
 // Netlify Functions üzerinden rastgele font çekme
 async function getRandomFont() {
     try {
@@ -72,7 +80,7 @@ function removeTag(index) {
     updateTags(document.getElementById("tag-container"));
 }
 
-// API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font)
+// API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font + Rastgele Renk)
 async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
     const selectedCategory = sessionStorage.getItem("category") || null; // Hata burada düzeltildi
@@ -119,12 +127,14 @@ async function generateNames() {
                 [...uniqueNames].forEach(async (name, index) => {
                     const card = document.createElement("div");
                     const randomFont = await getRandomFont();
+                    const randomColor = getRandomColor();
                     const link = document.createElement("link");
                     link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}&display=swap`;
                     link.rel = "stylesheet";
                     document.head.appendChild(link);
 
                     card.style.fontFamily = `"${randomFont}", sans-serif`;
+                    card.style.backgroundColor = randomColor;
                     card.className = "card cursor-pointer transition duration-300 hover:shadow-lg";
                     card.innerText = name;
                     resultsContainer.appendChild(card);
@@ -178,6 +188,9 @@ function redirectToResults() {
 if (window.location.pathname.includes("results.html")) {
     window.onload = generateNames;
 }
+
+// "Generate New" butonuna tıklama olayını dinle
+document.getElementById("generate-new").addEventListener("click", generateNames);
 
 // Header ve Footer'ı yükleme fonksiyonu
 document.addEventListener("DOMContentLoaded", function () {
