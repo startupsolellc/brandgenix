@@ -1,17 +1,21 @@
-<header class="w-screen max-w-full bg-white shadow-md py-4 flex justify-center items-center">
+<header class="w-screen max-w-full bg-white shadow-md py-4 flex justify-between items-center px-4">
     <div class="text-2xl font-bold text-gray-900">
         <a href="/" class="text-gray-900 no-underline" style="font-family: 'Orbitron', sans-serif; color: #22507d; font-size: 2.5rem;">BRANDGENIX</a>
+    </div>
+    <nav class="flex-grow text-center">
+        <!-- Gelecekte kullanılacak menü -->
+    </nav>
+    <div class="flex items-center space-x-4">
+        <button id="auth-button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Google ile Giriş Yap</button>
+        <div id="lang-switcher" class="cursor-pointer text-gray-700 hover:text-gray-900">EN</div>
     </div>
 </header>
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 </style>
-<button onclick="import('./firebase-auth.js').then(module => module.googleLogin())" 
-        class="bg-red-500 text-white px-4 py-2 rounded">
-    Google ile Giriş Yap
-</button>
-<button onclick="import('./firebase-auth.js').then(module => module.googleLogout())" 
-        class="bg-gray-500 text-white px-4 py-2 rounded">
-    Çıkış Yap
-</button>
+
+<script type="module">
+    import { setupAuthUI } from "./functions/firebase-auth.js";
+    document.addEventListener("DOMContentLoaded", setupAuthUI);
+</script>
