@@ -6,7 +6,7 @@
         <!-- Gelecekte kullanılacak menü -->
     </nav>
     <div class="flex items-center space-x-4">
-        <button id="auth-button" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Google ile Giriş Yap</button>
+        <button id="auth-button" class="auth-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Google ile Giriş Yap</button>
         <div id="lang-switcher" class="cursor-pointer text-gray-700 hover:text-gray-900">EN</div>
     </div>
 </header>
@@ -16,6 +16,5 @@
 </style>
 
 <script type="module">
-    import { setupAuthUI } from "./functions/firebase-auth.js";
-    document.addEventListener("DOMContentLoaded", setupAuthUI);
+    import "./functions/firebase-auth.js";
 </script>
