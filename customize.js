@@ -9,12 +9,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    const width = 800; // Mevcut canvas genişliği
-    const height = 600; // Mevcut canvas yüksekliği
     const stage = new Konva.Stage({
         container: 'canvas', // HTML element id
-        width: width,
-        height: height,
+        width: window.innerWidth,
+        height: window.innerHeight - 8 * 16, // Subtract header and footer height (8rem)
     });
 
     const layer = new Konva.Layer();
@@ -24,22 +22,27 @@ document.addEventListener("DOMContentLoaded", async function () {
     stage.add(gridLayer);
     stage.add(layer);
 
-    // Draw grid
     const gridSize = 20;
-    for (let i = 0; i < width / gridSize; i++) {
-        gridLayer.add(new Konva.Line({
-            points: [i * gridSize, 0, i * gridSize, height],
-            stroke: '#ccc',
-            strokeWidth: 0.5,
-        }));
-        gridLayer.add(new Konva.Line({
-            points: [0, i * gridSize, width, i * gridSize],
-            stroke: '#ccc',
-            strokeWidth: 0.5,
-        }));
+    function drawGrid() {
+        gridLayer.destroyChildren();
+        const width = stage.width();
+        const height = stage.height();
+        for (let i = 0; i < width / gridSize; i++) {
+            gridLayer.add(new Konva.Line({
+                points: [i * gridSize, 0, i * gridSize, height],
+                stroke: '#ccc',
+                strokeWidth: 0.5,
+            }));
+            gridLayer.add(new Konva.Line({
+                points: [0, i * gridSize, width, i * gridSize],
+                stroke: '#ccc',
+                strokeWidth: 0.5,
+            }));
+        }
+        gridLayer.draw();
     }
+    drawGrid();
 
-    // Load selected font from URL parameters
     if (fontFamily) {
         const link = document.createElement('link');
         link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, '+')}&display=swap`;
@@ -47,10 +50,9 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.head.appendChild(link);
     }
 
-    // Add selected text
     const text = new Konva.Text({
-        x: 150,
-        y: 150,
+        x: stage.width() / 2,
+        y: stage.height() / 2,
         text: name,
         fontSize: 50,
         fontFamily: fontFamily,
@@ -60,18 +62,16 @@ document.addEventListener("DOMContentLoaded", async function () {
     layer.add(text);
     layer.draw();
 
-    // Background Rect
     const backgroundRect = new Konva.Rect({
         x: 0,
         y: 0,
-        width: width,
-        height: height,
+        width: stage.width(),
+        height: stage.height(),
         fill: '#ffffff',
     });
     backgroundLayer.add(backgroundRect);
     backgroundLayer.draw();
 
-    // Track history for undo and redo
     let history = [];
     let historyStep = -1;
 
@@ -97,17 +97,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Removed event listeners for Undo, Redo, Opacity, Flip, Duplicate
+    saveHistory();
 
-    saveHistory(); // initial save
-
-    // Removed opacity button event listener
-
-    // Removed flip button event listener
-
-    // Removed duplicate button event listener
-
-    // Populate font selector with Google Fonts
     async function loadGoogleFonts() {
         const response = await fetch('/.netlify/functions/get-fonts');
         const data = await response.json();
@@ -121,7 +112,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             fontSelector.appendChild(option);
         });
 
-        // Load selected font from URL parameters
         if (fontFamily) {
             document.getElementById('fontSelector').value = fontFamily;
             applyFont(fontFamily);
@@ -129,7 +119,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     function applyFont(font) {
-        // Remove existing font link if any
         const existingLink = document.querySelector('link[rel="stylesheet"][href*="fonts.googleapis.com"]');
         if (existingLink) {
             document.head.removeChild(existingLink);
@@ -177,7 +166,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         saveHistory();
     });
 
-    // Format
     document.getElementById('fontSizeInput').addEventListener('input', function () {
         text.fontSize(this.value);
         layer.draw();
@@ -196,7 +184,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         saveHistory();
     });
 
-    // Tab functionality
     document.querySelectorAll('.tab-button').forEach(button => {
         button.addEventListener('click', function () {
             const tab = this.getAttribute('data-tab');
@@ -207,15 +194,25 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    loadGoogleFonts(); // Load Google Fonts
+    loadGoogleFonts();
 
-    // PNG Download
+    function resizeCanvas() {
+        stage.width(window.innerWidth);
+        stage.height(window.innerHeight - 8 * 16); 
+        backgroundRect.width(stage.width());
+        backgroundRect.height(stage.height());
+        layer.draw();
+        drawGrid();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
     document.getElementById('downloadBtn').addEventListener('click', function () {
-        const scaleFactor = 2; // Çözünürlüğü artırmak için ölçek faktörü
+        const scaleFactor = 2;
         gridLayer.hide();
         stage.toDataURL({
-            width: width * scaleFactor,
-            height: height * scaleFactor,
+            width: stage.width() * scaleFactor,
+            height: stage.height() * scaleFactor,
             pixelRatio: scaleFactor,
             callback: function(dataURL) {
                 const link = document.createElement('a');
@@ -229,14 +226,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    // WebP Download
     document.getElementById('downloadWebpBtn').addEventListener('click', function () {
-        const scaleFactor = 2; // Çözünürlüğü artırmak için ölçek faktörü
+        const scaleFactor = 2;
         gridLayer.hide();
         stage.toDataURL({
             mimeType: 'image/webp',
-            width: width * scaleFactor,
-            height: height * scaleFactor,
+            width: stage.width() * scaleFactor,
+            height: stage.height() * scaleFactor,
             pixelRatio: scaleFactor,
             callback: function(dataURL) {
                 const link = document.createElement('a');
@@ -250,14 +246,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    // Save Progress
     document.getElementById('saveProgressBtn').addEventListener('click', function () {
         const json = stage.toJSON();
         localStorage.setItem('canvasState', json);
         alert('Progress saved!');
     });
 
-    // Load Progress
     window.addEventListener('load', function () {
         const json = localStorage.getItem('canvasState');
         if (json) {
