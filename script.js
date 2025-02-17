@@ -229,3 +229,10 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.text())
         .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
+
+// Firebase Authentication Kodu
+import { setupAuthUI } from "./functions/auth.js";
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupAuthUI();
+});
