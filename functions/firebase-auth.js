@@ -43,22 +43,29 @@ function googleLogout() {
 
 // Auth Button Güncelleme Fonksiyonu
 function updateAuthButton(user) {
-    const authButton = document.getElementById("auth-button");
-    if (authButton) {
-        if (user) {
-            authButton.textContent = "Çıkış Yap";
-            authButton.classList.remove("bg-blue-500");
-            authButton.classList.add("bg-red-500");
-            authButton.onclick = googleLogout;
+    document.addEventListener("DOMContentLoaded", function () {
+        const authButton = document.getElementById("auth-button");
+        if (authButton) {
+            if (user) {
+                authButton.textContent = "Çıkış Yap";
+                authButton.classList.remove("bg-blue-500");
+                authButton.classList.add("bg-red-500");
+                authButton.onclick = googleLogout;
+            } else {
+                authButton.textContent = "Google ile Giriş Yap";
+                authButton.classList.remove("bg-red-500");
+                authButton.classList.add("bg-blue-500");
+                authButton.onclick = googleLogin;
+            }
         } else {
-            authButton.textContent = "Google ile Giriş Yap";
-            authButton.classList.remove("bg-red-500");
-            authButton.classList.add("bg-blue-500");
-            authButton.onclick = googleLogin;
+            console.error("❌ auth-button bulunamadı! Buton HTML içinde tanımlı mı?");
         }
-    }
+    });
 }
 
 // Fonksiyonları Global Hale Getir
-window.googleLogin = googleLogin;
-window.googleLogout = googleLogout;
+document.addEventListener("DOMContentLoaded", function () {
+    window.googleLogin = googleLogin;
+    window.googleLogout = googleLogout;
+    updateAuthButton(JSON.parse(localStorage.getItem("user")));
+});
