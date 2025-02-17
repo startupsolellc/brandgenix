@@ -212,7 +212,12 @@ if (window.location.pathname.includes("results.html")) {
 }
 
 // "Generate New" butonuna tıklama olayını dinle
-document.getElementById("generate-new").addEventListener("click", generateNames);
+document.addEventListener("DOMContentLoaded", function () {
+    const generateNewButton = document.getElementById("generate-new");
+    if (generateNewButton) {
+        generateNewButton.addEventListener("click", generateNames);
+    }
+});
 
 // Header ve Footer'ı yükleme fonksiyonu
 document.addEventListener("DOMContentLoaded", function () {
