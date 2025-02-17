@@ -12,6 +12,7 @@ let tags = [];
 
 // Rastgele renk paleti
 const colorPalette = [
+    "#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2",
     "#D4AF37", "#B5A642", "#C0C0C0", "#A9A9A9", "#708090", "#778899", "#B0C4DE", "#4682B4",
     "#5F9EA0", "#7B68EE", "#6A5ACD", "#4169E1", "#1E90FF", "#6495ED", "#2E8B57", "#228B22",
     "#8FBC8F", "#66CDAA", "#20B2AA", "#008080", "#556B2F", "#6B8E23", "#BDB76B", "#DAA520",
@@ -24,6 +25,16 @@ const colorPalette = [
 // Rastgele renk seçme fonksiyonu
 function getRandomColor() {
     return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+}
+
+// Kontrast rengi belirleme fonksiyonu
+function getContrastColor(bgColor) {
+    const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 155 ? 'black' : 'white';
 }
 
 // Netlify Functions üzerinden rastgele font çekme
@@ -136,6 +147,7 @@ async function generateNames() {
                     const card = document.createElement("div");
                     const randomFont = await getRandomFont();
                     const randomColor = getRandomColor();
+                    const contrastColor = getContrastColor(randomColor);
                     const link = document.createElement("link");
                     link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}&display=swap`;
                     link.rel = "stylesheet";
@@ -143,6 +155,7 @@ async function generateNames() {
 
                     card.style.fontFamily = `"${randomFont}", sans-serif`;
                     card.style.backgroundColor = randomColor;
+                    card.style.color = contrastColor;
                     card.className = "card cursor-pointer transition duration-300 hover:shadow-lg";
                     card.innerText = name;
                     resultsContainer.appendChild(card);
