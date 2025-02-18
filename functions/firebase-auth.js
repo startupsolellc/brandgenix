@@ -1,131 +1,152 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
-// Firebase Başlat
+// Firebase Yapılandırması
 const app = initializeApp({
     apiKey: window.env.FIREBASE_API_KEY,
     authDomain: window.env.FIREBASE_AUTH_DOMAIN,
     projectId: window.env.FIREBASE_PROJECT_ID,
     storageBucket: window.env.FIREBASE_STORAGE_BUCKET,
     messagingSenderId: window.env.FIREBASE_MESSAGING_SENDER_ID,
-    appId: window.env.FIREBASE_APP_ID
+    appId: window.env.FIREBASE_APP_ID,
+    databaseURL: window.env.FIREBASE_DATABASE_URL // Realtime Database için önemli!
 });
 
+// Firebase servislerini başlat
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+const database = getDatabase(app);
 
-// Google Login Fonksiyonu
-function googleLogin() {
-    return signInWithPopup(auth, provider)
-        .then((result) => {
-            console.log("Giriş Başarılı:", result.user);
-            localStorage.setItem("user", JSON.stringify(result.user));
-            updateAuthButton(result.user);
-            return result.user;
-        })
-        .catch(error => {
-            console.error("Giriş Hatası:", error);
-        });
+// Database bağlantı kontrolü
+if (!database) {
+    console.error("❌ Database bağlantısı başarısız!");
+} else {
+    console.log("✅ Database bağlantısı başarılı!");
 }
 
-// Google Logout Fonksiyonu
-function googleLogout() {
-    return signOut(auth)
-        .then(() => {
-            console.log("Çıkış Yapıldı");
-            localStorage.removeItem("user");
-            updateAuthButton(null);
-        })
-        .catch(error => {
-            console.error("Çıkış Hatası:", error);
+// Kullanıcı kaydetme fonksiyonu
+async function saveUserToDatabase(user) {
+    console.log("💡 saveUserToDatabase başladı", user);
+    
+    if (!user || !user.uid || !user.email) {
+        console.error("❌ Geçersiz kullanıcı verisi:", user);
+        return null;
+    }
+
+    const userRef = ref(database, 'users/' + user.uid);
+    
+    const userData = {
+        email: user.email,
+        displayName: user.displayName || '',
+        photoURL: user.photoURL || '',
+        generatedNames: 0,
+        downloads: 0,
+        isPremium: false,
+        lastLogin: new Date().toISOString(),
+        createdAt: new Date().toISOString()
+    };
+
+    console.log("💡 Kaydedilecek veri:", userData);
+    console.log("💡 Kayıt yolu:", userRef.toString());
+
+    try {
+        await set(userRef, userData);
+        console.log("✅ Kullanıcı başarıyla kaydedildi:", user.email);
+        return userData;
+    } catch (error) {
+        console.error("❌ Kayıt hatası:", error);
+        console.error("❌ Hata detayı:", {
+            code: error.code,
+            message: error.message,
+            ref: userRef.toString(),
+            userData: userData
         });
+        throw error;
+    }
 }
 
-// Auth Button Güncelleme Fonksiyonu
+// Google Login fonksiyonu
+async function googleLogin() {
+    try {
+        const result = await signInWithPopup(auth, provider);
+        console.log("✅ Google Login başarılı:", result.user);
+        
+        // LocalStorage'a kaydet
+        localStorage.setItem("user", JSON.stringify(result.user));
+        
+        // Database'e kaydet
+        await saveUserToDatabase(result.user);
+        
+        // UI güncelle
+        updateAuthButton(result.user);
+        
+        return result.user;
+    } catch (error) {
+        console.error("❌ Login hatası:", error);
+        throw error;
+    }
+}
+
+// Google Logout fonksiyonu
+async function googleLogout() {
+    try {
+        await signOut(auth);
+        console.log("✅ Başarıyla çıkış yapıldı");
+        localStorage.removeItem("user");
+        updateAuthButton(null);
+    } catch (error) {
+        console.error("❌ Çıkış hatası:", error);
+        throw error;
+    }
+}
+
+// Auth Button güncelleme fonksiyonu
 function updateAuthButton(user) {
     setTimeout(() => {
         const desktopAuthButton = document.getElementById("auth-button");
         const mobileAuthButton = document.getElementById("mobile-auth-button");
 
-        if (desktopAuthButton) {
+        const updateButton = (button) => {
+            if (!button) return;
+            
             if (user) {
-                desktopAuthButton.textContent = "Çıkış Yap";
-                desktopAuthButton.classList.remove("bg-blue-500");
-                desktopAuthButton.classList.add("bg-red-500");
-                desktopAuthButton.onclick = googleLogout;
+                button.textContent = "Çıkış Yap";
+                button.classList.remove("bg-blue-500");
+                button.classList.add("bg-red-500");
+                button.onclick = googleLogout;
             } else {
-                desktopAuthButton.textContent = "Google ile Giriş Yap";
-                desktopAuthButton.classList.remove("bg-red-500");
-                desktopAuthButton.classList.add("bg-blue-500");
-                desktopAuthButton.onclick = googleLogin;
+                button.textContent = "Google ile Giriş Yap";
+                button.classList.remove("bg-red-500");
+                button.classList.add("bg-blue-500");
+                button.onclick = googleLogin;
             }
-        }
+        };
 
-        if (mobileAuthButton) {
-            if (user) {
-                mobileAuthButton.textContent = "Çıkış Yap";
-                mobileAuthButton.classList.remove("bg-blue-500");
-                mobileAuthButton.classList.add("bg-red-500");
-                mobileAuthButton.onclick = googleLogout;
-            } else {
-                mobileAuthButton.textContent = "Google ile Giriş Yap";
-                mobileAuthButton.classList.remove("bg-red-500");
-                mobileAuthButton.classList.add("bg-blue-500");
-                mobileAuthButton.onclick = googleLogin;
-            }
-        }
-    }, 500); // DOM'un tamamen yüklendiğinden emin olmak için bekletiyoruz
+        updateButton(desktopAuthButton);
+        updateButton(mobileAuthButton);
+    }, 500);
 }
 
-
-// Fonksiyonları Global Hale Getir
-document.addEventListener("DOMContentLoaded", function () {
+// Sayfa yüklendiğinde
+document.addEventListener("DOMContentLoaded", function() {
     console.log("✅ Sayfa yüklendi!");
+    
+    // Fonksiyonları global scope'a ekle
     window.googleLogin = googleLogin;
     window.googleLogout = googleLogout;
-    setTimeout(() => {
-        updateAuthButton(JSON.parse(localStorage.getItem("user")));
-    }, 1500); // Sayfa yüklenince 1.5 saniye bekleyip butonu güncelle
-});
-window.updateAuthButton = updateAuthButton;
-
-import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-
-// Firebase Realtime Database bağlantısını başlat
-const database = getDatabase();
-
-// Kullanıcıyı Firebase'e Kaydetme Fonksiyonu
-console.log("saveUserToDatabase fonksiyonu çalıştı - FONKSİYON BAŞLANGICI"); // EKLEDİĞİMİZ SATIR 1
-function saveUserToDatabase(user) {
-    console.log("saveUserToDatabase fonksiyonu içinde - PARAMETRE:", user); // EKLEDİĞİMİZ SATIR 2
-    if (!user) {
-        console.log("saveUserToDatabase - USER PARAMETRESİ BOŞ, KAYDETME İŞLEMİ İPTAL EDİLDİ"); // EKLEDİĞİMİZ SATIR 3
-        return;
+    window.updateAuthButton = updateAuthButton;
+    
+    // LocalStorage'dan kullanıcı durumunu kontrol et ve UI'ı güncelle
+    const savedUser = JSON.parse(localStorage.getItem("user"));
+    if (savedUser) {
+        console.log("💡 Kayıtlı kullanıcı bulundu:", savedUser.email);
+        updateAuthButton(savedUser);
     }
+});
 
-    const userRef = ref(database, 'users/' + user.uid);
-    console.log("✅ Veri Yolu (userRef):", userRef.toString()); // EKLEDİĞİMİZ SATIR 4 - VERİ YOLU KONSOLA YAZDIRILIYOR
-    set(userRef, {
-        email: user.email,
-        generatedNames: 0,
-        downloads: 0,
-        isPremium: false
-    }).then(() => {
-        console.log("✅ Kullanıcı Firebase'e kaydedildi:", user.email);
-    }).catch(error => {
-        console.error("❌ Kullanıcı Firebase'e kaydedilemedi:", error);
-        console.error("❌ HATA DETAYI:", error.code, error.message, error.details); // EKLEDİĞİMİZ SATIR 5 - DETAYLI HATA MESAJI
-    });
-    console.log("saveUserToDatabase fonksiyonu SONU"); // EKLEDİĞİMİZ SATIR 6
-}
-
-// Google Login Fonksiyonunu Firebase'e Kaydetme ile Güncelle
-const originalGoogleLogin = googleLogin; // Mevcut googleLogin fonksiyonunu sakla
-
-googleLogin = function () {
-    return originalGoogleLogin().then(user => {
-        console.log("✅ googleLogin BAŞARILI, şimdi saveUserToDatabase ÇAĞRILIYOR"); // EKLEDİĞİMİZ SATIR 7
-        saveUserToDatabase(user);
-        return user;
-    });
-};
+// Auth state değişikliklerini dinle
+auth.onAuthStateChanged((user) => {
+    console.log("🔄 Auth durumu değişti:", user ? "Giriş yapıldı" : "Çıkış yapıldı");
+    updateAuthButton(user);
+});
