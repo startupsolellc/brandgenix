@@ -87,3 +87,5 @@ document.addEventListener("DOMContentLoaded", function () {
         updateAuthButton(JSON.parse(localStorage.getItem("user")));
     }, 1500); // Sayfa yüklenince 1.5 saniye bekleyip butonu güncelle
 });
+window.updateAuthButton = updateAuthButton;
+
