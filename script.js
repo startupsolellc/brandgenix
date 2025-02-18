@@ -242,22 +242,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("❌ Mobil menü veya buton bulunamadı!");
                 }
 
-                // Google Giriş Butonlarını Bağla
-                if (desktopAuthButton) {
-                    desktopAuthButton.addEventListener("click", function () {
-                        googleLogin();
-                    });
-                }
-
-                if (mobileAuthButton) {
-                    console.log("✅ Mobil giriş butonu bulundu!");
-                    mobileAuthButton.addEventListener("click", function () {
-                        console.log("🎯 Mobil Google Giriş Butonuna Tıklandı!");
-                        googleLogin();
-                    });
-                } else {
-                    console.error("❌ Mobil Google Giriş Butonu Bulunamadı!");
-                }
+                // ✅ Giriş Durumunu Güncelle
+                updateAuthButton(JSON.parse(localStorage.getItem("user")));
 
             }, 500);
         })
@@ -268,4 +254,3 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => document.getElementById("footer-placeholder").innerHTML = data)
         .catch(error => console.error("❌ Footer yüklenirken hata oluştu:", error));
 });
-
