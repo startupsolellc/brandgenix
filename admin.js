@@ -1,4 +1,4 @@
-import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+import { getDatabase, ref, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 import { database } from "../functions/firebase-auth.js"; // Firebase bağlantısını içe aktar
 
 const usersTable = document.getElementById("users-table");
@@ -96,7 +96,14 @@ function togglePremium(event) {
 function deleteUser(event) {
     const uid = event.target.dataset.uid;
     const userRef = ref(database, `users/${uid}`);
-    update(userRef, null);
+    console.log(`🗑 Kullanıcı siliniyor: ${uid}`);
+    remove(userRef)
+        .then(() => {
+            console.log("✅ Kullanıcı başarıyla silindi.");
+        })
+        .catch(error => {
+            console.error("❌ Kullanıcı silme hatası:", error);
+        });
 }
 
 searchInput.addEventListener("input", renderUsers);
