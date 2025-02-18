@@ -78,11 +78,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 500); // Her 500ms'de bir Firebase'in yüklenip yüklenmediğini kontrol et
 });
 
-        }
-    }, 500); // Her 500ms'de bir kontrol et
-});
-
-
 
 // Etiket ekleme fonksiyonu
 function handleKeyDown(event) {
