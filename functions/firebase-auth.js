@@ -95,6 +95,7 @@ import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.6.0
 const database = getDatabase();
 
 // Kullanıcıyı Firebase'e Kaydetme Fonksiyonu
+console.log("saveUserToDatabase fonksiyonu çalıştı");
 function saveUserToDatabase(user) {
     if (!user) return;
 
