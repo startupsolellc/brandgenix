@@ -1,18 +1,3 @@
-// Firebase configuration and initialization
-const firebaseConfig = {
-    apiKey: "AIzaSyCX01FDEWQFL5zE6BZy45GHFuMFo0Z0cLg",
-    authDomain: "brandgenixapp.firebaseapp.com",
-    projectId: "brandgenixapp",
-    storageBucket: "brandgenixapp.firebasestorage.app",
-    messagingSenderId: "1065728742460",
-    appId: "1:1065728742460:web:180c104698a1a8f1be9f39",
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const database = firebase.database();
-
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
@@ -126,117 +111,74 @@ async function generateNames() {
     loadingDiv.innerHTML = `<div class="spinner"></div>`;
     document.body.appendChild(loadingDiv);
 
-    // Check user authentication status
-    auth.onAuthStateChanged(async (user) => {
-        if (user) {
-            // User is logged in, handle Firebase logic
-            const userId = user.uid;
-            const userRef = database.ref('users/' + userId);
-            userRef.once('value', async (snapshot) => {
-                const userData = snapshot.val();
-                const generatedNames = userData.generatedNames || 0;
-                const nameLimit = userData.nameLimit || 10; // Default limit if not set
+    setTimeout(async () => {
+        try {
+            let uniqueNames = new Set();
+            let attempts = 0;
+            const maxAttempts = 5;
+            const requestBody = keywords ? { keywords } : { category: selectedCategory };
 
-                if (generatedNames >= nameLimit) {
-                    // Redirect to login-required.html if limit is reached
-                    window.location.href = "login-required.html";
-                } else {
-                    // Increment generatedNames in Firebase
-                    userRef.update({
-                        generatedNames: generatedNames + 1
+            while (uniqueNames.size < 4 && attempts < maxAttempts) {
+                const response = await fetch("/.netlify/functions/generate-name", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (data.names && data.names.length > 0) {
+                    data.names.forEach(name => {
+                        if (!previousNames.has(name) && uniqueNames.size < 4) {
+                            uniqueNames.add(name);
+                            previousNames.add(name);
+                        }
+                    });
+                }
+                attempts++;
+            }
+
+            document.body.removeChild(loadingDiv);
+
+            if (uniqueNames.size > 0) {
+                resultsContainer.innerHTML = "";
+
+                [...uniqueNames].forEach(async (name, index) => {
+                    const card = document.createElement("div");
+                    const randomFont = await getRandomFont();
+                    const randomColor = getRandomColor();
+                    const contrastColor = getContrastColor(randomColor);
+                    const link = document.createElement("link");
+                    link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}&display=swap`;
+                    link.rel = "stylesheet";
+                    document.head.appendChild(link);
+
+                    card.style.fontFamily = `"${randomFont}", sans-serif`;
+                    card.style.backgroundColor = randomColor;
+                    card.style.color = contrastColor;
+                    card.className = "card cursor-pointer transition duration-300 hover:shadow-lg";
+                    card.innerText = name;
+                    resultsContainer.appendChild(card);
+
+                    card.addEventListener("click", function () {
+                        const selectedName = this.innerText.trim();
+                        const selectedFont = randomFont; // Font bilgisini de al
+                        const selectedBgColor = randomColor; // Background rengini al
+                        window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}&bgColor=${encodeURIComponent(selectedBgColor)}`;
                     });
 
-                    // Proceed with name generation
-                    await fetchAndDisplayNames(keywords, selectedCategory, resultsContainer, loadingDiv);
-                }
-            });
-        } else {
-            // User is not logged in, handle localStorage logic
-            let generatedNames = parseInt(localStorage.getItem('generatedNames')) || 0;
-            const nameLimit = 5;
-
-            if (generatedNames >= nameLimit) {
-                // Redirect to login-required.html if limit is reached
-                window.location.href = "login-required.html";
+                    setTimeout(() => {
+                        card.classList.add("show");
+                    }, 500 + index * 500);
+                });
             } else {
-                // Increment generatedNames in localStorage
-                localStorage.setItem('generatedNames', generatedNames + 1);
-
-                // Proceed with name generation
-                await fetchAndDisplayNames(keywords, selectedCategory, resultsContainer, loadingDiv);
+                resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
             }
+        } catch (error) {
+            console.error("API request error:", error);
+            document.body.removeChild(loadingDiv);
         }
-    });
-}
-
-// Function to fetch and display names
-async function fetchAndDisplayNames(keywords, selectedCategory, resultsContainer, loadingDiv) {
-    try {
-        let uniqueNames = new Set();
-        let attempts = 0;
-        const maxAttempts = 5;
-        const requestBody = keywords ? { keywords } : { category: selectedCategory };
-
-        while (uniqueNames.size < 4 && attempts < maxAttempts) {
-            const response = await fetch("/.netlify/functions/generate-name", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(requestBody)
-            });
-
-            const data = await response.json();
-
-            if (data.names && data.names.length > 0) {
-                data.names.forEach(name => {
-                    if (!previousNames.has(name) && uniqueNames.size < 4) {
-                        uniqueNames.add(name);
-                        previousNames.add(name);
-                    }
-                });
-            }
-            attempts++;
-        }
-
-        document.body.removeChild(loadingDiv);
-
-        if (uniqueNames.size > 0) {
-            resultsContainer.innerHTML = "";
-
-            [...uniqueNames].forEach(async (name, index) => {
-                const card = document.createElement("div");
-                const randomFont = await getRandomFont();
-                const randomColor = getRandomColor();
-                const contrastColor = getContrastColor(randomColor);
-                const link = document.createElement("link");
-                link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}&display=swap`;
-                link.rel = "stylesheet";
-                document.head.appendChild(link);
-
-                card.style.fontFamily = `"${randomFont}", sans-serif`;
-                card.style.backgroundColor = randomColor;
-                card.style.color = contrastColor;
-                card.className = "card cursor-pointer transition duration-300 hover:shadow-lg";
-                card.innerText = name;
-                resultsContainer.appendChild(card);
-
-                card.addEventListener("click", function () {
-                    const selectedName = this.innerText.trim();
-                    const selectedFont = randomFont; // Font bilgisini de al
-                    const selectedBgColor = randomColor; // Background rengini al
-                    window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}&bgColor=${encodeURIComponent(selectedBgColor)}`;
-                });
-
-                setTimeout(() => {
-                    card.classList.add("show");
-                }, 500 + index * 500);
-            });
-        } else {
-            resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
-        }
-    } catch (error) {
-        console.error("API request error:", error);
-        document.body.removeChild(loadingDiv);
-    }
+    }, 8000);
 }
 
 // Kategori seçimi için fonksiyon
