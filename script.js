@@ -1,3 +1,9 @@
+// 🚀 Kullanıcının giriş yapıp yapmadığını kontrol et
+function isUserLoggedIn() {
+    const auth = getAuth();
+    return auth.currentUser !== null; // Eğer kullanıcı varsa true döner, yoksa false
+}
+
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
