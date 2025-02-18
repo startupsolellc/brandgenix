@@ -226,18 +226,27 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => {
             document.getElementById("header-placeholder").innerHTML = data;
 
-            // Header yüklendikten sonra mobil menü butonu ve menüyü al
-            const menuButton = document.getElementById("mobile-menu-button");
-            const mobileMenu = document.getElementById("mobile-menu");
+            setTimeout(() => {
+                const menuButton = document.getElementById("mobile-menu-button");
+                const mobileMenu = document.getElementById("mobile-menu");
 
-            if (menuButton && mobileMenu) {
-                menuButton.addEventListener("click", function () {
-                    mobileMenu.classList.toggle("hidden");
-                });
-            } else {
-                console.error("❌ Mobil menü veya buton bulunamadı!");
-            }
+                if (menuButton && mobileMenu) {
+                    console.log("✅ Mobil menü butonu bulundu!");
+                    menuButton.addEventListener("click", function () {
+                        console.log("🎯 Mobil menü aç/kapat çalışıyor!");
+                        mobileMenu.classList.toggle("show");
+                    });
+                } else {
+                    console.error("❌ Mobil menü veya buton bulunamadı!");
+                }
+            }, 500);
         });
+
+    fetch("footer.html")
+        .then(response => response.text())
+        .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+});
+
 
     fetch("footer.html")
         .then(response => response.text())
