@@ -243,7 +243,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 // ✅ Giriş Durumunu Güncelle
-                updateAuthButton(JSON.parse(localStorage.getItem("user")));
+                if (typeof updateAuthButton === "function") {
+                    updateAuthButton(JSON.parse(localStorage.getItem("user")));
+                } else {
+                    console.error("❌ updateAuthButton fonksiyonu tanımlı değil!");
+                }
 
             }, 500);
         })
@@ -254,3 +258,4 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => document.getElementById("footer-placeholder").innerHTML = data)
         .catch(error => console.error("❌ Footer yüklenirken hata oluştu:", error));
 });
+
