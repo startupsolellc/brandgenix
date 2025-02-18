@@ -229,6 +229,8 @@ document.addEventListener("DOMContentLoaded", function () {
             setTimeout(() => {
                 const menuButton = document.getElementById("mobile-menu-button");
                 const mobileMenu = document.getElementById("mobile-menu");
+                const desktopAuthButton = document.getElementById("auth-button");
+                const mobileAuthButton = document.getElementById("mobile-auth-button");
 
                 if (menuButton && mobileMenu) {
                     console.log("✅ Mobil menü butonu bulundu!");
@@ -239,6 +241,24 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     console.error("❌ Mobil menü veya buton bulunamadı!");
                 }
+
+                // Google Giriş Butonlarını Bağla
+                if (desktopAuthButton) {
+                    desktopAuthButton.addEventListener("click", function () {
+                        googleLogin();
+                    });
+                }
+
+                if (mobileAuthButton) {
+                    console.log("✅ Mobil giriş butonu bulundu!");
+                    mobileAuthButton.addEventListener("click", function () {
+                        console.log("🎯 Mobil Google Giriş Butonuna Tıklandı!");
+                        googleLogin();
+                    });
+                } else {
+                    console.error("❌ Mobil Google Giriş Butonu Bulunamadı!");
+                }
+
             }, 500);
         })
         .catch(error => console.error("❌ Header yüklenirken hata oluştu:", error));
