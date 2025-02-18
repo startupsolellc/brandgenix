@@ -1,6 +1,6 @@
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+import { database } from "../functions/firebase-auth.js"; // Firebase bağlantısı buradan geliyor
 
-const database = getDatabase();
 const usersTable = document.getElementById("users-table");
 
 function fetchUsers() {
