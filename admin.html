@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrandGenix - AI-Powered Brand & Logo Name Generator</title>
+    <meta name="description" content="Create unique brand names & professional logos with BrandGenix! AI-powered brand name generator & logo design tool for modern, corporate & minimalist branding.">
+    <meta name="keywords" content="free brand name generator tool, AI logo maker, AI logo text, brand name maker">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link id="googleFontsLink" rel="stylesheet" href="" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="/functions/env.js"></script>
+    <script type="module" src="/functions/firebase-auth.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body class="bg-gradient-to-b from-[#c1d8ff] to-[#F1F4F9] flex flex-col items-center min-h-screen animate-gradient">
+    <div id="header-placeholder"></div> 
+    
+<script type="module">
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+    const auth = getAuth();
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // 🔹 Admin olup olmadığını kontrol et
+            const adminEmail = "seninadminemailin@gmail.com"; // 🔥 Kendi e-posta adresini gir
+
+            if (user.email === adminEmail) {
+                console.log("✅ Admin giriş yaptı:", user.email);
+            } else {
+                console.warn("❌ Yetkisiz giriş tespit edildi! Ana sayfaya yönlendiriliyor...");
+                window.location.href = "/";
+            }
+        } else {
+            console.warn("❌ Giriş yapılmamış! Ana sayfaya yönlendiriliyor...");
+            window.location.href = "/";
+        }
+    });
+</script>
+
+    <!-- Auth Google JavaScript -->
+    <script src="/functions/env.js"></script>
+    <script type="module">
+        import { setupAuthUI } from "./functions/auth.js";
+        document.addEventListener("DOMContentLoaded", setupAuthUI);
+    </script>
+    <div id="footer-placeholder"></div>
+</body>
+</html>
