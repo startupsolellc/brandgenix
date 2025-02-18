@@ -1,12 +1,12 @@
 // Firebase configuration and initialization
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyCX01FDEWQFL5zE6BZy45GHFuMFo0Z0cLg",
+    authDomain: "brandgenixapp.firebaseapp.com",
+    projectId: "brandgenixapp",
+    storageBucket: "brandgenixapp.firebasestorage.app",
+    messagingSenderId: "1065728742460",
+    appId: "1:1065728742460:web:180c104698a1a8f1be9f39",
+
 };
 
 // Initialize Firebase
