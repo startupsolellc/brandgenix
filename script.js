@@ -1,3 +1,19 @@
+// Firebase configuration and initialization
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    databaseURL: "YOUR_DATABASE_URL",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const database = firebase.database();
+
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
@@ -112,11 +128,11 @@ async function generateNames() {
     document.body.appendChild(loadingDiv);
 
     // Check user authentication status
-    onAuthStateChanged(auth, async (user) => {
+    auth.onAuthStateChanged(async (user) => {
         if (user) {
             // User is logged in, handle Firebase logic
             const userId = user.uid;
-            const userRef = firebase.database().ref('users/' + userId);
+            const userRef = database.ref('users/' + userId);
             userRef.once('value', async (snapshot) => {
                 const userData = snapshot.val();
                 const generatedNames = userData.generatedNames || 0;
