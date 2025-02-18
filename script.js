@@ -223,7 +223,21 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded", function () {
     fetch("header.html")
         .then(response => response.text())
-        .then(data => document.getElementById("header-placeholder").innerHTML = data);
+        .then(data => {
+            document.getElementById("header-placeholder").innerHTML = data;
+
+            // Header yüklendikten sonra mobil menü butonu ve menüyü al
+            const menuButton = document.getElementById("mobile-menu-button");
+            const mobileMenu = document.getElementById("mobile-menu");
+
+            if (menuButton && mobileMenu) {
+                menuButton.addEventListener("click", function () {
+                    mobileMenu.classList.toggle("hidden");
+                });
+            } else {
+                console.error("❌ Mobil menü veya buton bulunamadı!");
+            }
+        });
 
     fetch("footer.html")
         .then(response => response.text())
