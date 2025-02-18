@@ -4,6 +4,26 @@ function isUserLoggedIn() {
     return auth.currentUser !== null; // Eğer kullanıcı varsa true döner, yoksa false
 }
 
+// 🚀 Misafir kullanıcılar için üretim limiti kontrolü
+function checkGuestLimit() {
+    if (isUserLoggedIn()) {
+        return true; // Giriş yapmış kullanıcılar için sınır yok
+    }
+
+    let generatedCount = parseInt(localStorage.getItem("generatedCount")) || 0;
+
+    if (generatedCount >= 5) {
+        console.warn("🚨 Üretim limiti aşıldı! Login sayfasına yönlendiriliyor...");
+        window.location.href = "login-required.html";
+        return false;
+    }
+
+    localStorage.setItem("generatedCount", generatedCount + 1);
+    console.log(`🔄 Güncel misafir üretim sayısı: ${generatedCount + 1}/5`);
+    return true;
+}
+
+
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
