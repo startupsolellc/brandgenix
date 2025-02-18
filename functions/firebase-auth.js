@@ -10,7 +10,7 @@ const app = initializeApp({
     storageBucket: window.env.FIREBASE_STORAGE_BUCKET,
     messagingSenderId: window.env.FIREBASE_MESSAGING_SENDER_ID,
     appId: window.env.FIREBASE_APP_ID,
-    databaseURL: window.env.FIREBASE_DATABASE_URL // Realtime Database için önemli!
+    databaseURL: "https://brandgenixapp-default-rtdb.europe-west1.firebasedatabase.app" // ✅ Doğru bölge adresi!
 });
 console.log("✅ Firebase Config from window.env:", window.env);
 
