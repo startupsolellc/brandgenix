@@ -96,14 +96,19 @@ function togglePremium(event) {
 function deleteUser(event) {
     const uid = event.target.dataset.uid;
     const userRef = ref(database, `users/${uid}`);
-    console.log(`🗑 Kullanıcı siliniyor: ${uid}`);
-    remove(userRef)
-        .then(() => {
-            console.log("✅ Kullanıcı başarıyla silindi.");
-        })
-        .catch(error => {
-            console.error("❌ Kullanıcı silme hatası:", error);
-        });
+    
+    if (confirm("Kullanıcı silinecek, emin misiniz?")) {
+        console.log(`🗑 Kullanıcı siliniyor: ${uid}`);
+        remove(userRef)
+            .then(() => {
+                console.log("✅ Kullanıcı başarıyla silindi.");
+            })
+            .catch(error => {
+                console.error("❌ Kullanıcı silme hatası:", error);
+            });
+    } else {
+        console.log("❌ Kullanıcı silme işlemi iptal edildi.");
+    }
 }
 
 searchInput.addEventListener("input", renderUsers);
