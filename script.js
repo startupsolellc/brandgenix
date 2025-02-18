@@ -57,27 +57,27 @@ console.log("🔥 Kullanıcı oturum kontrolü çalışıyor...");
 // Sayfa yüklendiğinde giriş kontrolü yapılacak
 document.addEventListener("DOMContentLoaded", async function () {
     console.log("🔍 Sayfa yüklendi. Kullanıcı durumu kontrol ediliyor...");
-    
-    try {
-        // Firebase-auth.js'in yüklenip yüklenmediğini kontrol et
-        if (typeof getAuth !== "function") {
-            throw new Error("❌ Firebase Authentication yüklenmedi! `firebase-auth.js` dosyasını kontrol edin.");
-        }
 
-        const auth = getAuth();
-        
-        // Kullanıcı durumunu asenkron olarak kontrol et
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
-            } else {
-                console.log("❌ Kullanıcı giriş yapmamış.");
-            }
-        });
-    } catch (error) {
-        console.error(error.message);
-    }
+    // Firebase'in tamamen yüklenmesini beklemek için bir interval kullan
+    let checkFirebase = setInterval(() => {
+        if (typeof getAuth === "function") {
+            clearInterval(checkFirebase); // Firebase yüklendi, intervali durdur
+            console.log("✅ Firebase Authentication yüklendi!");
+
+            const auth = getAuth();
+
+            // Kullanıcı durumunu kontrol et
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
+                } else {
+                    console.log("❌ Kullanıcı giriş yapmamış.");
+                }
+            });
+        }
+    }, 500); // Her 500ms'de bir kontrol et
 });
+
 
 
 // Etiket ekleme fonksiyonu
