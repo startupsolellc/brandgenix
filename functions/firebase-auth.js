@@ -89,3 +89,36 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 window.updateAuthButton = updateAuthButton;
 
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+
+// Firebase Realtime Database bağlantısını başlat
+const database = getDatabase();
+
+// Kullanıcıyı Firebase'e Kaydetme Fonksiyonu
+function saveUserToDatabase(user) {
+    if (!user) return;
+
+    const userRef = ref(database, 'users/' + user.uid);
+    set(userRef, {
+        email: user.email,
+        generatedNames: 0,
+        downloads: 0,
+        isPremium: false
+    }).then(() => {
+        console.log("✅ Kullanıcı Firebase'e kaydedildi:", user.email);
+    }).catch(error => {
+        console.error("❌ Kullanıcı Firebase'e kaydedilemedi:", error);
+    });
+}
+
+// Google Login Fonksiyonunu Firebase'e Kaydetme ile Güncelle
+const originalGoogleLogin = googleLogin; // Mevcut googleLogin fonksiyonunu sakla
+
+googleLogin = function () {
+    return originalGoogleLogin().then(user => {
+        saveUserToDatabase(user);
+        return user;
+    });
+};
+
+
