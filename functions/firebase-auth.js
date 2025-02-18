@@ -44,25 +44,39 @@ function googleLogout() {
 // Auth Button Güncelleme Fonksiyonu
 function updateAuthButton(user) {
     setTimeout(() => {
-        const authButton = document.getElementById("auth-button");
-        if (authButton) {
-            console.log("✅ Buton bulundu! Güncelleniyor...");
+        const desktopAuthButton = document.getElementById("auth-button");
+        const mobileAuthButton = document.getElementById("mobile-auth-button");
+
+        if (desktopAuthButton) {
             if (user) {
-                authButton.textContent = "Çıkış Yap";
-                authButton.classList.remove("bg-blue-500");
-                authButton.classList.add("bg-red-500");
-                authButton.onclick = googleLogout;
+                desktopAuthButton.textContent = "Çıkış Yap";
+                desktopAuthButton.classList.remove("bg-blue-500");
+                desktopAuthButton.classList.add("bg-red-500");
+                desktopAuthButton.onclick = googleLogout;
             } else {
-                authButton.textContent = "Google ile Giriş Yap";
-                authButton.classList.remove("bg-red-500");
-                authButton.classList.add("bg-blue-500");
-                authButton.onclick = googleLogin;
+                desktopAuthButton.textContent = "Google ile Giriş Yap";
+                desktopAuthButton.classList.remove("bg-red-500");
+                desktopAuthButton.classList.add("bg-blue-500");
+                desktopAuthButton.onclick = googleLogin;
             }
-        } else {
-            console.error("❌ auth-button bulunamadı! Buton HTML içinde tanımlı mı?");
         }
-    }, 1000); // 1 saniye gecikme ile butonu kontrol et
+
+        if (mobileAuthButton) {
+            if (user) {
+                mobileAuthButton.textContent = "Çıkış Yap";
+                mobileAuthButton.classList.remove("bg-blue-500");
+                mobileAuthButton.classList.add("bg-red-500");
+                mobileAuthButton.onclick = googleLogout;
+            } else {
+                mobileAuthButton.textContent = "Google ile Giriş Yap";
+                mobileAuthButton.classList.remove("bg-red-500");
+                mobileAuthButton.classList.add("bg-blue-500");
+                mobileAuthButton.onclick = googleLogin;
+            }
+        }
+    }, 500); // DOM'un tamamen yüklendiğinden emin olmak için bekletiyoruz
 }
+
 
 // Fonksiyonları Global Hale Getir
 document.addEventListener("DOMContentLoaded", function () {
