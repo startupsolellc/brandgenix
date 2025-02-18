@@ -6,7 +6,6 @@ const firebaseConfig = {
     storageBucket: "brandgenixapp.firebasestorage.app",
     messagingSenderId: "1065728742460",
     appId: "1:1065728742460:web:180c104698a1a8f1be9f39",
-
 };
 
 // Initialize Firebase
