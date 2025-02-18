@@ -240,15 +240,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.error("❌ Mobil menü veya buton bulunamadı!");
                 }
             }, 500);
-        });
+        })
+        .catch(error => console.error("❌ Header yüklenirken hata oluştu:", error));
 
     fetch("footer.html")
         .then(response => response.text())
-        .then(data => document.getElementById("footer-placeholder").innerHTML = data);
+        .then(data => document.getElementById("footer-placeholder").innerHTML = data)
+        .catch(error => console.error("❌ Footer yüklenirken hata oluştu:", error));
 });
 
-
-    fetch("footer.html")
-        .then(response => response.text())
-        .then(data => document.getElementById("footer-placeholder").innerHTML = data);
-});
