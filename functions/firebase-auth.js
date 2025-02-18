@@ -104,6 +104,7 @@ function saveUserToDatabase(user) {
     }
 
     const userRef = ref(database, 'users/' + user.uid);
+    console.log("✅ Veri Yolu (userRef):", userRef.toString()); // EKLEDİĞİMİZ SATIR 4 - VERİ YOLU KONSOLA YAZDIRILIYOR
     set(userRef, {
         email: user.email,
         generatedNames: 0,
@@ -113,8 +114,9 @@ function saveUserToDatabase(user) {
         console.log("✅ Kullanıcı Firebase'e kaydedildi:", user.email);
     }).catch(error => {
         console.error("❌ Kullanıcı Firebase'e kaydedilemedi:", error);
+        console.error("❌ HATA DETAYI:", error.code, error.message, error.details); // EKLEDİĞİMİZ SATIR 5 - DETAYLI HATA MESAJI
     });
-    console.log("saveUserToDatabase fonksiyonu SONU"); // EKLEDİĞİMİZ SATIR 4
+    console.log("saveUserToDatabase fonksiyonu SONU"); // EKLEDİĞİMİZ SATIR 6
 }
 
 // Google Login Fonksiyonunu Firebase'e Kaydetme ile Güncelle
@@ -122,7 +124,7 @@ const originalGoogleLogin = googleLogin; // Mevcut googleLogin fonksiyonunu sakl
 
 googleLogin = function () {
     return originalGoogleLogin().then(user => {
-        console.log("✅ googleLogin BAŞARILI, şimdi saveUserToDatabase ÇAĞRILIYOR"); // EKLEDİĞİMİZ SATIR 5
+        console.log("✅ googleLogin BAŞARILI, şimdi saveUserToDatabase ÇAĞRILIYOR"); // EKLEDİĞİMİZ SATIR 7
         saveUserToDatabase(user);
         return user;
     });
