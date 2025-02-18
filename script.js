@@ -1,4 +1,4 @@
-/ Firebase Authentication import
+// Firebase Authentication import
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
 const auth = getAuth();
