@@ -1,9 +1,11 @@
 async function generateNames() {
+    console.log("🎯 generateNames() fonksiyonu çağrıldı."); // Test Logu
     if (!checkGuestLimit()) return; // Eğer limit aşıldıysa fonksiyon çalışmasın
 
     console.log("🟢 İsim üretme işlemi başlatılıyor...");
     // 📝 Mevcut isim üretme kodun buradan itibaren devam edecek...
 }
+
 
 // 🚀 Kullanıcının giriş yapıp yapmadığını kontrol et
 function isUserLoggedIn() {
@@ -11,13 +13,16 @@ function isUserLoggedIn() {
     return auth.currentUser !== null; // Eğer kullanıcı varsa true döner, yoksa false
 }
 
-// 🚀 Misafir kullanıcılar için üretim limiti kontrolü
 function checkGuestLimit() {
+    console.log("🛑 checkGuestLimit() fonksiyonu çağrıldı."); // Test Logu
+
     if (isUserLoggedIn()) {
+        console.log("✅ Kullanıcı giriş yapmış, üretim sınırı yok.");
         return true; // Giriş yapmış kullanıcılar için sınır yok
     }
 
     let generatedCount = parseInt(localStorage.getItem("generatedCount")) || 0;
+    console.log(`📊 Misafir üretim sayısı: ${generatedCount}/5`);
 
     if (generatedCount >= 5) {
         console.warn("🚨 Üretim limiti aşıldı! Login sayfasına yönlendiriliyor...");
