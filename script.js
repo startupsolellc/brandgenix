@@ -55,10 +55,10 @@ async function getRandomFont() {
 console.log("🔥 Kullanıcı oturum kontrolü çalışıyor...");
 
 // Sayfa yüklendiğinde giriş kontrolü yapılacak
-document.addEventListener("DOMContentLoaded", async function () {
+document.addEventListener("DOMContentLoaded", function () {
     console.log("🔍 Sayfa yüklendi. Kullanıcı durumu kontrol ediliyor...");
 
-    // Firebase'in tamamen yüklenmesini beklemek için bir interval kullan
+    // Firebase yüklendi mi kontrol et
     let checkFirebase = setInterval(() => {
         if (typeof getAuth === "function") {
             clearInterval(checkFirebase); // Firebase yüklendi, intervali durdur
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             const auth = getAuth();
 
-            // Kullanıcı durumunu kontrol et
+            // Kullanıcı durumu değiştiğinde kontrol et
             auth.onAuthStateChanged((user) => {
                 if (user) {
                     console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
@@ -74,6 +74,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                     console.log("❌ Kullanıcı giriş yapmamış.");
                 }
             });
+        }
+    }, 500); // Her 500ms'de bir Firebase'in yüklenip yüklenmediğini kontrol et
+});
+
         }
     }, 500); // Her 500ms'de bir kontrol et
 });
