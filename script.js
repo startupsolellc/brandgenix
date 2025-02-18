@@ -73,7 +73,7 @@ console.log("🔥 Kullanıcı oturum kontrolü çalışıyor...");
 // Sayfa yüklendiğinde giriş kontrolü de yapılacak
 document.addEventListener("DOMContentLoaded", function () {
     console.log("🔍 Sayfa yüklendi. Kullanıcı durumu kontrol ediliyor...");
-    
+  });  
 // Etiket ekleme fonksiyonu
 function handleKeyDown(event) {
     const input = event.target;
