@@ -151,3 +151,4 @@ auth.onAuthStateChanged((user) => {
     console.log("🔄 Auth durumu değişti:", user ? "Giriş yapıldı" : "Çıkış yapıldı");
     updateAuthButton(user);
 });
+export { database };
