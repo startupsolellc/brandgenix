@@ -12,6 +12,7 @@ const app = initializeApp({
     appId: window.env.FIREBASE_APP_ID,
     databaseURL: window.env.FIREBASE_DATABASE_URL // Realtime Database için önemli!
 });
+console.log("✅ Firebase Config from window.env:", window.env);
 
 // Firebase servislerini başlat
 const auth = getAuth(app);
