@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrandGenix - Login Required</title>
+    <meta name="description" content="Create unique brand names & professional logos with BrandGenix! AI-powered brand name generator & logo design tool for modern, corporate & minimalist branding.">
+    <meta name="keywords" content="free brand name generator tool, AI logo maker, AI logo text, brand name maker">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link id="googleFontsLink" rel="stylesheet" href="" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <script src="/functions/env.js"></script>
+    <script type="module" src="/functions/firebase-auth.js"></script>
+    <script src="script.js" defer></script>
+</head>
+<body class="bg-gradient-to-b from-blue-50 to-blue-100 flex items-center justify-center min-h-screen p-6">
+    <div class="bg-white shadow-lg rounded-2xl p-8 max-w-md w-full text-center">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">🔒 Brand Name Production Limit Reached</h1>
+        <p class="text-gray-600 mb-6">To generate more brand names, you need to log in.</p>
+        
+        <button id="google-login" class="w-full bg-blue-500 text-white font-semibold py-3 rounded-lg hover:bg-blue-600 transition-all">
+            Sign in with Google
+        </button>
+        
+        <p class="text-gray-500 text-sm mt-4">Or</p>
+        
+        <button onclick="goHome()" class="w-full bg-gray-200 text-gray-800 font-semibold py-3 rounded-lg hover:bg-gray-300 transition-all mt-2">
+            Return to Home Page
+        </button>
+    </div>
+    
+    <script type="module">
+        import { googleLogin } from "./functions/firebase-auth.js";
+        document.getElementById("google-login").addEventListener("click", () => {
+            googleLogin().then(() => {
+                window.location.href = "index.html"; // Redirect to homepage after successful login
+            });
+        });
+    </script>
+    
+    <script>
+        function goHome() {
+            window.location.href = "index.html";
+        }
+    </script>
+  <div id="footer-placeholder"></div>
+</body>
+</html>
+</body>
+</html>
