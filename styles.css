@@ -292,10 +292,35 @@ footer {
 
 .animate-gradient {
     background-size: 200% 200%;
-    animation: gradientBG 6s ease infinite;
+    animation: gradientBG 6s easeer
+}
+     /* ================= HEADER STYLES ================= */
+head
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 16px 0;
 }
 
-/* Auth Button ve Lang Switcher için stil */
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Butonlar ve logo arasındaki boşluk */
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.header-logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1F2937;
+    text-align: center;
+}
+
 #auth-button, #lang-switcher {
     background-color: #2563eb;
     color: white;
@@ -309,3 +334,28 @@ footer {
 #auth-button:hover, #lang-switcher:hover {
     background-color: #1e40af;
 }
+
+/* Mobil uyumluluk için medya sorgusu */
+@media (max-width: 768px) {
+    header {
+        padding: 10px 0;
+    }
+    .header-container {
+        flex-direction: column; /* Logo ve butonlar alt alta */
+        align-items: flex-start; /* Butonlar sola hizalanacak */
+        padding: 0 10px;
+    }
+    .header-logo {
+        font-size: 20px;
+        margin-bottom: 10px; /* Logo ile butonlar arasında boşluk */
+    }
+    #auth-button, #lang-switcher {
+        width: 100%; /* Butonlar tam genişlikte */
+        margin-bottom: 10px; /* Butonlar arasında boşluk */
+    }
+}
+
+
+
+
+
