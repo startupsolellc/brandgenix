@@ -92,7 +92,7 @@ window.updateAuthButton = updateAuthButton;
 import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
 // Firebase Realtime Database bağlantısını başlat
-const database = getDatabase(/*database,*/ "https://brandgenixapp-default-rtdb.europe-west1.firebasedatabase.app"); // SENİN URL'İNİ YAPIŞTIRDIN!
+const database = getDatabase();
 
 // Kullanıcıyı Firebase'e Kaydetme Fonksiyonu
 console.log("saveUserToDatabase fonksiyonu çalıştı - FONKSİYON BAŞLANGICI"); // EKLEDİĞİMİZ SATIR 1
