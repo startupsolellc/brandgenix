@@ -1,3 +1,10 @@
+async function generateNames() {
+    if (!checkGuestLimit()) return; // Eğer limit aşıldıysa fonksiyon çalışmasın
+
+    console.log("🟢 İsim üretme işlemi başlatılıyor...");
+    // 📝 Mevcut isim üretme kodun buradan itibaren devam edecek...
+}
+
 // 🚀 Kullanıcının giriş yapıp yapmadığını kontrol et
 function isUserLoggedIn() {
     const auth = getAuth();
