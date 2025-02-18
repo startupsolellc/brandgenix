@@ -95,9 +95,13 @@ import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.6.0
 const database = getDatabase();
 
 // Kullanıcıyı Firebase'e Kaydetme Fonksiyonu
-console.log("saveUserToDatabase fonksiyonu çalıştı");
+console.log("saveUserToDatabase fonksiyonu çalıştı - FONKSİYON BAŞLANGICI"); // EKLEDİĞİMİZ SATIR 1
 function saveUserToDatabase(user) {
-    if (!user) return;
+    console.log("saveUserToDatabase fonksiyonu içinde - PARAMETRE:", user); // EKLEDİĞİMİZ SATIR 2
+    if (!user) {
+        console.log("saveUserToDatabase - USER PARAMETRESİ BOŞ, KAYDETME İŞLEMİ İPTAL EDİLDİ"); // EKLEDİĞİMİZ SATIR 3
+        return;
+    }
 
     const userRef = ref(database, 'users/' + user.uid);
     set(userRef, {
@@ -110,6 +114,7 @@ function saveUserToDatabase(user) {
     }).catch(error => {
         console.error("❌ Kullanıcı Firebase'e kaydedilemedi:", error);
     });
+    console.log("saveUserToDatabase fonksiyonu SONU"); // EKLEDİĞİMİZ SATIR 4
 }
 
 // Google Login Fonksiyonunu Firebase'e Kaydetme ile Güncelle
@@ -117,9 +122,8 @@ const originalGoogleLogin = googleLogin; // Mevcut googleLogin fonksiyonunu sakl
 
 googleLogin = function () {
     return originalGoogleLogin().then(user => {
+        console.log("✅ googleLogin BAŞARILI, şimdi saveUserToDatabase ÇAĞRILIYOR"); // EKLEDİĞİMİZ SATIR 5
         saveUserToDatabase(user);
         return user;
     });
 };
-
-
