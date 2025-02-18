@@ -1,3 +1,19 @@
+/ Firebase Authentication import
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
+const auth = getAuth();
+let user = null;
+
+// 🚀 Kullanıcının giriş yapıp yapmadığını kontrol et
+onAuthStateChanged(auth, (loggedInUser) => {
+    if (loggedInUser) {
+        user = loggedInUser;
+        console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
+    } else {
+        console.log("❌ Kullanıcı giriş yapmamış.");
+    }
+});
+
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
@@ -51,7 +67,13 @@ async function getRandomFont() {
     }
     return "Arial"; // Hata olursa varsayılan font
 }
+// Kullanıcı giriş yaptı mı? Konsola yazdır
+console.log("🔥 Kullanıcı oturum kontrolü çalışıyor...");
 
+// Sayfa yüklendiğinde giriş kontrolü de yapılacak
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("🔍 Sayfa yüklendi. Kullanıcı durumu kontrol ediliyor...");
+    
 // Etiket ekleme fonksiyonu
 function handleKeyDown(event) {
     const input = event.target;
