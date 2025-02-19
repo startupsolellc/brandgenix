@@ -1,6 +1,27 @@
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-
 const database = getDatabase();
+
+//Yeni hash sistemi
+async function saveUserHashToFirebase() {
+    const userHash = await generateUserHash();
+    const userRef = ref(database, `guest_users/${userHash}`);
+
+    // Kullanıcı daha önce kayıtlı mı kontrol et
+    get(userRef).then(snapshot => {
+        if (snapshot.exists()) {
+            console.log("📌 Kullanıcı zaten var:", snapshot.val());
+        } else {
+            // Yeni kullanıcıyı kaydet
+            set(userRef, { generatedNames: 0 })
+                .then(() => console.log("✅ Kullanıcı Firebase'e eklendi:", userHash))
+                .catch(error => console.error("❌ Firebase yazma hatası:", error));
+        }
+    }).catch(error => console.error("❌ Firebase okuma hatası:", error));
+}
+
+// Firebase'e kaydetmeyi test et
+saveUserHashToFirebase();
+
 
 
 // Ana sayfaya yönlendirme fonksiyonu
