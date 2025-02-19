@@ -92,7 +92,7 @@ function goHome() {
 let previousNames = new Set();
 const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
 
-// 🔹 Etiketleri saklamak için dizi (Eksikse tanımla)
+// 🔹 Etiketleri saklamak için dizi (Eğer tanımlı değilse, tanımla)
 if (typeof tags === "undefined") {
     var tags = [];
 }
@@ -119,7 +119,7 @@ function handleKeyDown(event) {
     }
 }
 
-// 🔹 2️⃣ Etiketleri Güncelleme Fonksiyonu (Arayüze Ekler)
+// 🔹 2️⃣ Etiketleri Güncelleme Fonksiyonu
 function updateTags(container) {
     container.innerHTML = "";
     tags.forEach((tag, index) => {
@@ -253,6 +253,8 @@ function selectCategory(category) {
 
 // 🔹 6️⃣ Sayfa Yüklenince Etiket ve Butonları Bağla
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("🔄 Sayfa yükleniyor, elementler kontrol ediliyor...");
+
     // 🔸 Etiket giriş alanı
     const inputField = document.getElementById("keywords-input");
     if (inputField) {
@@ -270,8 +272,13 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("❌ 'Generate Name' butonu bulunamadı!");
     }
-});
 
+    // 🔹 Eğer sayfa results.html ise, generateNames fonksiyonunu çalıştır
+    if (window.location.pathname.includes("results.html")) {
+        console.log("🔄 Results sayfası tespit edildi, isim üretimi başlatılıyor...");
+        generateNames();
+    }
+});
 // Rastgele renk paleti
 const colorPalette = [
     "#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2",
