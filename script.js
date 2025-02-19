@@ -1,11 +1,6 @@
-async function generateNames() {
-    console.log("🎯 generateNames() fonksiyonu çağrıldı."); // Test Logu
-    if (!checkGuestLimit()) return; // Eğer limit aşıldıysa fonksiyon çalışmasın
+import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 
-    console.log("🟢 İsim üretme işlemi başlatılıyor...");
-    // 📝 Mevcut isim üretme kodun buradan itibaren devam edecek...
-}
-
+const database = getDatabase();
 
 // 🚀 Kullanıcının giriş yapıp yapmadığını kontrol et
 function isUserLoggedIn() {
@@ -13,27 +8,60 @@ function isUserLoggedIn() {
     return auth.currentUser !== null; // Eğer kullanıcı varsa true döner, yoksa false
 }
 
-function checkGuestLimit() {
-    console.log("🛑 checkGuestLimit() fonksiyonu çağrıldı."); // Test Logu
+// 🚀 Misafir kullanıcıları takip etmek için ID oluşturma
+function getGuestId() {
+    let guestId = localStorage.getItem("guestId");
+    if (!guestId) {
+        guestId = Math.floor(Math.random() * 1000000).toString(); // Rastgele misafir ID oluştur
+        localStorage.setItem("guestId", guestId);
+    }
+    return guestId;
+}
 
+// 🚀 Misafir kullanıcılar için Firebase tabanlı üretim limiti kontrolü
+async function checkGuestLimit() {
     if (isUserLoggedIn()) {
         console.log("✅ Kullanıcı giriş yapmış, üretim sınırı yok.");
         return true; // Giriş yapmış kullanıcılar için sınır yok
     }
 
-    let generatedCount = parseInt(localStorage.getItem("generatedCount")) || 0;
-    console.log(`📊 Misafir üretim sayısı: ${generatedCount}/5`);
+    const guestId = getGuestId();
+    const guestRef = ref(database, `guestUsage/${guestId}`);
 
-    if (generatedCount >= 5) {
-        console.warn("🚨 Üretim limiti aşıldı! Login sayfasına yönlendiriliyor...");
-        window.location.href = "login-required.html";
+    try {
+        const snapshot = await get(guestRef);
+        let guestCount = snapshot.exists() ? snapshot.val() : 0;
+
+        console.log(`📊 Mevcut misafir üretim sayısı: ${guestCount}/5`);
+
+        if (guestCount >= 5) {
+            console.warn("🚨 Üretim limiti aşıldı! Login sayfasına yönlendiriliyor...");
+            window.location.href = "login-required.html";
+            return false;
+        }
+
+        // Firebase'e güncel kullanım sayısını yaz
+        await set(guestRef, guestCount + 1);
+        console.log(`🔄 Güncellenmiş misafir üretim sayısı: ${guestCount + 1}/5`);
+        return true;
+
+    } catch (error) {
+        console.error("❌ Firebase misafir kullanım verisi alınamadı:", error);
         return false;
     }
-
-    localStorage.setItem("generatedCount", generatedCount + 1);
-    console.log(`🔄 Güncel misafir üretim sayısı: ${generatedCount + 1}/5`);
-    return true;
 }
+
+// 🚀 İsim üretme fonksiyonuna Firebase tabanlı limit kontrolü ekleyelim
+async function generateNames() {
+    console.log("🎯 generateNames() fonksiyonu çağrıldı.");
+
+    const allowed = await checkGuestLimit();
+    if (!allowed) return; // Eğer limit aşıldıysa fonksiyon çalışmasın
+
+    console.log("🟢 İsim üretme işlemi başlatılıyor...");
+    // 📝 Mevcut isim üretme kodun buradan itibaren devam edecek...
+}
+
 
 
 // Ana sayfaya yönlendirme fonksiyonu
