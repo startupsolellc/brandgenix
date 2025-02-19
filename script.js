@@ -47,7 +47,7 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-/ 🔹 3️⃣ Kullanıcı Limitini Kontrol Etme ve Güncelleme
+// 🔹 3️⃣ Kullanıcı Limitini Kontrol Etme ve Güncelleme
 async function checkAndUpdateLimit(user) {
     if (user) {
         console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
