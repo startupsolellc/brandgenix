@@ -9,19 +9,21 @@ function isUserLoggedIn() {
 }
 
 function getGuestId() {
+    console.log("🛠 getGuestId() fonksiyonu çalıştırıldı."); // Test Logu
+
     let guestId = localStorage.getItem("guestId");
+    console.log(`🔍 localStorage'den alınan guestId: ${guestId}`);
 
     if (!guestId) {
         guestId = Math.floor(Math.random() * 1000000).toString(); // Rastgele misafir ID oluştur
         localStorage.setItem("guestId", guestId);
         console.log(`🆕 Yeni misafir ID oluşturuldu: ${guestId}`);
     } else {
-        console.log(`🔍 Mevcut misafir ID bulundu: ${guestId}`);
+        console.log(`✅ Mevcut misafir ID kullanılıyor: ${guestId}`);
     }
 
     return guestId;
 }
-
 
 // 🚀 Misafir kullanıcılar için Firebase tabanlı üretim limiti kontrolü
 async function checkGuestLimit() {
