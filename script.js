@@ -38,72 +38,131 @@ async function saveUserHashToFirebase() {
 // 🔒 Sabitler ve Bayraklar
 const PREMIUM_FLAG = "app_premiumStatus";
 let isLimitChecked = false;
+let isAuthReady = false;
+let redirectInProgress = false;
 
-async function checkAndUpdateLimit() {
-    if (isLimitChecked) return;
-    isLimitChecked = true;
+// Auth durumu hazır olduğunda bir kez çağrılacak
+function handleInitialAuth(user) {
+  if (!isAuthReady) {
+    isAuthReady = true;
+    checkAndUpdateLimit(user);
+  }
+}
 
-    const user = auth.currentUser;
+async function checkAndUpdateLimit(user = auth.currentUser) {
+  // Zaten kontrol edildiyse veya yönlendirme işlemi varsa, tekrar işlemi engelle
+  if (isLimitChecked || redirectInProgress) return;
+  isLimitChecked = true;
+  
+  // Önce local storage'dan premium durumunu kontrol et
+  if (localStorage.getItem(PREMIUM_FLAG) === "true") {
+    console.log("💎 Premium kullanıcı: Tüm yönlendirmeler engellendi!");
+    // Sayfa yüklendiğinde yönlendirme olmasını engelle
+    preventRedirectLoop();
+    return;
+  }
 
-    // 🔒 Premium kullanıcılar için kesin engelleme
-    if (localStorage.getItem(PREMIUM_FLAG)) {
-        console.log("💎 Premium kullanıcı: Tüm yönlendirmeler engellendi!");
-        window.history.replaceState({}, "", window.location.pathname);
-        return;
-    }
-
-    if (user) {
-        console.log(`✅ Oturum açıldı: ${user.email}`);
-        const userRef = ref(database, `users/${user.uid}`);
-
-        try {
-            const snapshot = await get(userRef);
-            if (!snapshot.exists()) {
-                console.error("❌ Firebase'de kullanıcı bulunamadı!");
-                return;
-            }
-
-            const userData = snapshot.val();
-            if (userData.isPremium) {
-                localStorage.setItem(PREMIUM_FLAG, "true");
-                window.history.replaceState({}, "", window.location.pathname);
-                return;
-            }
-
-            const generatedNames = userData.generatedNames || 0;
-            if (generatedNames >= 100) {
-                window.location.href = "premium-required.html";
-            } else {
-                await update(userRef, { generatedNames: generatedNames + 4 });
-            }
-        } catch (error) {
-            console.error("❌ Firebase hatası:", error.message);
-        }
-        return;
-    }
-
-    // 🔒 Guest kontrolü (yalnızca oturum açmayanlar)
-    console.log("⚠️ Guest kullanıcı kontrolü...");
+  if (user) {
+    console.log(`✅ Oturum açıldı: ${user.email}`);
+    const userRef = ref(database, `users/${user.uid}`);
+    
     try {
-        const userHash = await generateUserHash();
-        const guestRef = ref(database, `browserGuests/${userHash}`);
-        const snapshot = await get(guestRef);
-        const generatedNames = snapshot.exists() ? snapshot.val().generatedNames : 0;
-
-        if (generatedNames >= 25) {
-            window.location.href = "login-required.html";
-        } else {
-            await update(guestRef, { generatedNames: generatedNames + 4 });
-        }
+      const snapshot = await get(userRef);
+      if (!snapshot.exists()) {
+        console.error("❌ Firebase'de kullanıcı bulunamadı!");
+        // Kullanıcı bilgileri oluştur
+        await set(userRef, {
+          email: user.email,
+          createdAt: serverTimestamp(),
+          isPremium: false,
+          generatedNames: 0
+        });
+        return;
+      }
+      
+      const userData = snapshot.val();
+      
+      // Premium kontrolü ve işlemleri
+      if (userData.isPremium) {
+        localStorage.setItem(PREMIUM_FLAG, "true");
+        console.log("💎 Premium durumu tespit edildi ve kaydedildi");
+        preventRedirectLoop();
+        return;
+      }
+      
+      // Limit kontrolü
+      const generatedNames = userData.generatedNames || 0;
+      if (generatedNames >= 100) {
+        safeRedirect("premium-required.html");
+      } else {
+        await update(userRef, { generatedNames: generatedNames + 4 });
+      }
     } catch (error) {
-        console.error("❌ Guest hatası:", error.message);
+      console.error("❌ Firebase hatası:", error.message);
     }
+    return;
+  }
+  
+  // 🔒 Guest kontrolü (yalnızca oturum açmayanlar)
+  console.log("⚠️ Guest kullanıcı kontrolü...");
+  try {
+    const userHash = await generateUserHash();
+    const guestRef = ref(database, `browserGuests/${userHash}`);
+    const snapshot = await get(guestRef);
+    const currentData = snapshot.exists() ? snapshot.val() : { generatedNames: 0 };
+    const generatedNames = currentData.generatedNames;
+    
+    if (generatedNames >= 25) {
+      safeRedirect("login-required.html");
+    } else {
+      await set(guestRef, { 
+        generatedNames: generatedNames + 4,
+        lastUpdated: serverTimestamp()
+      });
+    }
+  } catch (error) {
+    console.error("❌ Guest hatası:", error.message);
+  }
+}
+
+// Güvenli yönlendirme - çift yönlendirme hatalarını önler
+function safeRedirect(url) {
+  if (redirectInProgress) return;
+  
+  // Mevcut URL zaten hedef URL ise yönlendirme yapma
+  if (window.location.href.includes(url)) {
+    console.log("🔄 Zaten hedef sayfadasınız, yönlendirme atlanıyor");
+    return;
+  }
+  
+  redirectInProgress = true;
+  console.log(`🔄 Yönlendiriliyor: ${url}`);
+  window.location.href = url;
+}
+
+// Yönlendirme döngüsünü engelle
+function preventRedirectLoop() {
+  // Geçmiş durumu değiştirerek URL'yi temizle
+  window.history.replaceState({}, "", window.location.pathname);
+  console.log("🛡️ Yönlendirme döngüsü engellendi");
 }
 
 // 🔒 Auth State Dinleyicisi (Tüm senaryolar için güvenli)
 onAuthStateChanged(auth, (user) => {
-    isLimitChecked = false; // Her auth değişikliğinde bayrağı sıfırla
-    checkAndUpdateLimit();
+  console.log("🔄 Auth durumu değişti:", user ? user.email : "oturum açılmadı");
+  isLimitChecked = false; // Her auth değişikliğinde bayrağı sıfırla
+  handleInitialAuth(user); // İlk auth durumu kontrolü
+});
+
+// Sayfa yüklendiğinde mevcut kullanıcı durumunu kontrol et
+document.addEventListener('DOMContentLoaded', () => {
+  if (!isAuthReady) {
+    const user = auth.currentUser;
+    if (user) {
+      console.log("📄 Sayfa yüklendiğinde kullanıcı bulundu:", user.email);
+    }
+    checkAndUpdateLimit(user);
+  }
 });
 
 
