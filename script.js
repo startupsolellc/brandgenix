@@ -59,7 +59,15 @@ async function checkAndUpdateLimit() {
 saveUserHashToFirebase();
 
 // 🔹 5️⃣ "Create More" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
-document.getElementById("generate-new").addEventListener("click", checkAndUpdateLimit);
+document.addEventListener("DOMContentLoaded", function () {
+    const generateButton = document.getElementById("generate-new");
+    if (generateButton) {
+        generateButton.addEventListener("click", checkAndUpdateLimit);
+        console.log("✅ 'Create More' butonu bulundu ve event listener eklendi!");
+    } else {
+        console.error("❌ 'Create More' butonu bulunamadı!");
+    }
+});
 
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
