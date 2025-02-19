@@ -2,6 +2,20 @@ import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/1
 const database = getDatabase();
 
 //Yeni hash sistemi
+// 1️⃣ Kullanıcıya özel hash üretme fonksiyonu
+async function generateUserHash() {
+    const userData = `${navigator.userAgent}-${screen.width}x${screen.height}-${navigator.language}`;
+    
+    const encoder = new TextEncoder();
+    const data = encoder.encode(userData);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+    return hashHex;
+}
+
+// 2️⃣ Hash'i Firebase'e kaydetme fonksiyonu
 async function saveUserHashToFirebase() {
     const userHash = await generateUserHash();
     const userRef = ref(database, `guest_users/${userHash}`);
@@ -19,7 +33,7 @@ async function saveUserHashToFirebase() {
     }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 }
 
-// Firebase'e kaydetmeyi test et
+// 3️⃣ Firebase'e kaydetme işlemini çalıştır
 saveUserHashToFirebase();
 
 
