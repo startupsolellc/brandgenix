@@ -39,7 +39,7 @@ async function checkAndUpdateLimit() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             console.log("✅ Kullanıcı giriş yaptı, sınırsız üretim aktif:", user.email);
-            return; // Giriş yapan kullanıcılar için limit kontrolünü atla
+            return; // Giriş yapan kullanıcılar için limit kontrolünü atla ve üretime devam et
         } else {
             console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
             try {
@@ -52,9 +52,7 @@ async function checkAndUpdateLimit() {
 
                     if (generatedNames >= 25) {
                         console.warn("⚠️ İsim üretim sınırına ulaşıldı, yönlendirme başlıyor!");
-                        setTimeout(() => {
-                            window.location.href = "login-required.html";
-                        }, 1000); // 1 saniye gecikme ile yönlendirme
+                        window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
                     } else {
                         await update(userRef, { generatedNames: generatedNames + 4 });
                         console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
