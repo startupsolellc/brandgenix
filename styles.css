@@ -43,11 +43,19 @@ button:hover {
 }
 
 /* 'Create New Names' Butonunu Ortala */
-#new-names-button, .create-new-names {
-    display: block;
+header button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+}
+
+/* 'Create More' Butonunu Ortala */
+#generate-new {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 20px auto;
-    text-align: center;
-    width: fit-content;
 }
 
 
