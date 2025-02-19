@@ -35,17 +35,6 @@ async function saveUserHashToFirebase() {
     }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 }
 
-// 🔥 Kullanıcı giriş durumu değiştiğinde tetiklenen fonksiyon
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
-        saveUserToDatabase(user);
-        checkAndUpdateLimit(user); // Kullanıcı giriş yaptıktan sonra limit kontrolü
-    } else {
-        console.log("⚠️ Kullanıcı giriş yapmamış, guest kontrolü yapılacak.");
-        checkAndUpdateLimit(null); // Kullanıcı yoksa guest kontrolü
-    }
-});
 
 // 🔹 3️⃣ Kullanıcı Limitini Kontrol Etme ve Güncelleme
 async function checkAndUpdateLimit(user) {
@@ -99,6 +88,7 @@ async function checkAndUpdateLimit(user) {
 
         if (generatedNames >= maxLimit) {
             console.warn("⚠️ Guest limit aşıldı. (Giriş önerilecek)");
+            window.location.href = "login-required.html";
             return;
         } else {
             await update(guestRef, { generatedNames: generatedNames + 4 });
@@ -108,63 +98,22 @@ async function checkAndUpdateLimit(user) {
         console.error("❌ Guest işlem hatası:", error);
     }
 }
-// 🔹 Kullanıcıyı Firebase'e Kaydetme ve Guest Verisini Aktarma
-async function saveUserToDatabase(user) {
-    if (!user) return;
-
-    console.log("💡 saveUserToDatabase başladı", user);
-
-    const userRef = ref(database, `users/${user.uid}`);
-    const guestHash = await generateUserHash();
-    const guestRef = ref(database, `browserGuests/${guestHash}`);
-
-    try {
-        const userSnapshot = await get(userRef);
-        const guestSnapshot = await get(guestRef);
-        let generatedNames = 0;
-
-        // 🔥 Guest verisi varsa, önceki üretim sayısını al ve kullanıcı hesabına ekle
-        if (guestSnapshot.exists()) {
-            const guestData = guestSnapshot.val();
-            generatedNames = guestData.generatedNames !== undefined ? guestData.generatedNames : 0;
-
-            console.log(`🔄 Guest verisi bulundu, kullanıcı hesabına aktarılıyor: ${generatedNames} isim üretilmiş.`);
-            await remove(guestRef); // Guest kaydını tamamen kaldır
-        } else if (userSnapshot.exists()) {
-            generatedNames = userSnapshot.val().generatedNames || 0;
-        }
-
-        const userData = {
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL || "",
-            generatedNames: generatedNames, // **Guest verisini koruyarak aktar!**
-            downloads: userSnapshot.exists() ? userSnapshot.val().downloads || 0 : 0,
-            isPremium: userSnapshot.exists() ? userSnapshot.val().isPremium || false : false,
-            lastLogin: new Date().toISOString(),
-            createdAt: userSnapshot.exists() ? userSnapshot.val().createdAt || new Date().toISOString() : new Date().toISOString()
-        };
-
-        console.log("💡 Kaydedilecek veri:", userData);
-        await set(userRef, userData);
-        console.log(`✅ Kullanıcı başarıyla kaydedildi: ${user.email}`);
-    } catch (error) {
-        console.error("❌ Kullanıcı kaydetme hatası:", error);
-    }
-}
 
 
+// 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
+saveUserHashToFirebase();
 
-// 🔥 **Giriş Yapıldığında Kullanıcıyı Kaydet ve Limit Kontrolünü Başlat**
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        saveUserToDatabase(user); // **Veriyi kaydet, guest verisini koru!**
-        checkAndUpdateLimit(); // **Limit kontrolünü başlat**
+// 🔹 5️⃣ "Create More" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
+document.addEventListener("DOMContentLoaded", function () {
+    const generateButton = document.getElementById("generate-new");
+    if (generateButton) {
+        generateButton.addEventListener("click", checkAndUpdateLimit);
+        console.log("✅ 'Create More' butonu bulundu ve event listener eklendi!");
     } else {
-        console.log("⚠️ Kullanıcı giriş yapmamış, guest kontrolü yapılacak.");
-        checkAndUpdateLimit();
+        console.error("❌ 'Create More' butonu bulunamadı!");
     }
 });
+
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
