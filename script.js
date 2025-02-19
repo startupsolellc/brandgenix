@@ -245,6 +245,7 @@ function redirectToResults() {
     window.location.href = "results.html";
 }
 
+
 // 🔹 5️⃣ Hızlı Kategori Seçme Fonksiyonu
 function selectCategory(category) {
     console.log(`✅ Hızlı kategori seçildi: ${category}`);
@@ -266,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("❌ Etiket giriş alanı bulunamadı!");
     }
 
-    // 🔸 "Generate Name" Butonu
+    // 🔸 "Generate Name" Butonunu Dinamik Olarak Bağla
     const generateButton = document.getElementById("generate-button");
     if (generateButton) {
         generateButton.addEventListener("click", redirectToResults);
@@ -288,6 +289,7 @@ document.addEventListener("DOMContentLoaded", function () {
         generateNames();
     }
 });
+
 
 // Rastgele renk paleti
 const colorPalette = [
