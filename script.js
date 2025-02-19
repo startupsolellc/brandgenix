@@ -18,7 +18,7 @@ async function generateUserHash() {
 // 🔹 2️⃣ Firebase'e Kaydetme Fonksiyonu 
 async function saveUserHashToFirebase() {
     const userHash = await generateUserHash();
-    const userRef = ref(database, `browserGuests/${userHash}`); // Doğru koleksiyon yolu!
+    const userRef = ref(database, `browserGuests/${userHash}`);
 
     get(userRef).then(snapshot => {
         if (snapshot.exists()) {
@@ -44,7 +44,7 @@ async function checkAndUpdateLimit() {
                 console.warn("⚠️ İsim üretim sınırına ulaşıldı!");
                 window.location.href = "login-required.html"; // Kullanıcıyı giriş sayfasına yönlendir
             } else {
-                // 4 isim üretildiğini varsayalım, Firebase’de güncelle
+                // Firebase’de güncelle
                 update(userRef, { generatedNames: generatedNames + 4 })
                     .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
                     .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
