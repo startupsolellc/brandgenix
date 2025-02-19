@@ -51,17 +51,6 @@ async function checkGuestLimit() {
     }
 }
 
-// 🚀 İsim üretme fonksiyonuna Firebase tabanlı limit kontrolü ekleyelim
-async function generateNames() {
-    console.log("🎯 generateNames() fonksiyonu çağrıldı.");
-
-    const allowed = await checkGuestLimit();
-    if (!allowed) return; // Eğer limit aşıldıysa fonksiyon çalışmasın
-
-    console.log("🟢 İsim üretme işlemi başlatılıyor...");
-    // 📝 Mevcut isim üretme kodun buradan itibaren devam edecek...
-}
-
 
 
 // Ana sayfaya yönlendirme fonksiyonu
