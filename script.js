@@ -429,6 +429,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 500);
 });
 
+// Header ve Footer'ı yükleme fonksiyonu
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("header.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("header-placeholder").innerHTML = data;
+
+            setTimeout(() => {
+                const menuButton = document.getElementById("mobile-menu-button");
+                const mobileMenu = document.getElementById("mobile-menu");
+                const desktopAuthButton = document.getElementById("auth-button");
+                const mobileAuthButton = document.getElementById("mobile-auth-button");
+
+                if (menuButton && mobileMenu) {
+                    console.log("✅ Mobil menü butonu bulundu!");
+                    menuButton.addEventListener("click", function () {
+                        console.log("🎯 Mobil menü aç/kapat çalışıyor!");
+                        mobileMenu.classList.toggle("show");
+                    });
+                } else {
+                    console.error("❌ Mobil menü veya buton bulunamadı!");
+                }
+
+                // ✅ Giriş Durumunu Güncelle
+                if (typeof updateAuthButton === "function") {
+                    updateAuthButton(JSON.parse(localStorage.getItem("user")));
+                } else {
+                    console.error("❌ updateAuthButton fonksiyonu tanımlı değil!");
+                }
+
+            }, 500);
+        })
+        .catch(error => console.error("❌ Header yüklenirken hata oluştu:", error));
+
     fetch("footer.html")
         .then(response => response.text())
         .then(data => document.getElementById("footer-placeholder").innerHTML = data)
