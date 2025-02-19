@@ -2,7 +2,7 @@ import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/1
 const database = getDatabase();
 
 //Yeni hash sistemi
-// 1️⃣ Kullanıcıya özel hash üretme fonksiyonu
+// 1️⃣ Kullanıcı Hash Üretme Fonksiyonu
 async function generateUserHash() {
     const userData = `${navigator.userAgent}-${screen.width}x${screen.height}-${navigator.language}`;
     
@@ -15,28 +15,26 @@ async function generateUserHash() {
     return hashHex;
 }
 
-// 2️⃣ Hash'i Firebase'e kaydetme fonksiyonu
+// 2️⃣ Firebase'e Kaydetme Fonksiyonu
 async function saveUserHashToFirebase() {
     const userHash = await generateUserHash();
-    const userRef = ref(database, `guest_users/${userHash}`);
+    const userRef = ref(database, `browserGuests/${userHash}`); // Doğru koleksiyon yolu!
 
-    // Kullanıcı daha önce kayıtlı mı kontrol et
-    get(userRef).then(snapshot => {
-        if (snapshot.exists()) {
-            console.log("📌 Kullanıcı zaten var:", snapshot.val());
-        } else {
-            // Yeni kullanıcıyı kaydet
-            set(userRef, { generatedNames: 0 })
-                .then(() => console.log("✅ Kullanıcı Firebase'e eklendi:", userHash))
-                .catch(error => console.error("❌ Firebase yazma hatası:", error));
-        }
-    }).catch(error => console.error("❌ Firebase okuma hatası:", error));
+    get(userRef)
+        .then(snapshot => {
+            if (snapshot.exists()) {
+                console.log("📌 Kullanıcı zaten var:", snapshot.val());
+            } else {
+                set(userRef, { generatedNames: 0 })
+                    .then(() => console.log("✅ Kullanıcı Firebase'e eklendi:", userHash))
+                    .catch(error => console.error("❌ Firebase yazma hatası:", error));
+            }
+        })
+        .catch(error => console.error("❌ Firebase okuma hatası:", error));
 }
 
-// 3️⃣ Firebase'e kaydetme işlemini çalıştır
+// 3️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
-
-
 
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
