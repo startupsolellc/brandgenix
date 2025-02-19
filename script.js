@@ -42,46 +42,29 @@ async function checkAndUpdateLimit() {
             console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
 
             const userRef = ref(database, `users/${user.uid}`);
-            const guestHash = await generateUserHash();
-            const guestRef = ref(database, `browserGuests/${guestHash}`);
+            const userSnapshot = await get(userRef);
+            let generatedNames = 0;
 
-            try {
-                const guestSnapshot = await get(guestRef);
-                const userSnapshot = await get(userRef);
+            if (userSnapshot.exists()) {
+                generatedNames = userSnapshot.val().generatedNames || 0;
+            } else {
+                console.log("ℹ️ Yeni kullanıcı, sıfırdan başlatılıyor.");
+                await set(userRef, { generatedNames: 0, isPremium: false });
+            }
 
-                let generatedNames = 0;
+            const userData = (await get(userRef)).val();
+            if (userData.isPremium) {
+                console.log("💎 Premium kullanıcı, sınırsız üretim aktif!");
+                await update(userRef, { generatedNames: 99999999999999999 });
+                return;
+            }
 
-                // 🔥 Eğer guest verisi varsa, bunu kullanıcı verisine taşı
-                if (guestSnapshot.exists()) {
-                    generatedNames = guestSnapshot.val().generatedNames || 0;
-                    console.log(`🔄 Guest verisi bulundu, kullanıcı hesabına aktarılıyor: ${generatedNames} isim üretilmiş.`);
-                    await set(userRef, { generatedNames: generatedNames, isPremium: false });
-                    await remove(guestRef); // Eski guest kaydını kaldır
-                } else if (userSnapshot.exists()) {
-                    generatedNames = userSnapshot.val().generatedNames || 0;
-                } else {
-                    console.log("ℹ️ Kullanıcı yeni, sıfırdan başlatılıyor.");
-                    await set(userRef, { generatedNames: 0, isPremium: false });
-                }
-
-                // 🔥 Eğer kullanıcı premium ise, limiti sınırsız yap
-                const userData = (await get(userRef)).val();
-                if (userData.isPremium) {
-                    console.log("💎 Premium kullanıcı, sınırsız üretim aktif!");
-                    await update(userRef, { generatedNames: 99999999999999999 });
-                    return;
-                }
-
-                // 🔥 Normal kullanıcılar için limit 100 olarak ayarlanacak
-                if (generatedNames >= 100) {
-                    console.warn("⚠️ Normal kullanıcı üretim sınırına ulaştı. Premium öner!");
-                    window.location.href = "premium-required.html";
-                } else {
-                    await update(userRef, { generatedNames: generatedNames + 4 });
-                    console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
-                }
-            } catch (error) {
-                console.error("❌ Firebase okuma hatası:", error);
+            if (generatedNames >= 100) {
+                console.warn("⚠️ Normal kullanıcı üretim sınırına ulaştı. Premium öner!");
+                window.location.href = "premium-required.html";
+            } else {
+                await update(userRef, { generatedNames: generatedNames + 4 });
+                console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
             }
             return;
         }
@@ -114,8 +97,58 @@ async function checkAndUpdateLimit() {
         }
     });
 }
+// 🔹 Kullanıcıyı Firebase'e Kaydetme ve Guest Verisini Aktarma
+async function saveUserToDatabase(user) {
+    if (!user) return;
 
+    console.log("💡 saveUserToDatabase başladı", user);
 
+    const userRef = ref(database, `users/${user.uid}`);
+    const guestHash = await generateUserHash();
+    const guestRef = ref(database, `browserGuests/${guestHash}`);
+
+    try {
+        const userSnapshot = await get(userRef);
+        const guestSnapshot = await get(guestRef);
+        let generatedNames = 0;
+
+        if (guestSnapshot.exists()) {
+            generatedNames = guestSnapshot.val().generatedNames || 0;
+            console.log(`🔄 Guest verisi bulundu, kullanıcı hesabına aktarılıyor: ${generatedNames} isim üretilmiş.`);
+            await remove(guestRef);
+        } else if (userSnapshot.exists()) {
+            generatedNames = userSnapshot.val().generatedNames || 0;
+        }
+
+        const userData = {
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL || "",
+            generatedNames: generatedNames,
+            downloads: userSnapshot.exists() ? userSnapshot.val().downloads || 0 : 0,
+            isPremium: userSnapshot.exists() ? userSnapshot.val().isPremium || false : false,
+            lastLogin: new Date().toISOString(),
+            createdAt: userSnapshot.exists() ? userSnapshot.val().createdAt || new Date().toISOString() : new Date().toISOString()
+        };
+
+        console.log("💡 Kaydedilecek veri:", userData);
+        await set(userRef, userData);
+        console.log(`✅ Kullanıcı başarıyla kaydedildi: ${user.email}`);
+    } catch (error) {
+        console.error("❌ Kullanıcı kaydetme hatası:", error);
+    }
+}
+
+// 🔥 **Giriş Yapıldığında Kullanıcıyı Kaydet ve Limit Kontrolünü Başlat**
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        saveUserToDatabase(user); // **Veriyi kaydet, guest verisini koru!**
+        checkAndUpdateLimit(); // **Limit kontrolünü başlat**
+    } else {
+        console.log("⚠️ Kullanıcı giriş yapmamış, guest kontrolü yapılacak.");
+        checkAndUpdateLimit();
+    }
+});
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
