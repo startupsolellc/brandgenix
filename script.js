@@ -97,7 +97,7 @@ if (typeof tags === "undefined") {
     var tags = [];
 }
 
-/ 🔹 1️⃣ Etiket Ekleme Fonksiyonu
+// 🔹 1️⃣ Etiket Ekleme Fonksiyonu
 function handleKeyDown(event) {
     const input = event.target;
     const tagContainer = document.getElementById("tag-container");
