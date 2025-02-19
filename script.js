@@ -8,15 +8,20 @@ function isUserLoggedIn() {
     return auth.currentUser !== null; // Eğer kullanıcı varsa true döner, yoksa false
 }
 
-// 🚀 Misafir kullanıcıları takip etmek için ID oluşturma
 function getGuestId() {
     let guestId = localStorage.getItem("guestId");
+
     if (!guestId) {
         guestId = Math.floor(Math.random() * 1000000).toString(); // Rastgele misafir ID oluştur
         localStorage.setItem("guestId", guestId);
+        console.log(`🆕 Yeni misafir ID oluşturuldu: ${guestId}`);
+    } else {
+        console.log(`🔍 Mevcut misafir ID bulundu: ${guestId}`);
     }
+
     return guestId;
 }
+
 
 // 🚀 Misafir kullanıcılar için Firebase tabanlı üretim limiti kontrolü
 async function checkGuestLimit() {
