@@ -112,14 +112,13 @@ async function saveUserToDatabase(user) {
         const guestSnapshot = await get(guestRef);
         let generatedNames = 0;
 
+        // 🔥 Guest verisi varsa, önceki üretim sayısını al ve kullanıcı hesabına ekle
         if (guestSnapshot.exists()) {
-            generatedNames = guestSnapshot.val().generatedNames || 0;
-            console.log(`🔄 Guest verisi bulundu, kullanıcı hesabına aktarılıyor: ${generatedNames} isim üretilmiş.`);
-            await set(userRef, { generatedNames: generatedNames, isPremium: false });
+            const guestData = guestSnapshot.val();
+            generatedNames = guestData.generatedNames !== undefined ? guestData.generatedNames : 0;
 
-            // 🔥 **Guest kaydını silmek yerine güncelleme yaparak etkisini kaldır**
-            await update(guestRef, { generatedNames: 0, migrated: true });
-            console.log("✅ Guest kaydı güncellendi, üretim sıfırlandı.");
+            console.log(`🔄 Guest verisi bulundu, kullanıcı hesabına aktarılıyor: ${generatedNames} isim üretilmiş.`);
+            await remove(guestRef); // Guest kaydını tamamen kaldır
         } else if (userSnapshot.exists()) {
             generatedNames = userSnapshot.val().generatedNames || 0;
         }
@@ -128,7 +127,7 @@ async function saveUserToDatabase(user) {
             email: user.email,
             displayName: user.displayName,
             photoURL: user.photoURL || "",
-            generatedNames: generatedNames,
+            generatedNames: generatedNames, // **Guest verisini koruyarak aktar!**
             downloads: userSnapshot.exists() ? userSnapshot.val().downloads || 0 : 0,
             isPremium: userSnapshot.exists() ? userSnapshot.val().isPremium || false : false,
             lastLogin: new Date().toISOString(),
@@ -142,6 +141,7 @@ async function saveUserToDatabase(user) {
         console.error("❌ Kullanıcı kaydetme hatası:", error);
     }
 }
+
 
 
 // 🔥 **Giriş Yapıldığında Kullanıcıyı Kaydet ve Limit Kontrolünü Başlat**
