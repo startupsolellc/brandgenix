@@ -290,6 +290,30 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// 🔍 Kullanıcı limit kontrolü (Back butonu bug'ını engelleme)
+document.addEventListener("DOMContentLoaded", async function () {
+    if (window.location.pathname.includes("results.html")) {
+        console.log("🔍 Results sayfası yüklendi, limit kontrol ediliyor...");
+
+        const userHash = await generateUserHash();
+        const userRef = ref(database, `browserGuests/${userHash}`);
+
+        get(userRef).then(snapshot => {
+            if (snapshot.exists()) {
+                let generatedNames = snapshot.val().generatedNames || 0;
+
+                if (generatedNames >= 25) {
+                    console.warn("⚠️ İsim üretim sınırına ulaşıldı, tekrar giriş yapmanız gerekiyor!");
+                    window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
+                }
+            }
+        }).catch(error => console.error("❌ Firebase okuma hatası:", error));
+
+        console.log("🔄 Results sayfası tespit edildi, isim üretimi başlatılıyor...");
+        generateNames();
+    }
+});
+
 
 // Rastgele renk paleti
 const colorPalette = [
