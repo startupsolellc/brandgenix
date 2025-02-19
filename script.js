@@ -8,7 +8,7 @@ function isUserLoggedIn() {
     return auth.currentUser !== null; // Eğer kullanıcı varsa true döner, yoksa false
 }
 
-function getGuestId() {
+window.getGuestId = function () {
     console.log("🛠 getGuestId() fonksiyonu çalıştırıldı."); // Test Logu
 
     let guestId = localStorage.getItem("guestId");
@@ -23,7 +23,8 @@ function getGuestId() {
     }
 
     return guestId;
-}
+};
+
 
 // 🚀 Misafir kullanıcılar için Firebase tabanlı üretim limiti kontrolü
 async function checkGuestLimit() {
