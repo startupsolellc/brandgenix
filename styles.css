@@ -26,39 +26,12 @@ button {
 button:hover {
     opacity: 0.8;
 }
-
 /* Ana Sayfa İçin Genişletilmiş İçerik Alanı */
 .home-container {
     max-width: 72rem; /* max-w-4xl eşdeğeri */
     width: 100%;
     margin: 0 auto;
-    text-align: center;
 }
-
-/* 'Generate Name' Butonunu Ortala */
-#generate-button {
-    display: block;
-    margin: 20px auto;
-    text-align: center;
-}
-
-/* 'Create New Names' Butonunu Ortala */
-header button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0 auto;
-}
-
-/* 'Create More' Butonunu Ortala */
-#generate-new {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px auto;
-}
-
-
 /* Kategori Seçim Alanı Stili */
 #category-select {
     width: 100%;
@@ -154,7 +127,7 @@ footer a:hover {
     color: #007bff;
 }
 
-/* Yeni Kart Grid Yapısı: 2x2 */
+/* ✅ Yeni Kart Grid Yapısı: 2x2 */
 #results-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -165,7 +138,7 @@ footer a:hover {
     margin: 0 auto;
 }
 
-/* Kartları Daha Büyük Hale Getir */
+/* 📌 Kartları Daha Büyük Hale Getir */
 .card {
     background-color: white;
     border-radius: 16px;
@@ -184,13 +157,13 @@ footer a:hover {
     text-shadow: 1px 1px 3px rgb(0 0 0 / 20%);
 }
 
-/* Kartlar göründüğünde animasyon */
+/* 🌟 Kartlar göründüğünde animasyon */
 .card.show {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* Mobilde 1 sütun olacak */
+/* 📌 Mobilde 1 sütun olacak */
 @media (max-width: 768px) {
     #results-container {
         grid-template-columns: 1fr;
@@ -198,7 +171,7 @@ footer a:hover {
     }
 }
 
-/* Spinning Gear Animasyonu (Tam Ortada) */
+/* 🔄 Spinning Gear Animasyonu (Tam Ortada) */
 .loading-container {
     position: fixed;
     top: 50%;
@@ -228,112 +201,32 @@ footer a:hover {
     100% { transform: rotate(360deg); }
 }
 
-/* Header İçin Stiller */
+/* ================= HEADER STYLES ================= */
 header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     width: 100%;
     background-color: white;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 16px 16px;
+    padding: 16px 0;
 }
 
 .header-container {
     display: flex;
+    justify-content: center; /* Logo ortada olacak */
     align-items: center;
-    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
 .header-logo {
     font-size: 24px;
     font-weight: bold;
     color: #1F2937;
+    text-align: center;
 }
-
-.nav-menu {
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    gap: 20px;
-}
-
-.auth-button, .lang-switcher {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 20px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    transition: background-color 0.3s ease-in-out;
-}
-
-.auth-button {
-    background-color: #2563eb;
-    color: white;
-}
-.auth-button:hover {
-    background-color: #1d4ed8;
-}
-
-.lang-switcher {
-    background-color: #6B7280;
-    color: white;
-}
-.lang-switcher:hover {
-    background-color: #4B5563;
-}
-
-/* Mobil Menü */
-#mobile-menu-button {
-    display: none;
-}
-
-#mobile-menu {
-    display: none;
-    position: absolute;
-    top: 60px;
-    right: 16px;
-    background-color: white;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 16px;
-    z-index: 50;
-    transition: all 0.3s ease-in-out;
-}
-
-/* Menü açıldığında görünür hale getirmek için */
-#mobile-menu.show {
-    display: block !important;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-@media (max-width: 768px) {
-    .nav-menu {
-        display: none;
-    }
-    #mobile-menu-button {
-        display: block;
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-    #mobile-menu {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-}
-
-/* Mobil Butonları */
-@media (max-width: 768px) {
-    .auth-button, .lang-switcher {
-        width: 100%;
-        text-align: center;
-    }
-}
-
 
 /* ================= FOOTER STYLES ================= */
 footer {
@@ -388,7 +281,7 @@ footer {
     color: #333;
 }
 
-/* Arka Plan Animasyon */
+/* Arka Plan Animasyon
 @keyframes gradientBG {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
@@ -397,10 +290,6 @@ footer {
 
 .animate-gradient {
     background-size: 200% 200%;
-    animation: gradientBG 6s easeer
+    animation: gradientBG 6s ease infinite;
 }
-
-
-
-
 
