@@ -46,32 +46,32 @@ async function checkAndUpdateLimit() {
                     const userData = snapshot.val();
 
                     if (userData.isPremium) {
-                        console.log("💎 Premium kullanıcı, sınırsız üretim aktif!");
-                        return; // Premium kullanıcılar için limit uygulanmaz
-                    } 
+                        console.log("💎 Premium kullanıcı, sınırsız üretim aktif! Yönlendirme engellendi.");
+                        return; // **Premium kullanıcılar için kesinlikle yönlendirme yapma!**
+                    }
 
                     let generatedNames = userData.generatedNames || 0;
                     let maxLimit = 100; // Premium olmayanlar için varsayılan üretim limiti
 
                     if (generatedNames >= maxLimit) {
                         console.warn("⚠️ İsim üretim sınırına ulaşıldı, premium satın almanız gerekiyor!");
-                        window.location.href = "premium-required.html"; // Kullanıcıyı premium satın alma sayfasına yönlendir
+                        setTimeout(() => {
+                            window.location.href = "premium-required.html"; // Kullanıcıyı premium satın alma sayfasına yönlendir
+                        }, 1000);
                     } else {
                         update(userRef, { generatedNames: generatedNames + 4 })
                             .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
                             .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
                     }
-                    return; // Kullanıcı guest kontrolüne düşmemesi için buradan çık!
                 } else {
                     console.error("❌ Kullanıcı Firebase'de bulunamadı!");
-                    return;
                 }
             }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 
-            return; // Kullanıcı giriş yaptıysa guest kontrolünü ÇALIŞTIRMAMAK için burada çık!
+            return; // Kullanıcı giriş yaptıysa guest kontrolüne düşmemesi için burada çık!
         }
 
-        // Eğer kullanıcı giriş yapmamışsa guest olarak kontrol et (bu kısım en sona alındı)
+        // 🔹 **Guest Kullanıcılar İçin Kontrol (Bu Kısım Giriş Yapmayanlar İçin Çalışır!)**
         console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
         try {
             const userHash = await generateUserHash();
@@ -83,7 +83,9 @@ async function checkAndUpdateLimit() {
 
                     if (generatedNames >= 25) {
                         console.warn("⚠️ İsim üretim sınırına ulaşıldı, giriş yapmanız gerekiyor!");
-                        window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
+                        setTimeout(() => {
+                            window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
+                        }, 1000);
                     } else {
                         update(guestRef, { generatedNames: generatedNames + 4 })
                             .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
