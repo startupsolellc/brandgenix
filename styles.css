@@ -32,6 +32,21 @@ button:hover {
     max-width: 72rem; /* max-w-4xl eşdeğeri */
     width: 100%;
     margin: 0 auto;
+    text-align: center;
+}
+
+/* 'Generate Name' Butonunu Ortala */
+#generate-button {
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+}
+
+/* 'Create New Names' Butonunu Ortala */
+#new-names-button {
+    display: block;
+    margin: 20px auto;
+    text-align: center;
 }
 
 /* Kategori Seçim Alanı Stili */
