@@ -38,7 +38,7 @@ async function saveUserHashToFirebase() {
 async function checkAndUpdateLimit() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            console.log("✅ Kullanıcı giriş yaptı, limit kontrolü yapılıyor:", user.email);
+            console.log(`✅ Kullanıcı giriş yaptı, e-posta: ${user.email}`);
 
             const userRef = ref(database, `users/${user.uid}`);
             get(userRef).then(snapshot => {
@@ -65,31 +65,34 @@ async function checkAndUpdateLimit() {
                     console.error("❌ Kullanıcı Firebase'de bulunamadı!");
                 }
             }).catch(error => console.error("❌ Firebase okuma hatası:", error));
-        } else {
-            console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
-            try {
-                const userHash = await generateUserHash();
-                const guestRef = ref(database, `browserGuests/${userHash}`);
 
-                get(guestRef).then(snapshot => {
-                    if (snapshot.exists()) {
-                        let generatedNames = snapshot.val().generatedNames || 0;
+            return; // Kullanıcı giriş yaptıysa guest kontrolünü çalıştırmamak için return ekledik!
+        }
 
-                        if (generatedNames >= 25) {
-                            console.warn("⚠️ İsim üretim sınırına ulaşıldı, giriş yapmanız gerekiyor!");
-                            window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
-                        } else {
-                            update(guestRef, { generatedNames: generatedNames + 4 })
-                                .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
-                                .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
-                        }
+        // Eğer kullanıcı giriş yapmamışsa guest olarak kontrol et
+        console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
+        try {
+            const userHash = await generateUserHash();
+            const guestRef = ref(database, `browserGuests/${userHash}`);
+
+            get(guestRef).then(snapshot => {
+                if (snapshot.exists()) {
+                    let generatedNames = snapshot.val().generatedNames || 0;
+
+                    if (generatedNames >= 25) {
+                        console.warn("⚠️ İsim üretim sınırına ulaşıldı, giriş yapmanız gerekiyor!");
+                        window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
                     } else {
-                        console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                        update(guestRef, { generatedNames: generatedNames + 4 })
+                            .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
+                            .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
                     }
-                }).catch(error => console.error("❌ Firebase okuma hatası:", error));
-            } catch (error) {
-                console.error("❌ Firebase işlem hatası:", error);
-            }
+                } else {
+                    console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                }
+            }).catch(error => console.error("❌ Firebase okuma hatası:", error));
+        } catch (error) {
+            console.error("❌ Firebase işlem hatası:", error);
         }
     });
 }
