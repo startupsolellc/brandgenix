@@ -35,7 +35,7 @@ async function saveUserHashToFirebase() {
     }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 }
 
-// 🔹 3️⃣ Kullanıcı Limitini Kontrol Etme ve Güncelleme
+/// 🔹 3️⃣ Kullanıcı Limitini Kontrol Etme ve Güncelleme
 async function checkAndUpdateLimit() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
@@ -47,6 +47,7 @@ async function checkAndUpdateLimit() {
 
             if (userSnapshot.exists()) {
                 generatedNames = userSnapshot.val().generatedNames || 0;
+                console.log(`📌 Mevcut kullanıcı, üretilen isim sayısı: ${generatedNames}`);
             } else {
                 console.log("ℹ️ Yeni kullanıcı, sıfırdan başlatılıyor.");
                 await set(userRef, { generatedNames: 0, isPremium: false });
@@ -60,8 +61,8 @@ async function checkAndUpdateLimit() {
             }
 
             if (generatedNames >= 100) {
-                console.warn("⚠️ Normal kullanıcı üretim sınırına ulaştı. Premium öner!");
-                window.location.href = "premium-required.html";
+                console.warn("⚠️ Normal kullanıcı üretim sınırına ulaştı. (Premium yönlendirme KALDIRILDI)");
+                // window.location.href = "premium-required.html"; // YÖNLENDİRMEYİ KALDIRDIK!
             } else {
                 await update(userRef, { generatedNames: generatedNames + 4 });
                 console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
@@ -86,8 +87,8 @@ async function checkAndUpdateLimit() {
             let maxLimit = 25;
 
             if (generatedNames >= maxLimit) {
-                console.warn("⚠️ Guest limit aşıldı, giriş sayfasına yönlendiriliyor...");
-                window.location.href = "login-required.html";
+                console.warn("⚠️ Guest limit aşıldı. (Login yönlendirme KALDIRILDI)");
+                // window.location.href = "login-required.html"; // YÖNLENDİRMEYİ KALDIRDIK!
             } else {
                 await update(guestRef, { generatedNames: generatedNames + 4 });
                 console.log(`✅ Yeni guest toplam: ${generatedNames + 4} isim.`);
