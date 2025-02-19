@@ -1,134 +1,3 @@
-
-import { getDatabase, ref, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
-
-const database = getDatabase();
-const auth = getAuth();
-
-//Yeni hash sistemi
-// 🔹 1️⃣ Kullanıcı Hash Üretme Fonksiyonu 
-async function generateUserHash() {
-    const userData = `${navigator.userAgent}-${screen.width}x${screen.height}-${navigator.language}`;
-    
-    const encoder = new TextEncoder();
-    const data = encoder.encode(userData);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    
-    return hashHex;
-}
-
-// 🔹 2️⃣ Firebase'e Kaydetme Fonksiyonu 
-async function saveUserHashToFirebase() {
-    const userHash = await generateUserHash();
-    const userRef = ref(database, `browserGuests/${userHash}`);
-
-    get(userRef).then(snapshot => {
-        if (snapshot.exists()) {
-            console.log("📌 Kullanıcı zaten var:", snapshot.val());
-        } else {
-            set(userRef, { generatedNames: 0 })
-                .then(() => console.log("✅ Kullanıcı Firebase'e eklendi:", userHash))
-                .catch(error => console.error("❌ Firebase yazma hatası:", error));
-        }
-    }).catch(error => console.error("❌ Firebase okuma hatası:", error));
-}
-
-
-// 🔹 3️⃣ Kullanıcı Limitini Kontrol Etme ve Güncelleme
-async function checkAndUpdateLimit(user) {
-    if (user) {
-        console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
-
-        const userRef = ref(database, `users/${user.uid}`);
-        const userSnapshot = await get(userRef);
-        let generatedNames = 0;
-
-        if (userSnapshot.exists()) {
-            generatedNames = userSnapshot.val().generatedNames || 0;
-            console.log(`📌 Mevcut kullanıcı, üretilen isim sayısı: ${generatedNames}`);
-        } else {
-            console.log("ℹ️ Yeni kullanıcı, sıfırdan başlatılıyor.");
-            await set(userRef, { generatedNames: 0, isPremium: false });
-        }
-
-        const userData = (await get(userRef)).val();
-        if (userData.isPremium) {
-            console.log("💎 Premium kullanıcı, sınırsız üretim aktif!");
-            await update(userRef, { generatedNames: 99999999999999999 });
-            return;
-        }
-
-        if (generatedNames >= 100) {
-            console.warn("⚠️ Normal kullanıcı üretim sınırına ulaştı. (Premium önerilecek)");
-            return;
-        } else {
-            await update(userRef, { generatedNames: generatedNames + 4 });
-            console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
-        }
-        return;
-    }
-
-    // 🔹 **Guest Kullanıcılar İçin Limit Kontrolü**
-    console.log("⚠️ Misafir kullanıcı, limit kontrolü başlatılıyor...");
-    try {
-        const guestHash = await generateUserHash();
-        const guestRef = ref(database, `browserGuests/${guestHash}`);
-
-        const snapshot = await get(guestRef);
-        if (!snapshot.exists()) {
-            console.log("ℹ️ Guest kullanıcı Firebase'de kaydı yok, sıfırdan başlatılıyor.");
-            await set(guestRef, { generatedNames: 0 });
-            return;
-        }
-
-        let generatedNames = snapshot.val().generatedNames || 0;
-        let maxLimit = 25;
-
-        if (generatedNames >= maxLimit) {
-            console.warn("⚠️ Guest limit aşıldı. (Giriş önerilecek)");
-            window.location.href = "login-required.html";
-            return;
-        } else {
-            await update(guestRef, { generatedNames: generatedNames + 4 });
-            console.log(`✅ Yeni guest toplam: ${generatedNames + 4} isim.`);
-        }
-    } catch (error) {
-        console.error("❌ Guest işlem hatası:", error);
-    }
-}
-
-
-// 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
-saveUserHashToFirebase();
-
-// 🔹 5️⃣ "Create More" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
-document.addEventListener("DOMContentLoaded", function () {
-    const generateButton = document.getElementById("generate-new");
-    if (generateButton) {
-        generateButton.addEventListener("click", checkAndUpdateLimit);
-        console.log("✅ 'Create More' butonu bulundu ve event listener eklendi!");
-    } else {
-        console.error("❌ 'Create More' butonu bulunamadı!");
-    }
-});
-
-
-// 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
-saveUserHashToFirebase();
-
-// 🔹 5️⃣ \"Create More\" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
-document.addEventListener("DOMContentLoaded", function () {
-    const generateButton = document.getElementById("generate-new");
-    if (generateButton) {
-        generateButton.addEventListener("click", checkAndUpdateLimit);
-        console.log("✅ 'Create More' butonu bulundu ve event listener eklendi!");
-    } else {
-        console.error("❌ 'Create More' butonu bulunamadı!");
-    }
-});
-
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
     window.location.href = "index.html";
@@ -138,12 +7,52 @@ function goHome() {
 let previousNames = new Set();
 const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
 
-// 🔹 Etiketleri saklamak için dizi (Eğer tanımlı değilse, tanımla)
-if (typeof tags === "undefined") {
-    var tags = [];
+// Etiketleri saklamak için değişken
+let tags = [];
+
+// Rastgele renk paleti
+const colorPalette = [
+    "#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2",
+    "#D4AF37", "#B5A642", "#C0C0C0", "#A9A9A9", "#708090", "#778899", "#B0C4DE", "#4682B4",
+    "#5F9EA0", "#7B68EE", "#6A5ACD", "#4169E1", "#1E90FF", "#6495ED", "#2E8B57", "#228B22",
+    "#8FBC8F", "#66CDAA", "#20B2AA", "#008080", "#556B2F", "#6B8E23", "#BDB76B", "#DAA520",
+    "#CD853F", "#8B4513", "#A0522D", "#D2691E", "#BC8F8F", "#F4A460", "#C3B091", "#D2B48C",
+    "#DEB887", "#A52A2A", "#8B0000", "#800000", "#B22222", "#DC143C", "#E9967A", "#FA8072",
+    "#FF8C00", "#FF7F50", "#FFA07A", "#F08080", "#D3D3D3", "#C0C0C0", "#A9A9A9", "#696969",
+    "#808080", "#333333"
+];
+
+// Rastgele renk seçme fonksiyonu
+function getRandomColor() {
+    return colorPalette[Math.floor(Math.random() * colorPalette.length)];
 }
 
-// 🔹 1️⃣ Etiket Ekleme Fonksiyonu
+// Kontrast rengi belirleme fonksiyonu
+function getContrastColor(bgColor) {
+    const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 155 ? 'black' : 'white';
+}
+
+// Netlify Functions üzerinden rastgele font çekme
+async function getRandomFont() {
+    try {
+        const response = await fetch(netlifyFontsApiUrl);
+        const data = await response.json();
+
+        if (data.fonts && data.fonts.length > 0) {
+            return data.fonts[Math.floor(Math.random() * data.fonts.length)];
+        }
+    } catch (error) {
+        console.error("Netlify Fonts API request failed:", error);
+    }
+    return "Arial"; // Hata olursa varsayılan font
+}
+
+// Etiket ekleme fonksiyonu
 function handleKeyDown(event) {
     const input = event.target;
     const tagContainer = document.getElementById("tag-container");
@@ -165,13 +74,13 @@ function handleKeyDown(event) {
     }
 }
 
-// 🔹 2️⃣ Etiketleri Güncelleme Fonksiyonu
+// Etiketleri güncelleme fonksiyonu
 function updateTags(container) {
     container.innerHTML = "";
     tags.forEach((tag, index) => {
         const tagElement = document.createElement("div");
         tagElement.className = "tag bg-blue-500 text-white rounded-full px-3 py-1 flex items-center";
-        tagElement.innerHTML = `${tag} <button class="ml-2 text-white" onclick="removeTag(${index})">✖</button>`;
+        tagElement.innerHTML = `${tag} <button class="ml-2" onclick="removeTag(${index})">X</button>`;
         container.appendChild(tagElement);
     });
 
@@ -184,7 +93,7 @@ function updateTags(container) {
     container.appendChild(input);
 }
 
-// 🔹 3️⃣ Etiket Silme Fonksiyonu
+// Etiket kaldırma fonksiyonu
 function removeTag(index) {
     tags.splice(index, 1);
     updateTags(document.getElementById("tag-container"));
@@ -193,7 +102,7 @@ function removeTag(index) {
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font + Rastgele Renk)
 async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
-    const selectedCategory = sessionStorage.getItem("category") || null; 
+    const selectedCategory = sessionStorage.getItem("category") || null; // Hata burada düzeltildi
     const resultsContainer = document.getElementById("results-container");
 
     // 🔄 Loading Animasyonu Ekle (Tam Ortada)
@@ -253,8 +162,8 @@ async function generateNames() {
 
                     card.addEventListener("click", function () {
                         const selectedName = this.innerText.trim();
-                        const selectedFont = randomFont; 
-                        const selectedBgColor = randomColor; 
+                        const selectedFont = randomFont; // Font bilgisini de al
+                        const selectedBgColor = randomColor; // Background rengini al
                         window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}&bgColor=${encodeURIComponent(selectedBgColor)}`;
                     });
 
@@ -272,10 +181,16 @@ async function generateNames() {
     }, 8000);
 }
 
-// 🔹 4️⃣ Sonuç Sayfasına Yönlendirme (Generate Name)
+// Kategori seçimi için fonksiyon
+function selectCategory(category) {
+    sessionStorage.setItem("category", category);
+    sessionStorage.removeItem("keywords");
+    window.location.href = "results.html";
+}
+
+// Sonuç sayfasına yönlendirme
 function redirectToResults() {
-    console.log("✅ 'Generate Name' butonuna basıldı, yönlendirme başlıyor...");
-    const selectedCategory = document.getElementById("category-select")?.value;
+    const selectedCategory = document.getElementById("category-select").value;
 
     if (tags.length >= 3 && tags.length <= 5) {
         sessionStorage.setItem("keywords", JSON.stringify(tags));
@@ -291,181 +206,26 @@ function redirectToResults() {
     window.location.href = "results.html";
 }
 
-
-// 🔹 5️⃣ Hızlı Kategori Seçme Fonksiyonu
-function selectCategory(category) {
-    console.log(`✅ Hızlı kategori seçildi: ${category}`);
-    sessionStorage.setItem("category", category);
-    sessionStorage.removeItem("keywords");
-    window.location.href = "results.html";
+// Sayfa yüklendiğinde sonuçları üret
+if (window.location.pathname.includes("results.html")) {
+    window.onload = generateNames;
 }
 
-// 🔹 6️⃣ Sayfa Yüklenince Etiket ve Butonları Bağla
+// "Generate New" butonuna tıklama olayını dinle
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("🔄 Sayfa yükleniyor, elementler kontrol ediliyor...");
-
-    // 🔸 Etiket giriş alanı
-    const inputField = document.getElementById("keywords-input");
-    if (inputField) {
-        inputField.onkeydown = handleKeyDown;
-        console.log("✅ Etiket giriş alanı bulundu ve event listener eklendi!");
-    } else {
-        console.error("❌ Etiket giriş alanı bulunamadı!");
+    const generateNewButton = document.getElementById("generate-new");
+    if (generateNewButton) {
+        generateNewButton.addEventListener("click", generateNames);
     }
-
-    // 🔸 "Generate Name" Butonunu Dinamik Olarak Bağla
-    const generateButton = document.getElementById("generate-button");
-    if (generateButton) {
-        generateButton.addEventListener("click", redirectToResults);
-        console.log("✅ 'Generate Name' butonu bulundu ve event listener eklendi!");
-    } else {
-        console.error("❌ 'Generate Name' butonu bulunamadı!");
-    }
-
-    // 🔸 Hızlı Kategori Butonları
-    document.querySelectorAll(".category-button").forEach(button => {
-        button.addEventListener("click", function () {
-            selectCategory(this.dataset.category);
-        });
-    });
-
-    // 🔹 Eğer sayfa results.html ise, generateNames fonksiyonunu çalıştır
-    if (window.location.pathname.includes("results.html")) {
-        console.log("🔄 Results sayfası tespit edildi, isim üretimi başlatılıyor...");
-        generateNames();
-    }
-});
-
-// 🔍 Kullanıcı limit kontrolü (Back butonu bug'ını engelleme)
-document.addEventListener("DOMContentLoaded", async function () {
-    if (window.location.pathname.includes("results.html")) {
-        console.log("🔍 Results sayfası yüklendi, limit kontrol ediliyor...");
-
-        const userHash = await generateUserHash();
-        const userRef = ref(database, `browserGuests/${userHash}`);
-
-        get(userRef).then(snapshot => {
-            if (snapshot.exists()) {
-                let generatedNames = snapshot.val().generatedNames || 0;
-
-                if (generatedNames >= 25) {
-                    console.warn("⚠️ İsim üretim sınırına ulaşıldı, tekrar giriş yapmanız gerekiyor!");
-                    window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
-                }
-            }
-        }).catch(error => console.error("❌ Firebase okuma hatası:", error));
-
-        console.log("🔄 Results sayfası tespit edildi, isim üretimi başlatılıyor...");
-        generateNames();
-    }
-});
-
-
-// Rastgele renk paleti
-const colorPalette = [
-    "#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2",
-    "#D4AF37", "#B5A642", "#C0C0C0", "#A9A9A9", "#708090", "#778899", "#B0C4DE", "#4682B4",
-    "#5F9EA0", "#7B68EE", "#6A5ACD", "#4169E1", "#1E90FF", "#6495ED", "#2E8B57", "#228B22",
-    "#8FBC8F", "#66CDAA", "#20B2AA", "#008080", "#556B2F", "#6B8E23", "#BDB76B", "#DAA520",
-    "#CD853F", "#8B4513", "#A0522D", "#D2691E", "#BC8F8F", "#F4A460", "#C3B091", "#D2B48C",
-    "#DEB887", "#A52A2A", "#8B0000", "#800000", "#B22222", "#DC143C", "#E9967A", "#FA8072",
-    "#FF8C00", "#FF7F50", "#FFA07A", "#F08080", "#D3D3D3", "#C0C0C0", "#A9A9A9", "#696969",
-    "#808080", "#333333"
-];
-
-// Rastgele renk seçme fonksiyonu
-function getRandomColor() {
-    return colorPalette[Math.floor(Math.random() * colorPalette.length)];
-}
-
-// Kontrast rengi belirleme fonksiyonu
-function getContrastColor(bgColor) {
-    const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
-    const r = parseInt(color.substring(0, 2), 16);
-    const g = parseInt(color.substring(2, 4), 16);
-    const b = parseInt(color.substring(4, 6), 16);
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness > 155 ? 'black' : 'white';
-}
-
-// Netlify Functions üzerinden rastgele font çekme
-async function getRandomFont() {
-    try {
-        const response = await fetch(netlifyFontsApiUrl);
-        const data = await response.json();
-
-        if (data.fonts && data.fonts.length > 0) {
-            return data.fonts[Math.floor(Math.random() * data.fonts.length)];
-        }
-    } catch (error) {
-        console.error("Netlify Fonts API request failed:", error);
-    }
-    return "Arial"; // Hata olursa varsayılan font
-}
-
-// Kullanıcı giriş yaptı mı? Konsola yazdır
-console.log("🔥 Kullanıcı oturum kontrolü çalışıyor...");
-
-// Sayfa yüklendiğinde giriş kontrolü yapılacak
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("🔍 Sayfa yüklendi. Kullanıcı durumu kontrol ediliyor...");
-
-    // Firebase yüklendi mi kontrol et
-    let checkFirebase = setInterval(() => {
-        if (typeof getAuth === "function") {
-            clearInterval(checkFirebase); // Firebase yüklendi, intervali durdur
-            console.log("✅ Firebase Authentication yüklendi!");
-
-            const auth = getAuth();
-
-            // Kullanıcı durumu değiştiğinde kontrol et
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
-                } else {
-                    console.log("❌ Kullanıcı giriş yapmamış.");
-                }
-            });
-        }
-    }, 500);
 });
 
 // Header ve Footer'ı yükleme fonksiyonu
 document.addEventListener("DOMContentLoaded", function () {
     fetch("header.html")
         .then(response => response.text())
-        .then(data => {
-            document.getElementById("header-placeholder").innerHTML = data;
-
-            setTimeout(() => {
-                const menuButton = document.getElementById("mobile-menu-button");
-                const mobileMenu = document.getElementById("mobile-menu");
-                const desktopAuthButton = document.getElementById("auth-button");
-                const mobileAuthButton = document.getElementById("mobile-auth-button");
-
-                if (menuButton && mobileMenu) {
-                    console.log("✅ Mobil menü butonu bulundu!");
-                    menuButton.addEventListener("click", function () {
-                        console.log("🎯 Mobil menü aç/kapat çalışıyor!");
-                        mobileMenu.classList.toggle("show");
-                    });
-                } else {
-                    console.error("❌ Mobil menü veya buton bulunamadı!");
-                }
-
-                // ✅ Giriş Durumunu Güncelle
-                if (typeof updateAuthButton === "function") {
-                    updateAuthButton(JSON.parse(localStorage.getItem("user")));
-                } else {
-                    console.error("❌ updateAuthButton fonksiyonu tanımlı değil!");
-                }
-
-            }, 500);
-        })
-        .catch(error => console.error("❌ Header yüklenirken hata oluştu:", error));
+        .then(data => document.getElementById("header-placeholder").innerHTML = data);
 
     fetch("footer.html")
         .then(response => response.text())
-        .then(data => document.getElementById("footer-placeholder").innerHTML = data)
-        .catch(error => console.error("❌ Footer yüklenirken hata oluştu:", error));
+        .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
