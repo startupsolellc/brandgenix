@@ -35,7 +35,6 @@ async function saveUserHashToFirebase() {
 }
 
 // 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme
-
 // 🔒 Sabitler ve Bayraklar
 const PREMIUM_FLAG = "app_premiumStatus";
 let isLimitChecked = false;
@@ -47,7 +46,7 @@ async function checkAndUpdateLimit() {
     const user = auth.currentUser;
 
     // 🔒 Premium kullanıcılar için kesin engelleme
-    if (localStorage.getItem(PREMIUM_FLAG) {
+    if (localStorage.getItem(PREMIUM_FLAG)) {
         console.log("💎 Premium kullanıcı: Tüm yönlendirmeler engellendi!");
         window.history.replaceState({}, "", window.location.pathname);
         return;
