@@ -87,13 +87,15 @@ async function handleGuestUser() {
         const userHash = await generateUserHash();
         const guestRef = ref(database, `browserGuests/${userHash}`);
 
+        // **🔥 Firebase'den önce veriyi çek, sonra yönlendirme yap**
         const snapshot = await get(guestRef);
         if (!snapshot.exists()) {
             console.log("ℹ️ Guest kullanıcı Firebase'de kaydı yok, sıfırdan başlatılıyor.");
             await set(guestRef, { generatedNames: 0 });
+            return; // **Yeni kullanıcı olduğu için yönlendirme yapma**
         }
 
-        let generatedNames = snapshot.exists() ? snapshot.val().generatedNames : 0;
+        let generatedNames = snapshot.val().generatedNames || 0;
         let maxLimit = 25;
 
         if (generatedNames >= maxLimit) {
@@ -109,6 +111,7 @@ async function handleGuestUser() {
         console.error("❌ Guest işlem hatası:", error);
     }
 }
+
 
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
