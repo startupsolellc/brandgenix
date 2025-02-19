@@ -118,7 +118,6 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
 
