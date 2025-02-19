@@ -1,4 +1,4 @@
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 const database = getDatabase();
 
 //Yeni hash sistemi
