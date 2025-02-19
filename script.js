@@ -25,22 +25,23 @@ window.getGuestId = function () {
     return guestId;
 };
 
-
-// 🚀 Misafir kullanıcılar için Firebase tabanlı üretim limiti kontrolü
+// 🚀 Guest limit kontrol
 async function checkGuestLimit() {
     if (isUserLoggedIn()) {
         console.log("✅ Kullanıcı giriş yapmış, üretim sınırı yok.");
-        return true; // Giriş yapmış kullanıcılar için sınır yok
+        return true;
     }
 
     const guestId = getGuestId();
+    console.log(`🎯 Misafir ID: ${guestId}`);
+
     const guestRef = ref(database, `guestUsage/${guestId}`);
 
     try {
         const snapshot = await get(guestRef);
         let guestCount = snapshot.exists() ? snapshot.val() : 0;
 
-        console.log(`📊 Mevcut misafir üretim sayısı: ${guestCount}/5`);
+        console.log(`📊 Firebase'den alınan misafir üretim sayısı: ${guestCount}/5`);
 
         if (guestCount >= 5) {
             console.warn("🚨 Üretim limiti aşıldı! Login sayfasına yönlendiriliyor...");
@@ -48,16 +49,20 @@ async function checkGuestLimit() {
             return false;
         }
 
-        // Firebase'e güncel kullanım sayısını yaz
+        // Firebase'e yazma işlemi test logu
+        console.log(`📝 Firebase'e yazılacak yeni değer: ${guestCount + 1}`);
+
         await set(guestRef, guestCount + 1);
-        console.log(`🔄 Güncellenmiş misafir üretim sayısı: ${guestCount + 1}/5`);
+        console.log(`✅ Firebase'e başarıyla yazıldı: ${guestCount + 1}/5`);
+
         return true;
 
     } catch (error) {
-        console.error("❌ Firebase misafir kullanım verisi alınamadı:", error);
+        console.error("❌ Firebase'e veri yazılamadı:", error);
         return false;
     }
 }
+
 
 
 
