@@ -264,11 +264,11 @@ async function generateNames() {
 }
 
 // Kategori seçimi için fonksiyon
-function selectCategory(category) {
+window.selectCategory = function(category) {
     sessionStorage.setItem("category", category);
     sessionStorage.removeItem("keywords");
     window.location.href = "results.html";
-}
+};
 
 // Sonuç sayfasına yönlendirme
 function redirectToResults() {
