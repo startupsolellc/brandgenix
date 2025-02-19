@@ -1,5 +1,5 @@
 
-import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+import { getDatabase, ref, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
 const database = getDatabase();
@@ -115,7 +115,11 @@ async function saveUserToDatabase(user) {
         if (guestSnapshot.exists()) {
             generatedNames = guestSnapshot.val().generatedNames || 0;
             console.log(`🔄 Guest verisi bulundu, kullanıcı hesabına aktarılıyor: ${generatedNames} isim üretilmiş.`);
-            await remove(guestRef);
+            await set(userRef, { generatedNames: generatedNames, isPremium: false });
+
+            // 🔥 **Guest kaydını silmek yerine güncelleme yaparak etkisini kaldır**
+            await update(guestRef, { generatedNames: 0, migrated: true });
+            console.log("✅ Guest kaydı güncellendi, üretim sıfırlandı.");
         } else if (userSnapshot.exists()) {
             generatedNames = userSnapshot.val().generatedNames || 0;
         }
@@ -138,6 +142,7 @@ async function saveUserToDatabase(user) {
         console.error("❌ Kullanıcı kaydetme hatası:", error);
     }
 }
+
 
 // 🔥 **Giriş Yapıldığında Kullanıcıyı Kaydet ve Limit Kontrolünü Başlat**
 onAuthStateChanged(auth, (user) => {
