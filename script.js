@@ -72,7 +72,7 @@ async function checkAndUpdateLimit() {
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
 
-// 🔹 5️⃣ "Create More" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
+// 🔹 5️⃣ \"Create More\" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
 document.addEventListener("DOMContentLoaded", function () {
     const generateButton = document.getElementById("generate-new");
     if (generateButton) {
@@ -84,7 +84,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Ana sayfaya yönlendirme fonksiyonu
-
 function goHome() {
     window.location.href = "index.html";
 }
@@ -93,79 +92,10 @@ function goHome() {
 let previousNames = new Set();
 const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
 
-// Etiketleri saklamak için değişken
+// 🔹 Etiketleri saklamak için dizi
 let tags = [];
 
-// Rastgele renk paleti
-const colorPalette = [
-    "#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2",
-    "#D4AF37", "#B5A642", "#C0C0C0", "#A9A9A9", "#708090", "#778899", "#B0C4DE", "#4682B4",
-    "#5F9EA0", "#7B68EE", "#6A5ACD", "#4169E1", "#1E90FF", "#6495ED", "#2E8B57", "#228B22",
-    "#8FBC8F", "#66CDAA", "#20B2AA", "#008080", "#556B2F", "#6B8E23", "#BDB76B", "#DAA520",
-    "#CD853F", "#8B4513", "#A0522D", "#D2691E", "#BC8F8F", "#F4A460", "#C3B091", "#D2B48C",
-    "#DEB887", "#A52A2A", "#8B0000", "#800000", "#B22222", "#DC143C", "#E9967A", "#FA8072",
-    "#FF8C00", "#FF7F50", "#FFA07A", "#F08080", "#D3D3D3", "#C0C0C0", "#A9A9A9", "#696969",
-    "#808080", "#333333"
-];
-
-// Rastgele renk seçme fonksiyonu
-function getRandomColor() {
-    return colorPalette[Math.floor(Math.random() * colorPalette.length)];
-}
-
-// Kontrast rengi belirleme fonksiyonu
-function getContrastColor(bgColor) {
-    const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
-    const r = parseInt(color.substring(0, 2), 16);
-    const g = parseInt(color.substring(2, 4), 16);
-    const b = parseInt(color.substring(4, 6), 16);
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
-    return brightness > 155 ? 'black' : 'white';
-}
-
-// Netlify Functions üzerinden rastgele font çekme
-async function getRandomFont() {
-    try {
-        const response = await fetch(netlifyFontsApiUrl);
-        const data = await response.json();
-
-        if (data.fonts && data.fonts.length > 0) {
-            return data.fonts[Math.floor(Math.random() * data.fonts.length)];
-        }
-    } catch (error) {
-        console.error("Netlify Fonts API request failed:", error);
-    }
-    return "Arial"; // Hata olursa varsayılan font
-}
-// Kullanıcı giriş yaptı mı? Konsola yazdır
-console.log("🔥 Kullanıcı oturum kontrolü çalışıyor...");
-
-// Sayfa yüklendiğinde giriş kontrolü yapılacak
-document.addEventListener("DOMContentLoaded", function () {
-    console.log("🔍 Sayfa yüklendi. Kullanıcı durumu kontrol ediliyor...");
-
-    // Firebase yüklendi mi kontrol et
-    let checkFirebase = setInterval(() => {
-        if (typeof getAuth === "function") {
-            clearInterval(checkFirebase); // Firebase yüklendi, intervali durdur
-            console.log("✅ Firebase Authentication yüklendi!");
-
-            const auth = getAuth();
-
-            // Kullanıcı durumu değiştiğinde kontrol et
-            auth.onAuthStateChanged((user) => {
-                if (user) {
-                    console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
-                } else {
-                    console.log("❌ Kullanıcı giriş yapmamış.");
-                }
-            });
-        }
-    }, 500); // Her 500ms'de bir Firebase'in yüklenip yüklenmediğini kontrol et
-});
-
-
-// Etiket ekleme fonksiyonu
+// 🔹 1️⃣ Etiket Ekleme Fonksiyonu
 function handleKeyDown(event) {
     const input = event.target;
     const tagContainer = document.getElementById("tag-container");
@@ -187,13 +117,13 @@ function handleKeyDown(event) {
     }
 }
 
-// Etiketleri güncelleme fonksiyonu
+// 🔹 2️⃣ Etiketleri Güncelleme Fonksiyonu (Arayüze Ekler)
 function updateTags(container) {
     container.innerHTML = "";
     tags.forEach((tag, index) => {
         const tagElement = document.createElement("div");
         tagElement.className = "tag bg-blue-500 text-white rounded-full px-3 py-1 flex items-center";
-        tagElement.innerHTML = `${tag} <button class="ml-2" onclick="removeTag(${index})">X</button>`;
+        tagElement.innerHTML = `${tag} <button class="ml-2 text-white" onclick="removeTag(${index})">✖</button>`;
         container.appendChild(tagElement);
     });
 
@@ -206,7 +136,7 @@ function updateTags(container) {
     container.appendChild(input);
 }
 
-// Etiket kaldırma fonksiyonu
+// 🔹 3️⃣ Etiket Silme Fonksiyonu
 function removeTag(index) {
     tags.splice(index, 1);
     updateTags(document.getElementById("tag-container"));
@@ -215,7 +145,7 @@ function removeTag(index) {
 // API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font + Rastgele Renk)
 async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
-    const selectedCategory = sessionStorage.getItem("category") || null; // Hata burada düzeltildi
+    const selectedCategory = sessionStorage.getItem("category") || null; 
     const resultsContainer = document.getElementById("results-container");
 
     // 🔄 Loading Animasyonu Ekle (Tam Ortada)
@@ -275,8 +205,8 @@ async function generateNames() {
 
                     card.addEventListener("click", function () {
                         const selectedName = this.innerText.trim();
-                        const selectedFont = randomFont; // Font bilgisini de al
-                        const selectedBgColor = randomColor; // Background rengini al
+                        const selectedFont = randomFont; 
+                        const selectedBgColor = randomColor; 
                         window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}&bgColor=${encodeURIComponent(selectedBgColor)}`;
                     });
 
@@ -294,14 +224,7 @@ async function generateNames() {
     }, 8000);
 }
 
-// Kategori seçimi için fonksiyon
-window.selectCategory = function(category) {
-    sessionStorage.setItem("category", category);
-    sessionStorage.removeItem("keywords");
-    window.location.href = "results.html";
-};
-
-// Sonuç sayfasına yönlendirme
+// 🔹 4️⃣ Sonuç Sayfasına Yönlendirme (Generate Name)
 function redirectToResults() {
     const selectedCategory = document.getElementById("category-select").value;
 
@@ -319,17 +242,85 @@ function redirectToResults() {
     window.location.href = "results.html";
 }
 
+// 🔹 5️⃣ Hızlı Kategori Seçme Fonksiyonu
+function selectCategory(category) {
+    sessionStorage.setItem("category", category);
+    sessionStorage.removeItem("keywords");
+    window.location.href = "results.html";
+}
+
 // Sayfa yüklendiğinde sonuçları üret
 if (window.location.pathname.includes("results.html")) {
     window.onload = generateNames;
 }
 
-// "Generate New" butonuna tıklama olayını dinle
-document.addEventListener("DOMContentLoaded", function () {
-    const generateNewButton = document.getElementById("generate-new");
-    if (generateNewButton) {
-        generateNewButton.addEventListener("click", generateNames);
+// Rastgele renk paleti
+const colorPalette = [
+    "#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2",
+    "#D4AF37", "#B5A642", "#C0C0C0", "#A9A9A9", "#708090", "#778899", "#B0C4DE", "#4682B4",
+    "#5F9EA0", "#7B68EE", "#6A5ACD", "#4169E1", "#1E90FF", "#6495ED", "#2E8B57", "#228B22",
+    "#8FBC8F", "#66CDAA", "#20B2AA", "#008080", "#556B2F", "#6B8E23", "#BDB76B", "#DAA520",
+    "#CD853F", "#8B4513", "#A0522D", "#D2691E", "#BC8F8F", "#F4A460", "#C3B091", "#D2B48C",
+    "#DEB887", "#A52A2A", "#8B0000", "#800000", "#B22222", "#DC143C", "#E9967A", "#FA8072",
+    "#FF8C00", "#FF7F50", "#FFA07A", "#F08080", "#D3D3D3", "#C0C0C0", "#A9A9A9", "#696969",
+    "#808080", "#333333"
+];
+
+// Rastgele renk seçme fonksiyonu
+function getRandomColor() {
+    return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+}
+
+// Kontrast rengi belirleme fonksiyonu
+function getContrastColor(bgColor) {
+    const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 155 ? 'black' : 'white';
+}
+
+// Netlify Functions üzerinden rastgele font çekme
+async function getRandomFont() {
+    try {
+        const response = await fetch(netlifyFontsApiUrl);
+        const data = await response.json();
+
+        if (data.fonts && data.fonts.length > 0) {
+            return data.fonts[Math.floor(Math.random() * data.fonts.length)];
+        }
+    } catch (error) {
+        console.error("Netlify Fonts API request failed:", error);
     }
+    return "Arial"; // Hata olursa varsayılan font
+}
+
+// Kullanıcı giriş yaptı mı? Konsola yazdır
+console.log("🔥 Kullanıcı oturum kontrolü çalışıyor...");
+
+// Sayfa yüklendiğinde giriş kontrolü yapılacak
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("🔍 Sayfa yüklendi. Kullanıcı durumu kontrol ediliyor...");
+
+    // Firebase yüklendi mi kontrol et
+    let checkFirebase = setInterval(() => {
+        if (typeof getAuth === "function") {
+            clearInterval(checkFirebase); // Firebase yüklendi, intervali durdur
+            console.log("✅ Firebase Authentication yüklendi!");
+
+            const auth = getAuth();
+
+            // Kullanıcı durumu değiştiğinde kontrol et
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
+                } else {
+                    console.log("❌ Kullanıcı giriş yapmamış.");
+                }
+            });
+        }
+    }, 500);
 });
 
 // Header ve Footer'ı yükleme fonksiyonu
