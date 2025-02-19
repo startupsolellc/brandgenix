@@ -35,84 +35,38 @@ async function saveUserHashToFirebase() {
     }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 }
 
-// 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme
-// 🔥 Kullanıcı durumu değiştiğinde çağrılacak
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        handleLoggedInUser(user);
-    } else {
-        handleGuestUser();
-    }
-});
-
-// 🔹 1️⃣ Giriş Yapan Kullanıcılar İçin Limit Kontrolü
-async function handleLoggedInUser(user) {
-    console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
-
-    const userRef = ref(database, `users/${user.uid}`);
-    try {
-        const snapshot = await get(userRef);
-        if (!snapshot.exists()) {
-            console.error("❌ Kullanıcı Firebase'de bulunamadı!");
-            return;
-        }
-
-        const userData = snapshot.val();
-
-        if (userData.isPremium) {
-            console.log("💎 Premium kullanıcı, sınırsız üretim aktif!");
-            window.history.replaceState({}, "", window.location.pathname);
-            return; // **Premium kullanıcılar için hiçbir yönlendirme olmayacak!**
-        }
-
-        let generatedNames = userData.generatedNames || 0;
-        let maxLimit = 100; // Premium olmayanlar için varsayılan üretim limiti
-
-        if (generatedNames >= maxLimit) {
-            console.warn("⚠️ Normal kullanıcı üretim sınırına ulaştı. Premium öner!");
-            window.location.href = "premium-required.html"; // Premium sayfasına yönlendir
+// 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme 
+async function checkAndUpdateLimit() {
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            console.log("✅ Kullanıcı giriş yaptı, sınırsız üretim aktif:", user.email);
+            return; // Giriş yapan kullanıcılar için limit kontrolünü atla ve üretime devam et
         } else {
-            await update(userRef, { generatedNames: generatedNames + 4 });
-            console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
+            console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
+            try {
+                const userHash = await generateUserHash();
+                const userRef = ref(database, `browserGuests/${userHash}`);
+
+                const snapshot = await get(userRef);
+                if (snapshot.exists()) {
+                    let generatedNames = snapshot.val().generatedNames || 0;
+
+                    if (generatedNames >= 25) {
+                        console.warn("⚠️ İsim üretim sınırına ulaşıldı, yönlendirme başlıyor!");
+                        window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
+                    } else {
+                        await update(userRef, { generatedNames: generatedNames + 4 });
+                        console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
+                    }
+                } else {
+                    console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                }
+            } catch (error) {
+                console.error("❌ Firebase işlem hatası:", error);
+            }
         }
-    } catch (error) {
-        console.error("❌ Firebase okuma hatası:", error);
-    }
+    });
 }
-
-// 🔹 2️⃣ Guest Kullanıcılar İçin Limit Kontrolü
-async function handleGuestUser() {
-    console.log("⚠️ Misafir kullanıcı, limit kontrolü başlatılıyor...");
-
-    try {
-        const userHash = await generateUserHash();
-        const guestRef = ref(database, `browserGuests/${userHash}`);
-
-        // **🔥 Firebase'den önce veriyi çek, sonra yönlendirme yap**
-        const snapshot = await get(guestRef);
-        if (!snapshot.exists()) {
-            console.log("ℹ️ Guest kullanıcı Firebase'de kaydı yok, sıfırdan başlatılıyor.");
-            await set(guestRef, { generatedNames: 0 });
-            return; // **Yeni kullanıcı olduğu için yönlendirme yapma**
-        }
-
-        let generatedNames = snapshot.val().generatedNames || 0;
-        let maxLimit = 25;
-
-        if (generatedNames >= maxLimit) {
-            console.warn("⚠️ Guest limit aşıldı, giriş sayfasına yönlendiriliyor...");
-            setTimeout(() => {
-                window.location.href = "login-required.html";
-            }, 1000);
-        } else {
-            await update(guestRef, { generatedNames: generatedNames + 4 });
-            console.log(`✅ Yeni guest toplam: ${generatedNames + 4} isim.`);
-        }
-    } catch (error) {
-        console.error("❌ Guest işlem hatası:", error);
-    }
-}
-
 
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
