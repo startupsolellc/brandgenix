@@ -2,7 +2,7 @@ import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/1
 const database = getDatabase();
 
 //Yeni hash sistemi
-// 1️⃣ Kullanıcı Hash Üretme Fonksiyonu
+// 🔹 1️⃣ Kullanıcı Hash Üretme Fonksiyonu 
 async function generateUserHash() {
     const userData = `${navigator.userAgent}-${screen.width}x${screen.height}-${navigator.language}`;
     
@@ -15,26 +15,51 @@ async function generateUserHash() {
     return hashHex;
 }
 
-// 2️⃣ Firebase'e Kaydetme Fonksiyonu
+// 🔹 2️⃣ Firebase'e Kaydetme Fonksiyonu 
 async function saveUserHashToFirebase() {
     const userHash = await generateUserHash();
     const userRef = ref(database, `browserGuests/${userHash}`); // Doğru koleksiyon yolu!
 
-    get(userRef)
-        .then(snapshot => {
-            if (snapshot.exists()) {
-                console.log("📌 Kullanıcı zaten var:", snapshot.val());
-            } else {
-                set(userRef, { generatedNames: 0 })
-                    .then(() => console.log("✅ Kullanıcı Firebase'e eklendi:", userHash))
-                    .catch(error => console.error("❌ Firebase yazma hatası:", error));
-            }
-        })
-        .catch(error => console.error("❌ Firebase okuma hatası:", error));
+    get(userRef).then(snapshot => {
+        if (snapshot.exists()) {
+            console.log("📌 Kullanıcı zaten var:", snapshot.val());
+        } else {
+            set(userRef, { generatedNames: 0 })
+                .then(() => console.log("✅ Kullanıcı Firebase'e eklendi:", userHash))
+                .catch(error => console.error("❌ Firebase yazma hatası:", error));
+        }
+    }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 }
 
-// 3️⃣ Firebase'e Kaydetme İşlemini Başlat
+// 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme 
+async function checkAndUpdateLimit() {
+    const userHash = await generateUserHash();
+    const userRef = ref(database, `browserGuests/${userHash}`);
+
+    get(userRef).then(snapshot => {
+        if (snapshot.exists()) {
+            let generatedNames = snapshot.val().generatedNames || 0;
+
+            if (generatedNames >= 25) {
+                console.warn("⚠️ İsim üretim sınırına ulaşıldı!");
+                window.location.href = "login-required.html"; // Kullanıcıyı giriş sayfasına yönlendir
+            } else {
+                // 4 isim üretildiğini varsayalım, Firebase’de güncelle
+                update(userRef, { generatedNames: generatedNames + 4 })
+                    .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
+                    .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
+            }
+        } else {
+            console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+        }
+    }).catch(error => console.error("❌ Firebase okuma hatası:", error));
+}
+
+// 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
+
+// 🔹 5️⃣ "Create More" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
+document.getElementById("generate-new").addEventListener("click", checkAndUpdateLimit);
 
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
