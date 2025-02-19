@@ -1,28 +1,143 @@
 import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
-import { GuestManager } from './functions/guest-manager.js';
-import { database } from './functions/firebase-auth.js';
 
-// GuestManager'ı başlat
-const guestManager = new GuestManager(database);
+const database = getDatabase();
 
-// ... (diğer değişkenler ve fonksiyonlar aynı kalacak)
 
-// API'den isim üretme ve sonuçları ekrana yerleştirme
-async function generateNames() {
-    // Önce kullanım hakkını kontrol et
-    const canGenerate = await guestManager.checkUsageLimit();
-    
-    if (!canGenerate) {
-        alert("Ücretsiz kullanım hakkınız dolmuştur. Devam etmek için lütfen giriş yapın.");
-        window.location.href = '/login-required.html';
-        return;
+// Ana sayfaya yönlendirme fonksiyonu
+function goHome() {
+    window.location.href = "index.html";
+}
+
+// Önceden üretilen isimleri saklamak için değişken
+let previousNames = new Set();
+const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
+
+// Etiketleri saklamak için değişken
+let tags = [];
+
+// Rastgele renk paleti
+const colorPalette = [
+    "#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2",
+    "#D4AF37", "#B5A642", "#C0C0C0", "#A9A9A9", "#708090", "#778899", "#B0C4DE", "#4682B4",
+    "#5F9EA0", "#7B68EE", "#6A5ACD", "#4169E1", "#1E90FF", "#6495ED", "#2E8B57", "#228B22",
+    "#8FBC8F", "#66CDAA", "#20B2AA", "#008080", "#556B2F", "#6B8E23", "#BDB76B", "#DAA520",
+    "#CD853F", "#8B4513", "#A0522D", "#D2691E", "#BC8F8F", "#F4A460", "#C3B091", "#D2B48C",
+    "#DEB887", "#A52A2A", "#8B0000", "#800000", "#B22222", "#DC143C", "#E9967A", "#FA8072",
+    "#FF8C00", "#FF7F50", "#FFA07A", "#F08080", "#D3D3D3", "#C0C0C0", "#A9A9A9", "#696969",
+    "#808080", "#333333"
+];
+
+// Rastgele renk seçme fonksiyonu
+function getRandomColor() {
+    return colorPalette[Math.floor(Math.random() * colorPalette.length)];
+}
+
+// Kontrast rengi belirleme fonksiyonu
+function getContrastColor(bgColor) {
+    const color = bgColor.charAt(0) === '#' ? bgColor.substring(1, 7) : bgColor;
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    return brightness > 155 ? 'black' : 'white';
+}
+
+// Netlify Functions üzerinden rastgele font çekme
+async function getRandomFont() {
+    try {
+        const response = await fetch(netlifyFontsApiUrl);
+        const data = await response.json();
+
+        if (data.fonts && data.fonts.length > 0) {
+            return data.fonts[Math.floor(Math.random() * data.fonts.length)];
+        }
+    } catch (error) {
+        console.error("Netlify Fonts API request failed:", error);
     }
+    return "Arial"; // Hata olursa varsayılan font
+}
+// Kullanıcı giriş yaptı mı? Konsola yazdır
+console.log("🔥 Kullanıcı oturum kontrolü çalışıyor...");
 
+// Sayfa yüklendiğinde giriş kontrolü yapılacak
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("🔍 Sayfa yüklendi. Kullanıcı durumu kontrol ediliyor...");
+
+    // Firebase yüklendi mi kontrol et
+    let checkFirebase = setInterval(() => {
+        if (typeof getAuth === "function") {
+            clearInterval(checkFirebase); // Firebase yüklendi, intervali durdur
+            console.log("✅ Firebase Authentication yüklendi!");
+
+            const auth = getAuth();
+
+            // Kullanıcı durumu değiştiğinde kontrol et
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
+                } else {
+                    console.log("❌ Kullanıcı giriş yapmamış.");
+                }
+            });
+        }
+    }, 500); // Her 500ms'de bir Firebase'in yüklenip yüklenmediğini kontrol et
+});
+
+
+// Etiket ekleme fonksiyonu
+function handleKeyDown(event) {
+    const input = event.target;
+    const tagContainer = document.getElementById("tag-container");
+    const errorMessage = document.getElementById("error-message");
+
+    if (event.key === "Enter" && input.value.trim() !== "") {
+        event.preventDefault();
+
+        if (tags.length >= 5) {
+            errorMessage.classList.remove("hidden");
+            return;
+        }
+
+        tags.push(input.value.trim());
+        input.value = "";
+        errorMessage.classList.add("hidden");
+
+        updateTags(tagContainer);
+    }
+}
+
+// Etiketleri güncelleme fonksiyonu
+function updateTags(container) {
+    container.innerHTML = "";
+    tags.forEach((tag, index) => {
+        const tagElement = document.createElement("div");
+        tagElement.className = "tag bg-blue-500 text-white rounded-full px-3 py-1 flex items-center";
+        tagElement.innerHTML = `${tag} <button class="ml-2" onclick="removeTag(${index})">X</button>`;
+        container.appendChild(tagElement);
+    });
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "keywords-input";
+    input.placeholder = "Enter keywords...";
+    input.className = "flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4";
+    input.onkeydown = handleKeyDown;
+    container.appendChild(input);
+}
+
+// Etiket kaldırma fonksiyonu
+function removeTag(index) {
+    tags.splice(index, 1);
+    updateTags(document.getElementById("tag-container"));
+}
+
+// API'den isim üretme ve sonuçları ekrana yerleştirme (Benzersiz isimler + Dinamik Font + Rastgele Renk)
+async function generateNames() {
     const keywords = JSON.parse(sessionStorage.getItem("keywords")) || null;
-    const selectedCategory = sessionStorage.getItem("category") || null;
+    const selectedCategory = sessionStorage.getItem("category") || null; // Hata burada düzeltildi
     const resultsContainer = document.getElementById("results-container");
 
-    // Loading Animasyonu
+    // 🔄 Loading Animasyonu Ekle (Tam Ortada)
     const loadingDiv = document.createElement("div");
     loadingDiv.className = "loading-container";
     loadingDiv.innerHTML = `<div class="spinner"></div>`;
@@ -58,21 +173,7 @@ async function generateNames() {
             document.body.removeChild(loadingDiv);
 
             if (uniqueNames.size > 0) {
-                // İsim üretme başarılı olduysa kullanım sayısını artır
-                await guestManager.incrementUsage();
-
-                // Kalan hakkı al
-                const remaining = await guestManager.getRemainingGenerations();
-
-                // Kalan hak bilgisini göster
-                const remainingDiv = document.createElement("div");
-                remainingDiv.className = "text-center text-gray-600 mt-4";
-                remainingDiv.textContent = `Kalan ücretsiz hakkınız: ${remaining}`;
-                resultsContainer.appendChild(remainingDiv);
-
-                // İsimleri göster
                 resultsContainer.innerHTML = "";
-                resultsContainer.appendChild(remainingDiv);
 
                 [...uniqueNames].forEach(async (name, index) => {
                     const card = document.createElement("div");
@@ -80,7 +181,7 @@ async function generateNames() {
                     const randomColor = getRandomColor();
                     const contrastColor = getContrastColor(randomColor);
                     const link = document.createElement("link");
-                    link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}`;
+                    link.href = `https://fonts.googleapis.com/css2?family=${randomFont.replace(/ /g, '+')}&display=swap`;
                     link.rel = "stylesheet";
                     document.head.appendChild(link);
 
@@ -91,10 +192,10 @@ async function generateNames() {
                     card.innerText = name;
                     resultsContainer.appendChild(card);
 
-                    card.addEventListener("click", function() {
+                    card.addEventListener("click", function () {
                         const selectedName = this.innerText.trim();
-                        const selectedFont = randomFont;
-                        const selectedBgColor = randomColor;
+                        const selectedFont = randomFont; // Font bilgisini de al
+                        const selectedBgColor = randomColor; // Background rengini al
                         window.location.href = `/customize?name=${encodeURIComponent(selectedName)}&font=${encodeURIComponent(selectedFont)}&bgColor=${encodeURIComponent(selectedBgColor)}`;
                     });
 
@@ -103,10 +204,10 @@ async function generateNames() {
                     }, 500 + index * 500);
                 });
             } else {
-                resultsContainer.innerHTML = "<p class='text-red-500'>Benzersiz isim bulunamadı. Tekrar deneyin.</p>";
+                resultsContainer.innerHTML = "<p class='text-red-500'>No unique names available. Try again.</p>";
             }
         } catch (error) {
-            console.error("API isteği hatası:", error);
+            console.error("API request error:", error);
             document.body.removeChild(loadingDiv);
         }
     }, 8000);
