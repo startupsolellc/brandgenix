@@ -36,85 +36,74 @@ async function saveUserHashToFirebase() {
 
 // 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme
 
+// 🔒 Sabitler ve Bayraklar
+const PREMIUM_FLAG = "app_premiumStatus";
 let isLimitChecked = false;
 
 async function checkAndUpdateLimit() {
-    const user = auth.currentUser;
-
-    // 🔥 Eğer daha önce kontrol yapıldıysa işlemi iptal et
     if (isLimitChecked) return;
     isLimitChecked = true;
 
+    const user = auth.currentUser;
+
+    // 🔒 Premium kullanıcılar için kesin engelleme
+    if (localStorage.getItem(PREMIUM_FLAG) {
+        console.log("💎 Premium kullanıcı: Tüm yönlendirmeler engellendi!");
+        window.history.replaceState({}, "", window.location.pathname);
+        return;
+    }
+
     if (user) {
-        console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
+        console.log(`✅ Oturum açıldı: ${user.email}`);
         const userRef = ref(database, `users/${user.uid}`);
 
         try {
             const snapshot = await get(userRef);
             if (!snapshot.exists()) {
-                console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                console.error("❌ Firebase'de kullanıcı bulunamadı!");
                 return;
             }
 
             const userData = snapshot.val();
-
-            // 🔥 Premium kontrolü EN ÜSTTE yapılıyor
             if (userData.isPremium) {
-                console.log("💎 Premium kullanıcı, tüm yönlendirmeler engellendi!");
+                localStorage.setItem(PREMIUM_FLAG, "true");
                 window.history.replaceState({}, "", window.location.pathname);
-                localStorage.setItem("isPremium", "true"); // Yönlendirme önleme için bayrak
-                return; // ❗️Fonksiyonu burada sonlandır
+                return;
             }
 
             const generatedNames = userData.generatedNames || 0;
-            const maxLimit = 100;
-
-            if (generatedNames >= maxLimit) {
-                console.warn("⚠️ Limit aşıldı, premium sayfasına yönlendiriliyor...");
+            if (generatedNames >= 100) {
                 window.location.href = "premium-required.html";
             } else {
                 await update(userRef, { generatedNames: generatedNames + 4 });
-                console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
             }
         } catch (error) {
-            console.error("❌ Firebase hatası:", error.message || error);
+            console.error("❌ Firebase hatası:", error.message);
         }
         return;
     }
 
-    // 🔥 Guest kullanıcılar için kontrol (YALNIZCA oturum açmayanlar)
-    console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
+    // 🔒 Guest kontrolü (yalnızca oturum açmayanlar)
+    console.log("⚠️ Guest kullanıcı kontrolü...");
     try {
-        // LocalStorage'da premium bayrağı varsa yönlendirme yapma
-        if (localStorage.getItem("isPremium") === "true") return;
-
         const userHash = await generateUserHash();
         const guestRef = ref(database, `browserGuests/${userHash}`);
-
         const snapshot = await get(guestRef);
         const generatedNames = snapshot.exists() ? snapshot.val().generatedNames : 0;
-        const maxLimit = 25;
 
-        if (generatedNames >= maxLimit) {
-            console.warn("⚠️ Guest limit aşıldı, giriş sayfasına yönlendiriliyor...");
+        if (generatedNames >= 25) {
             window.location.href = "login-required.html";
         } else {
             await update(guestRef, { generatedNames: generatedNames + 4 });
-            console.log(`✅ Yeni guest toplam: ${generatedNames + 4} isim.`);
         }
     } catch (error) {
-        console.error("❌ Guest işlem hatası:", error.message || error);
+        console.error("❌ Guest hatası:", error.message);
     }
 }
 
-// 🔥 Auth State Dinleyicisi (TEK SEFERLİK tetikleme)
-const authUnsubscribe = onAuthStateChanged(auth, (user) => {
-    // Eğer kullanıcı premium ise dinleyiciyi kapat
-    if (user && localStorage.getItem("isPremium") === "true") {
-        authUnsubscribe(); // ❗️Artık auth değişikliklerini dinleme
-        return;
-    }
-    
+// 🔒 Auth State Dinleyicisi (Tüm senaryolar için güvenli)
+onAuthStateChanged(auth, (user) => {
+    isLimitChecked = false; // Her auth değişikliğinde bayrağı sıfırla
     checkAndUpdateLimit();
 });
 
