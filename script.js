@@ -1,5 +1,8 @@
 import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+
 const database = getDatabase();
+const auth = getAuth();
 
 //Yeni hash sistemi
 // 🔹 1️⃣ Kullanıcı Hash Üretme Fonksiyonu 
@@ -33,31 +36,38 @@ async function saveUserHashToFirebase() {
 
 // 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme 
 async function checkAndUpdateLimit() {
-    try {
-        const userHash = await generateUserHash();
-        const userRef = ref(database, `browserGuests/${userHash}`);
-        
-        const snapshot = await get(userRef);
-        if (snapshot.exists()) {
-            let generatedNames = snapshot.val().generatedNames || 0;
-
-            if (generatedNames >= 25) {
-                console.warn("⚠️ İsim üretim sınırına ulaşıldı, yönlendirme başlıyor!");
-                setTimeout(() => {
-                    window.location.href = "login-required.html";
-                }, 1000); // 1 saniye gecikme ile yönlendirme
-            } else {
-                await update(userRef, { generatedNames: generatedNames + 4 });
-                console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
-            }
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            console.log("✅ Kullanıcı giriş yaptı, sınırsız üretim aktif:", user.email);
+            return; // Giriş yapan kullanıcılar için limit kontrolünü atla
         } else {
-            console.error("❌ Kullanıcı Firebase'de bulunamadı!");
-        }
-    } catch (error) {
-        console.error("❌ Firebase işlem hatası:", error);
-    }
-}
+            console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
+            try {
+                const userHash = await generateUserHash();
+                const userRef = ref(database, `browserGuests/${userHash}`);
 
+                const snapshot = await get(userRef);
+                if (snapshot.exists()) {
+                    let generatedNames = snapshot.val().generatedNames || 0;
+
+                    if (generatedNames >= 25) {
+                        console.warn("⚠️ İsim üretim sınırına ulaşıldı, yönlendirme başlıyor!");
+                        setTimeout(() => {
+                            window.location.href = "login-required.html";
+                        }, 1000); // 1 saniye gecikme ile yönlendirme
+                    } else {
+                        await update(userRef, { generatedNames: generatedNames + 4 });
+                        console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
+                    }
+                } else {
+                    console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                }
+            } catch (error) {
+                console.error("❌ Firebase işlem hatası:", error);
+            }
+        }
+    });
+}
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
@@ -74,6 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Ana sayfaya yönlendirme fonksiyonu
+
 function goHome() {
     window.location.href = "index.html";
 }
