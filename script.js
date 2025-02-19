@@ -48,21 +48,23 @@ async function checkAndUpdateLimit() {
                     if (userData.isPremium) {
                         console.log("💎 Premium kullanıcı, sınırsız üretim aktif!");
                         return; // Premium kullanıcılar için limit uygulanmaz
-                    } else {
-                        let generatedNames = userData.generatedNames || 0;
-                        let maxLimit = 100; // Premium olmayanlar için varsayılan üretim limiti
+                    } 
 
-                        if (generatedNames >= maxLimit) {
-                            console.warn("⚠️ İsim üretim sınırına ulaşıldı, premium satın almanız gerekiyor!");
-                            window.location.href = "premium-required.html"; // Kullanıcıyı premium satın alma sayfasına yönlendir
-                        } else {
-                            update(userRef, { generatedNames: generatedNames + 4 })
-                                .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
-                                .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
-                        }
+                    let generatedNames = userData.generatedNames || 0;
+                    let maxLimit = 100; // Premium olmayanlar için varsayılan üretim limiti
+
+                    if (generatedNames >= maxLimit) {
+                        console.warn("⚠️ İsim üretim sınırına ulaşıldı, premium satın almanız gerekiyor!");
+                        window.location.href = "premium-required.html"; // Kullanıcıyı premium satın alma sayfasına yönlendir
+                    } else {
+                        update(userRef, { generatedNames: generatedNames + 4 })
+                            .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
+                            .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
                     }
+                    return; // Kullanıcı guest kontrolüne düşmemesi için buradan çık!
                 } else {
                     console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                    return;
                 }
             }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 
