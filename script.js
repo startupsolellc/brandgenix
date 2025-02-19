@@ -34,38 +34,66 @@ async function saveUserHashToFirebase() {
     }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 }
 
-// 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme 
+// 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme
 async function checkAndUpdateLimit() {
     onAuthStateChanged(auth, async (user) => {
         if (user) {
-            console.log("✅ Kullanıcı giriş yaptı, sınırsız üretim aktif:", user.email);
-            return; // Giriş yapan kullanıcılar için limit kontrolünü atla ve üretime devam et
-        } else {
-            console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
-            try {
-                const userHash = await generateUserHash();
-                const userRef = ref(database, `browserGuests/${userHash}`);
+            console.log("✅ Kullanıcı giriş yaptı, limit kontrolü yapılıyor:", user.email);
 
-                const snapshot = await get(userRef);
+            const userRef = ref(database, `users/${user.uid}`);
+            get(userRef).then(snapshot => {
                 if (snapshot.exists()) {
-                    let generatedNames = snapshot.val().generatedNames || 0;
+                    const userData = snapshot.val();
 
-                    if (generatedNames >= 25) {
-                        console.warn("⚠️ İsim üretim sınırına ulaşıldı, yönlendirme başlıyor!");
-                        window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
+                    if (userData.isPremium) {
+                        console.log("💎 Premium kullanıcı, sınırsız üretim hakkı var!");
+                        return; // Premium kullanıcılar için limit uygulanmaz
                     } else {
-                        await update(userRef, { generatedNames: generatedNames + 4 });
-                        console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`);
+                        let generatedNames = userData.generatedNames || 0;
+                        let maxLimit = 100; // Premium olmayanlar için varsayılan üretim limiti
+
+                        if (generatedNames >= maxLimit) {
+                            console.warn("⚠️ İsim üretim sınırına ulaşıldı, premium satın almanız gerekiyor!");
+                            window.location.href = "premium-required.html"; // Kullanıcıyı premium satın alma sayfasına yönlendir
+                        } else {
+                            update(userRef, { generatedNames: generatedNames + 4 })
+                                .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
+                                .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
+                        }
                     }
                 } else {
                     console.error("❌ Kullanıcı Firebase'de bulunamadı!");
                 }
+            }).catch(error => console.error("❌ Firebase okuma hatası:", error));
+        } else {
+            console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
+            try {
+                const userHash = await generateUserHash();
+                const guestRef = ref(database, `browserGuests/${userHash}`);
+
+                get(guestRef).then(snapshot => {
+                    if (snapshot.exists()) {
+                        let generatedNames = snapshot.val().generatedNames || 0;
+
+                        if (generatedNames >= 25) {
+                            console.warn("⚠️ İsim üretim sınırına ulaşıldı, giriş yapmanız gerekiyor!");
+                            window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
+                        } else {
+                            update(guestRef, { generatedNames: generatedNames + 4 })
+                                .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
+                                .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
+                        }
+                    } else {
+                        console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                    }
+                }).catch(error => console.error("❌ Firebase okuma hatası:", error));
             } catch (error) {
                 console.error("❌ Firebase işlem hatası:", error);
             }
         }
     });
 }
+
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
