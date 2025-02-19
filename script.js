@@ -47,8 +47,12 @@ async function checkAndUpdateLimit() {
 
                     if (userData.isPremium) {
                         console.log("💎 Premium kullanıcı, sınırsız üretim aktif! Yönlendirme engellendi.");
-                        return; // **Premium kullanıcılar için kesinlikle yönlendirme yapma!**
-                    }
+                        
+                        // 🔥 **Herhangi bir yönlendirmeyi kesinlikle engellemek için burada tarayıcı geçmişini temizleyelim.**
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                        
+                        return; // **Premium kullanıcılar için limit kontrolü tamamen atlanmalı!**
+                    } 
 
                     let generatedNames = userData.generatedNames || 0;
                     let maxLimit = 100; // Premium olmayanlar için varsayılan üretim limiti
@@ -83,8 +87,10 @@ async function checkAndUpdateLimit() {
 
                     if (generatedNames >= 25) {
                         console.warn("⚠️ İsim üretim sınırına ulaşıldı, giriş yapmanız gerekiyor!");
+                        
+                        // **🔥 Eğer kullanıcı guest ise ve limit aşıldıysa, yönlendirme yap.**
                         setTimeout(() => {
-                            window.location.href = "login-required.html"; // Kullanıcıyı tekrar yönlendir
+                            window.location.href = "login-required.html"; 
                         }, 1000);
                     } else {
                         update(guestRef, { generatedNames: generatedNames + 4 })
@@ -111,6 +117,7 @@ onAuthStateChanged(auth, (user) => {
         checkAndUpdateLimit();
     }
 });
+
 
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
