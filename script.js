@@ -92,7 +92,12 @@ function goHome() {
 let previousNames = new Set();
 const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
 
-// 🔹 1️⃣ Etiket Ekleme Fonksiyonu
+// 🔹 Etiketleri saklamak için dizi (Eksikse tanımla)
+if (typeof tags === "undefined") {
+    var tags = [];
+}
+
+/ 🔹 1️⃣ Etiket Ekleme Fonksiyonu
 function handleKeyDown(event) {
     const input = event.target;
     const tagContainer = document.getElementById("tag-container");
@@ -248,6 +253,7 @@ function selectCategory(category) {
 
 // 🔹 6️⃣ Sayfa Yüklenince Etiket ve Butonları Bağla
 document.addEventListener("DOMContentLoaded", function () {
+    // 🔸 Etiket giriş alanı
     const inputField = document.getElementById("keywords-input");
     if (inputField) {
         inputField.onkeydown = handleKeyDown;
@@ -256,6 +262,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("❌ Etiket giriş alanı bulunamadı!");
     }
 
+    // 🔸 "Generate Name" Butonu
     const generateButton = document.getElementById("generate-button");
     if (generateButton) {
         generateButton.addEventListener("click", redirectToResults);
@@ -263,14 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("❌ 'Generate Name' butonu bulunamadı!");
     }
-
-    // 🔹 Eğer sayfa results.html ise, generateNames fonksiyonunu çalıştır
-    if (window.location.pathname.includes("results.html")) {
-        console.log("🔄 Results sayfası tespit edildi, isim üretimi başlatılıyor...");
-        generateNames();
-    }
 });
-
 
 // Rastgele renk paleti
 const colorPalette = [
