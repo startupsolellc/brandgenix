@@ -36,24 +36,25 @@ async function checkAndUpdateLimit() {
     const userHash = await generateUserHash();
     const userRef = ref(database, `browserGuests/${userHash}`);
 
-    get(userRef).then(snapshot => {
-        if (snapshot.exists()) {
-            let generatedNames = snapshot.val().generatedNames || 0;
+get(userRef).then(snapshot => {
+    if (snapshot.exists()) {
+        let generatedNames = snapshot.val().generatedNames || 0;
 
-            if (generatedNames >= 25) {
-                console.warn("⚠️ İsim üretim sınırına ulaşıldı!");
-                window.location.href = "login-required.html"; // Kullanıcıyı giriş sayfasına yönlendir
-            } else {
-                // Firebase’de güncelle
-                update(userRef, { generatedNames: generatedNames + 4 })
-                    .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
-                    .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
-            }
+        if (generatedNames >= 25) {
+            console.warn("⚠️ İsim üretim sınırına ulaşıldı, yönlendirme başlıyor!");
+            setTimeout(() => {
+                window.location.href = "login-required.html";
+            }, 1000); // 1 saniye gecikme ile yönlendirme
         } else {
-            console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+            update(userRef, { generatedNames: generatedNames + 4 })
+                .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
+                .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
         }
-    }).catch(error => console.error("❌ Firebase okuma hatası:", error));
-}
+    } else {
+        console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+    }
+}).catch(error => console.error("❌ Firebase okuma hatası:", error));
+
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
