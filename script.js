@@ -2,69 +2,6 @@ import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/1
 
 const database = getDatabase();
 
-// 🚀 Kullanıcının giriş yapıp yapmadığını kontrol et
-function isUserLoggedIn() {
-    const auth = getAuth();
-    return auth.currentUser !== null; // Eğer kullanıcı varsa true döner, yoksa false
-}
-
-window.getGuestId = function () {
-    console.log("🛠 getGuestId() fonksiyonu çalıştırıldı."); // Test Logu
-
-    let guestId = localStorage.getItem("guestId");
-    console.log(`🔍 localStorage'den alınan guestId: ${guestId}`);
-
-    if (!guestId) {
-        guestId = Math.floor(Math.random() * 1000000).toString(); // Rastgele misafir ID oluştur
-        localStorage.setItem("guestId", guestId);
-        console.log(`🆕 Yeni misafir ID oluşturuldu: ${guestId}`);
-    } else {
-        console.log(`✅ Mevcut misafir ID kullanılıyor: ${guestId}`);
-    }
-
-    return guestId;
-};
-
-// 🚀 Guest limit kontrol
-async function checkGuestLimit() {
-    if (isUserLoggedIn()) {
-        console.log("✅ Kullanıcı giriş yapmış, üretim sınırı yok.");
-        return true;
-    }
-
-    const guestId = getGuestId();
-    console.log(`🎯 Misafir ID: ${guestId}`);
-
-    const guestRef = ref(database, `guestUsage/${guestId}`);
-
-    try {
-        const snapshot = await get(guestRef);
-        let guestCount = snapshot.exists() ? snapshot.val() : 0;
-
-        console.log(`📊 Firebase'den alınan misafir üretim sayısı: ${guestCount}/5`);
-
-        if (guestCount >= 5) {
-            console.warn("🚨 Üretim limiti aşıldı! Login sayfasına yönlendiriliyor...");
-            window.location.href = "login-required.html";
-            return false;
-        }
-
-        // Firebase'e yazma işlemi test logu
-        console.log(`📝 Firebase'e yazılacak yeni değer: ${guestCount + 1}`);
-
-        await set(guestRef, guestCount + 1);
-        console.log(`✅ Firebase'e başarıyla yazıldı: ${guestCount + 1}/5`);
-
-        return true;
-
-    } catch (error) {
-        console.error("❌ Firebase'e veri yazılamadı:", error);
-        return false;
-    }
-}
-
-
-
 
 // Ana sayfaya yönlendirme fonksiyonu
 function goHome() {
