@@ -36,75 +36,75 @@ async function saveUserHashToFirebase() {
 
 // 🔹 3️⃣ İsim Üretim Limitini Kontrol Etme ve Güncelleme
 async function checkAndUpdateLimit() {
-    onAuthStateChanged(auth, async (user) => {
-        if (user) {
-            console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
+    const user = auth.currentUser;
 
-            const userRef = ref(database, `users/${user.uid}`);
-            get(userRef).then(snapshot => {
-                if (snapshot.exists()) {
-                    const userData = snapshot.val();
+    if (user) {
+        console.log(`✅ Kullanıcı giriş yaptı: ${user.email}`);
 
-                    if (userData.isPremium) {
-                        console.log("💎 Premium kullanıcı, sınırsız üretim aktif! Yönlendirme engellendi.");
-                        
-                        // 🔥 **Herhangi bir yönlendirmeyi kesinlikle engellemek için burada tarayıcı geçmişini temizleyelim.**
-                        window.history.replaceState({}, document.title, window.location.pathname);
-                        
-                        return; // **Premium kullanıcılar için limit kontrolü tamamen atlanmalı!**
-                    } 
+        const userRef = ref(database, `users/${user.uid}`);
+        get(userRef).then(snapshot => {
+            if (snapshot.exists()) {
+                const userData = snapshot.val();
 
-                    let generatedNames = userData.generatedNames || 0;
-                    let maxLimit = 100; // Premium olmayanlar için varsayılan üretim limiti
-
-                    if (generatedNames >= maxLimit) {
-                        console.warn("⚠️ İsim üretim sınırına ulaşıldı, premium satın almanız gerekiyor!");
-                        setTimeout(() => {
-                            window.location.href = "premium-required.html"; // Kullanıcıyı premium satın alma sayfasına yönlendir
-                        }, 1000);
-                    } else {
-                        update(userRef, { generatedNames: generatedNames + 4 })
-                            .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
-                            .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
-                    }
-                } else {
-                    console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                if (userData.isPremium) {
+                    console.log("💎 Premium kullanıcı, sınırsız üretim aktif! Yönlendirme kesinlikle engellendi.");
+                    
+                    // **🔥 Tarayıcı geçmişini temizleyerek önceki yönlendirmeleri iptal et**
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                    
+                    return; // **Premium kullanıcılar için hiçbir şekilde yönlendirme yapılmayacak!**
                 }
-            }).catch(error => console.error("❌ Firebase okuma hatası:", error));
 
-            return; // Kullanıcı giriş yaptıysa guest kontrolüne düşmemesi için burada çık!
-        }
+                let generatedNames = userData.generatedNames || 0;
+                let maxLimit = 100; // Premium olmayanlar için varsayılan üretim limiti
 
-        // 🔹 **Guest Kullanıcılar İçin Kontrol (Bu Kısım Giriş Yapmayanlar İçin Çalışır!)**
-        console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
-        try {
-            const userHash = await generateUserHash();
-            const guestRef = ref(database, `browserGuests/${userHash}`);
-
-            get(guestRef).then(snapshot => {
-                if (snapshot.exists()) {
-                    let generatedNames = snapshot.val().generatedNames || 0;
-
-                    if (generatedNames >= 25) {
-                        console.warn("⚠️ İsim üretim sınırına ulaşıldı, giriş yapmanız gerekiyor!");
-                        
-                        // **🔥 Eğer kullanıcı guest ise ve limit aşıldıysa, yönlendirme yap.**
-                        setTimeout(() => {
-                            window.location.href = "login-required.html"; 
-                        }, 1000);
-                    } else {
-                        update(guestRef, { generatedNames: generatedNames + 4 })
-                            .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
-                            .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
-                    }
+                if (generatedNames >= maxLimit) {
+                    console.warn("⚠️ İsim üretim sınırına ulaşıldı, premium satın almanız gerekiyor!");
+                    setTimeout(() => {
+                        window.location.href = "premium-required.html"; // Kullanıcıyı premium satın alma sayfasına yönlendir
+                    }, 1000);
                 } else {
-                    console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+                    update(userRef, { generatedNames: generatedNames + 4 })
+                        .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
+                        .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
                 }
-            }).catch(error => console.error("❌ Firebase okuma hatası:", error));
-        } catch (error) {
-            console.error("❌ Firebase işlem hatası:", error);
-        }
-    });
+            } else {
+                console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+            }
+        }).catch(error => console.error("❌ Firebase okuma hatası:", error));
+
+        return; // **🔥 Kullanıcı giriş yaptıysa buradan ÇIKIYORUZ, guest kontrolüne girmemesi için!**
+    }
+
+    // 🔹 **Guest Kullanıcılar İçin Kontrol (Bu Kısım Giriş Yapmayanlar İçin Çalışır!)**
+    console.log("⚠️ Misafir kullanıcı, limit kontrolü aktif.");
+    try {
+        const userHash = await generateUserHash();
+        const guestRef = ref(database, `browserGuests/${userHash}`);
+
+        get(guestRef).then(snapshot => {
+            if (snapshot.exists()) {
+                let generatedNames = snapshot.val().generatedNames || 0;
+
+                if (generatedNames >= 25) {
+                    console.warn("⚠️ İsim üretim sınırına ulaşıldı, giriş yapmanız gerekiyor!");
+                    
+                    // **🔥 Eğer kullanıcı guest ise ve limit aşıldıysa, yönlendirme yap.**
+                    setTimeout(() => {
+                        window.location.href = "login-required.html"; 
+                    }, 1000);
+                } else {
+                    update(guestRef, { generatedNames: generatedNames + 4 })
+                        .then(() => console.log(`✅ Yeni toplam: ${generatedNames + 4} isim üretildi.`))
+                        .catch(error => console.error("❌ Firebase güncelleme hatası:", error));
+                }
+            } else {
+                console.error("❌ Kullanıcı Firebase'de bulunamadı!");
+            }
+        }).catch(error => console.error("❌ Firebase okuma hatası:", error));
+    } catch (error) {
+        console.error("❌ Firebase işlem hatası:", error);
+    }
 }
 
 // 🔥 **Kullanıcı giriş yaptıktan sonra `checkAndUpdateLimit()` çağrılmalı**
@@ -117,7 +117,6 @@ onAuthStateChanged(auth, (user) => {
         checkAndUpdateLimit();
     }
 });
-
 
 
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
