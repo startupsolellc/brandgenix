@@ -1,3 +1,4 @@
+
 import { getDatabase, ref, get, set, update } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-database.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
 
@@ -38,11 +39,7 @@ async function saveUserHashToFirebase() {
 // 🔥 Kullanıcı durumu değiştiğinde çağrılacak
 onAuthStateChanged(auth, (user) => {
     if (user) {
-        if (user.isAnonymous) {
-            handleGuestUser();
-        } else {
-            handleLoggedInUser(user);
-        }
+        handleLoggedInUser(user);
     } else {
         handleGuestUser();
     }
@@ -116,10 +113,12 @@ async function handleGuestUser() {
     }
 }
 
+
+
 // 🔹 4️⃣ Firebase'e Kaydetme İşlemini Başlat
 saveUserHashToFirebase();
 
-// 🔹 5️⃣ "Create More" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
+// 🔹 5️⃣ \"Create More\" Butonuna Tıklanınca Limit Kontrolünü Çalıştır
 document.addEventListener("DOMContentLoaded", function () {
     const generateButton = document.getElementById("generate-new");
     if (generateButton) {
@@ -292,6 +291,7 @@ function redirectToResults() {
     window.location.href = "results.html";
 }
 
+
 // 🔹 5️⃣ Hızlı Kategori Seçme Fonksiyonu
 function selectCategory(category) {
     console.log(`✅ Hızlı kategori seçildi: ${category}`);
@@ -359,6 +359,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         generateNames();
     }
 });
+
 
 // Rastgele renk paleti
 const colorPalette = [
