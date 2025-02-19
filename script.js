@@ -228,6 +228,7 @@ async function generateNames() {
 
 // 🔹 4️⃣ Sonuç Sayfasına Yönlendirme (Generate Name)
 function redirectToResults() {
+    console.log("✅ 'Generate Name' butonuna basıldı, yönlendirme başlıyor...");
     const selectedCategory = document.getElementById("category-select")?.value;
 
     if (tags.length >= 3 && tags.length <= 5) {
@@ -246,6 +247,7 @@ function redirectToResults() {
 
 // 🔹 5️⃣ Hızlı Kategori Seçme Fonksiyonu
 function selectCategory(category) {
+    console.log(`✅ Hızlı kategori seçildi: ${category}`);
     sessionStorage.setItem("category", category);
     sessionStorage.removeItem("keywords");
     window.location.href = "results.html";
@@ -273,12 +275,20 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("❌ 'Generate Name' butonu bulunamadı!");
     }
 
+    // 🔸 Hızlı Kategori Butonları
+    document.querySelectorAll(".category-button").forEach(button => {
+        button.addEventListener("click", function () {
+            selectCategory(this.dataset.category);
+        });
+    });
+
     // 🔹 Eğer sayfa results.html ise, generateNames fonksiyonunu çalıştır
     if (window.location.pathname.includes("results.html")) {
         console.log("🔄 Results sayfası tespit edildi, isim üretimi başlatılıyor...");
         generateNames();
     }
 });
+
 // Rastgele renk paleti
 const colorPalette = [
     "#FFB6C1", "#FFDAB9", "#E6E6FA", "#FFFACD", "#D8BFD8", "#D3D3D3", "#FFC0CB", "#ADD8E6", "#F08080", "#FAFAD2",
