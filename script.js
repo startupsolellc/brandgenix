@@ -270,4 +270,47 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.text())
         .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
+// Desteklenen diller
+const supportedLanguages = ['en', 'tr'];
+let currentLanguage = localStorage.getItem('language') || 'en';
 
+// Dil dosyalarını yükleme fonksiyonu
+async function loadLanguage(lang) {
+    if (!supportedLanguages.includes(lang)) lang = 'en';
+    const response = await fetch(`/locales/${lang}.json`);
+    const translations = await response.json();
+
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[key]) {
+            element.textContent = translations[key];
+            console.log(`✅ ${key} -> ${translations[key]}`);
+        }
+    });
+
+    // Dil değiştirici butonunu güncelle
+    document.getElementById('lang-switcher').textContent = lang.toUpperCase();
+    document.getElementById('mobile-lang-switcher').textContent = lang.toUpperCase();
+
+    localStorage.setItem('language', lang);
+}
+
+// Dil değiştirici butonlarına tıklama olayları
+if (langSwitcher) {
+    langSwitcher.addEventListener("click", () => {
+        console.log("🌐 Masaüstü dil değiştirici tıklandı!");
+        currentLanguage = currentLanguage === 'en' ? 'tr' : 'en';
+        loadLanguage(currentLanguage);
+    });
+}
+
+if (mobileLangSwitcher) {
+    mobileLangSwitcher.addEventListener("click", () => {
+        console.log("🌐 Mobil dil değiştirici tıklandı!");
+        currentLanguage = currentLanguage === 'en' ? 'tr' : 'en';
+        loadLanguage(currentLanguage);
+    });
+}
+
+// Sayfa yüklendiğinde mevcut dili yükle
+loadLanguage(currentLanguage);
