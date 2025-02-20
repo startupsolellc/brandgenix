@@ -26,5 +26,21 @@
     <button id="mobile-auth-button" class="auth-button bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-700 mt-2" data-i18n="login">Google ile Giriş Yap</button>
     <div id="mobile-lang-switcher" class="cursor-pointer text-gray-700 text-center mt-2" data-i18n="language">EN</div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const menuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        if (menuButton && mobileMenu) {
+            console.log("✅ Mobil menü butonu bulundu!"); // Konsolda görünüyor mu?
+            menuButton.addEventListener("click", function () {
+                console.log("🎯 Mobil menüye tıklandı!"); // Tıklanınca görünüyor mu?
+                mobileMenu.classList.toggle("hidden");
+            });
+        } else {
+            console.error("❌ Mobil menü veya buton bulunamadı!");
+        }
+    });
+</script>
 
 <script type="module" src="i18n.js"></script>
