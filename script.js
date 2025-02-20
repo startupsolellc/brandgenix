@@ -277,22 +277,38 @@ let currentLanguage = localStorage.getItem('language') || 'en';
 // Dil dosyalarını yükleme fonksiyonu
 async function loadLanguage(lang) {
     if (!supportedLanguages.includes(lang)) lang = 'en';
-    const response = await fetch(`/locales/${lang}.json`);
-    const translations = await response.json();
 
-    document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        if (translations[key]) {
-            element.textContent = translations[key];
-            console.log(`✅ ${key} -> ${translations[key]}`);
+    try {
+        const response = await fetch(`/locales/${lang}.json`);
+        
+        // ✅ Fetch isteğini kontrol edelim
+        if (!response.ok) {
+            console.error(`❌ Dil dosyası yüklenemedi: ${response.statusText}`);
+            return;
         }
-    });
 
-    // Dil değiştirici butonunu güncelle
-    document.getElementById('lang-switcher').textContent = lang.toUpperCase();
-    document.getElementById('mobile-lang-switcher').textContent = lang.toUpperCase();
+        const translations = await response.json();
+        console.log(`✅ ${lang} dil dosyası yüklendi:`, translations);
 
-    localStorage.setItem('language', lang);
+        document.querySelectorAll('[data-i18n]').forEach(element => {
+            const key = element.getAttribute('data-i18n');
+            if (translations[key]) {
+                element.textContent = translations[key];
+                console.log(`✅ ${key} -> ${translations[key]}`);
+            } else {
+                console.warn(`⚠️ Çeviri anahtarı bulunamadı: ${key}`);
+            }
+        });
+
+        // Dil değiştirici butonunu güncelle
+        document.getElementById('lang-switcher').textContent = lang.toUpperCase();
+        document.getElementById('mobile-lang-switcher').textContent = lang.toUpperCase();
+
+        localStorage.setItem('language', lang);
+
+    } catch (error) {
+        console.error('❌ Dil dosyası yükleme hatası:', error);
+    }
 }
 
 // Dil değiştirici butonlarına tıklama olayları
