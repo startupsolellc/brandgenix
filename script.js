@@ -221,10 +221,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Header ve Footer'ı yükleme fonksiyonu
 document.addEventListener("DOMContentLoaded", function () {
+    // Header'ı yükle ve ardından menü butonunu aktif et
     fetch("header.html")
         .then(response => response.text())
-        .then(data => document.getElementById("header-placeholder").innerHTML = data);
+        .then(data => {
+            document.getElementById("header-placeholder").innerHTML = data;
 
+            // ✅ Mobil menü butonunu aktif et
+            const menuButton = document.getElementById("mobile-menu-button");
+            const mobileMenu = document.getElementById("mobile-menu");
+
+            if (menuButton && mobileMenu) {
+                console.log("✅ Mobil menü butonu bulundu!"); 
+                menuButton.addEventListener("click", function () {
+                    console.log("🎯 Mobil menüye tıklandı!"); 
+                    mobileMenu.classList.toggle("hidden");
+                });
+            } else {
+                console.error("❌ Mobil menü veya buton bulunamadı!");
+            }
+        })
+        .catch(error => console.error("❌ Header yüklenirken hata oluştu:", error));
+
+    // Footer'ı yükle
     fetch("footer.html")
         .then(response => response.text())
         .then(data => document.getElementById("footer-placeholder").innerHTML = data);
