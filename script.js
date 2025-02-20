@@ -221,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Header ve Footer'ı yükleme fonksiyonu
 document.addEventListener("DOMContentLoaded", function () {
-    // Header'ı yükle ve ardından menü butonunu aktif et
+    // Header'ı yükle ve ardından butonları aktif et
     fetch("header.html")
         .then(response => response.text())
         .then(data => {
@@ -240,6 +240,28 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 console.error("❌ Mobil menü veya buton bulunamadı!");
             }
+
+            // ✅ Dil değiştirici butonlarını aktif et
+            const langSwitcher = document.getElementById("lang-switcher");
+            const mobileLangSwitcher = document.getElementById("mobile-lang-switcher");
+
+            if (langSwitcher) {
+                console.log("✅ Masaüstü dil değiştirici bulundu!");
+                langSwitcher.addEventListener("click", () => {
+                    console.log("🌐 Masaüstü dil değiştirici tıklandı!");
+                });
+            } else {
+                console.error("❌ Masaüstü dil değiştirici bulunamadı!");
+            }
+
+            if (mobileLangSwitcher) {
+                console.log("✅ Mobil dil değiştirici bulundu!");
+                mobileLangSwitcher.addEventListener("click", () => {
+                    console.log("🌐 Mobil dil değiştirici tıklandı!");
+                });
+            } else {
+                console.error("❌ Mobil dil değiştirici bulunamadı!");
+            }
         })
         .catch(error => console.error("❌ Header yüklenirken hata oluştu:", error));
 
@@ -249,24 +271,3 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
 
-// Dil değiştirici butonunu aktif et
-const langSwitcher = document.getElementById("lang-switcher");
-const mobileLangSwitcher = document.getElementById("mobile-lang-switcher");
-
-if (langSwitcher) {
-    console.log("✅ Masaüstü dil değiştirici bulundu!");
-    langSwitcher.addEventListener("click", () => {
-        console.log("🌐 Masaüstü dil değiştirici tıklandı!");
-    });
-} else {
-    console.error("❌ Masaüstü dil değiştirici bulunamadı!");
-}
-
-if (mobileLangSwitcher) {
-    console.log("✅ Mobil dil değiştirici bulundu!");
-    mobileLangSwitcher.addEventListener("click", () => {
-        console.log("🌐 Mobil dil değiştirici tıklandı!");
-    });
-} else {
-    console.error("❌ Mobil dil değiştirici bulunamadı!");
-}
