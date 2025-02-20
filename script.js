@@ -276,8 +276,8 @@ let currentLanguage = localStorage.getItem('language') || 'en';
 
 // Dil dosyalarını yükleme fonksiyonu
 async function loadLanguage(lang) {
-    if (!supportedLanguages.includes(lang)) lang = 'en';
-
+    console.log(`🚦 loadLanguage fonksiyonu çağrıldı: ${lang}`);
+    
     try {
         const response = await fetch(`/locales/${lang}.json`);
         
@@ -310,6 +310,11 @@ async function loadLanguage(lang) {
         console.error('❌ Dil dosyası yükleme hatası:', error);
     }
 }
+
+// Test: Sayfa yüklendiğinde otomatik olarak dil dosyasını yükle
+console.log("🚦 Otomatik olarak dil yükleme başlatılıyor...");
+loadLanguage('en'); // İlk test için İngilizce dil dosyasını yükleyelim
+
 
 // Dil değiştirici butonlarına tıklama olayları
 if (langSwitcher) {
