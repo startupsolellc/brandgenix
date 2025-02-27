@@ -87,7 +87,7 @@
     </div>
     
     <script src="customize.js"></script>
-    <script>
+<script>
         // Fetch Google Fonts and populate the font selector
         async function fetchGoogleFonts() {
             try {
@@ -116,15 +116,15 @@
             googleFontsLink.href = `https://fonts.googleapis.com/css2?family=${selectedFont.replace(/ /g, '+')}&display=swap`;
 
             // Assuming you have a way to update the font in your Konva.js canvas
-            // Example:
-            const canvasText = /* your logic to get the text object in Konva.js */;
+            const canvasText = stage.findOne('Text');
             canvasText.fontFamily(selectedFont);
-            canvasText.draw();
+            layer.draw();
         });
 
         // Initialize the page by fetching Google Fonts
         fetchGoogleFonts();
     </script>
+
     <div id="footer-placeholder"></div>
 </body>
 </html>
