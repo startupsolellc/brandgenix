@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Startupsole - Şirket İsim Üretici, Yapay Zeka İle Şirket isimleri Üret</title>
-    <meta name="description" content="Benzersiz marka adları ve şirket isimleri yaratın! Modern, kurumsal ve minimalist markalaşma için yapay zeka destekli isim oluşturucu">
+    <title>BrandGenix - AI-Powered Brand & Logo Name Generator</title>
+    <meta name="description" content="Create unique brand names & professional logos with BrandGenix! AI-powered brand name generator & logo design tool for modern, corporate & minimalist branding.">
     <meta name="keywords" content="free brand name generator tool, AI logo maker, AI logo text, brand name maker">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
     <link id="googleFontsLink" rel="stylesheet" href="" />
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="script.js" defer></script>
 </head>
 <body class="bg-gradient-to-b from-[#c1d8ff] to-[#F1F4F9] flex flex-col items-center min-h-screen animate-gradient">
@@ -20,17 +19,17 @@
     <!-- Merkezi İçerik -->
     <div class="max-w-4xl w-full mx-auto flex flex-col items-center justify-center flex-grow space-y-8">
         <div class="text-center">
-            <h1 class="text-[2.5rem] font-medium text-gray-800">Şirket ve Marka İsim Üretici</h1>
-            <p class="text-gray-500 text-lg mt-2">Yapay zeka kullanarak kısa ve markalaşabilir bir işletme adı oluşturun</p>
+            <h1 class="text-[2.5rem] font-medium text-gray-800">Brand Name Generator</h1>
+            <p class="text-gray-500 text-lg mt-2">Generate a short, brandable business name using artificial intelligence</p>
         </div>
 
         <!-- Etiket Sistemi İçin Yeni Form Alanı --> 
         <div class="w-full max-w-2xl">
             <div class="bg-white rounded-full shadow-md w-full p-3 flex flex-wrap items-center" id="tag-container">
-                <input type="text" id="keywords-input" placeholder="Kelime girin..." 
+                <input type="text" id="keywords-input" placeholder="Enter keywords..." 
                     class="flex-1 bg-transparent text-gray-700 text-lg border-none focus:outline-none px-4" onkeydown="handleKeyDown(event)">
             </div>
-            <p id="error-message" class="text-red-500 text-sm mt-2 hidden">En az 3 veya 5 anahtar kelime ekleyin.</p>
+            <p id="error-message" class="text-red-500 text-sm mt-2 hidden">Enter between 3 and 5 keywords.</p>
             
             <!-- Kategori Seçim Alanı -->
             <div class="w-full flex justify-center mt-4">
@@ -48,14 +47,14 @@
             <div class="w-full flex justify-center mt-4">
                 <button onclick="redirectToResults()" 
                         class="bg-[#4A90E2] hover:bg-[#357ABD] text-white font-bold py-2 px-6 rounded-full transition-all duration-300 ease-in-out">
-                    İsim Oluştur
+                    Generate Name
                 </button>
             </div>
         </div>
         
         <!-- Yeni Kategori Seçim Butonları -->
         <div class="w-full max-w-4xl text-center mt-8">
-            <p class="text-gray-700 text-lg mb-4">Nereden başlayacağınızdan emin değil misiniz? Bu kategorilerde rastgele isimler üretin:</p>
+            <p class="text-gray-700 text-lg mb-4">Not sure where to start? Random name generator in these categories:</p>
             <div class="flex flex-wrap justify-center gap-2" id="category-buttons">
                 <button onclick="selectCategory('ARTS & CRAFTS')" class="category-button">ARTS & CRAFTS</button>
                 <button onclick="selectCategory('BEAUTY')" class="category-button">BEAUTY</button>
