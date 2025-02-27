@@ -282,14 +282,14 @@ footer {
 }
 
 /* Arka Plan Animasyon
-@keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .animate-gradient {
-            background: linear-gradient(120deg, #c1d8ff, #F1F4F9, #ff69b4, #32cd32);
-            background-size: 300% 300%;
-            animation: gradientAnimation 8s infinite alternate;
-        }
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.animate-gradient {
+    background-size: 200% 200%;
+    animation: gradientBG 6s ease infinite;
+}
 
