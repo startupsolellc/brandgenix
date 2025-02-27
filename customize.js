@@ -245,20 +245,3 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         });
     });
-
-    // Save Progress
-    document.getElementById('saveProgressBtn').addEventListener('click', function () {
-        const json = stage.toJSON();
-        localStorage.setItem('canvasState', json);
-        alert('Progress saved!');
-    });
-
-    // Load Progress
-    window.addEventListener('load', function () {
-        const json = localStorage.getItem('canvasState');
-        if (json) {
-            stage.destroyChildren();
-            Konva.Node.create(JSON.parse(json), stage);
-        }
-    });
-});
