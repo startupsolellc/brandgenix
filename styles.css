@@ -170,7 +170,7 @@ footer a:hover {
     }
 }
 
-/* 🔄 Loading Ekranı (Tam Ekran ve Beyaz Opak Arka Plan) */
+/* 🔄 Loading Ekranı (Tam Ekran ve Yarı Şeffaf Arka Plan) */
 .loading-container {
     position: fixed;
     top: 0;
@@ -180,9 +180,9 @@ footer a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 1); /* Tam opak beyaz */
+    background: rgba(255, 255, 255, 0.7); /* Hafif şeffaf beyaz */
     z-index: 9999;
-    transition: opacity 0.8s ease, visibility 0.8s ease;
+    transition: opacity 1.2s ease-in-out, visibility 1.2s ease-in-out;
     opacity: 1;
     visibility: visible;
 }
@@ -192,8 +192,6 @@ footer a:hover {
     opacity: 0; /* Tamamen görünmez */
     visibility: hidden;
     pointer-events: none; /* Tıklanabilirliği kapatır */
-}
-
 
 /* Spinning Animasyonu */
 .spinner {
