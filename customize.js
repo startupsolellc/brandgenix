@@ -1,6 +1,3 @@
-let stage;
-let layer;
-
 document.addEventListener("DOMContentLoaded", async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get('name');
@@ -99,7 +96,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             Konva.Node.create(JSON.parse(history[historyStep]), stage);
         }
     }
-
 
     saveHistory(); // initial save
 
@@ -213,7 +209,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             width: width * scaleFactor,
             height: height * scaleFactor,
             pixelRatio: scaleFactor,
-            callback: function(dataURL) {
+            callback: function (dataURL) {
                 const link = document.createElement('a');
                 link.href = dataURL;
                 link.download = 'brandgenix-design.png';
@@ -234,7 +230,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             width: width * scaleFactor,
             height: height * scaleFactor,
             pixelRatio: scaleFactor,
-            callback: function(dataURL) {
+            callback: function (dataURL) {
                 const link = document.createElement('a');
                 link.href = dataURL;
                 link.download = 'brandgenix-design.webp';
@@ -245,3 +241,4 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
         });
     });
+});
