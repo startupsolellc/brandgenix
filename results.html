@@ -3,20 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Şirket İsim Oluşturucu  - Oluşturulan İsimler</title>
-    <meta name="description" content="Benzersiz marka adları ve şirket isimleri yaratın! Modern, kurumsal ve minimalist markalaşma için yapay zeka destekli isim oluşturucu.">
-    <meta name="keywords" content="free brand name generator tool, AI logo maker, AI logo text, brand name maker">
+    <title>Generated Names - StartupSole</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="img/favicon.png">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link id="googleFontsLink" rel="stylesheet" href="" />
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <script src="/functions/env.js"></script>
-    <script type="module" src="/functions/firebase-auth.js"></script>
-    <script type="module" src="script.js"></script>
-
-    
 </head>
 <body class="bg-gradient-to-b from-[#EAEFF7] to-[#F1F4F9] flex flex-col items-center min-h-screen">
     
@@ -25,12 +15,12 @@
     <!-- Create new names button (Header) -->
     <header class="w-full bg-[#EAEFF7] py-4 text-center">
         <button onclick="goHome()" class="bg-blue-600 text-white font-bold py-2 px-6 rounded-full">
-            ⟲ Yeniden Başla
+            ⟲ Create New Names
         </button>
     </header>
  
     <!-- Açıklama Başlığı -->
-    <h2 id="results-title" class="text-lg font-semibold mt-6 text-gray-800 text-center mx-auto px-4">Sizin için üretilen isim seçenekleri</h2>
+    <h2 id="results-title" class="text-lg font-semibold mt-6 text-gray-800 text-center mx-auto px-4">Discover Unique Business Name Ideas for Your Selection</h2>
  
     <!-- Sonuç Kartları -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 p-8 w-full max-w-6xl" id="results-container">
@@ -43,7 +33,7 @@
     <!-- Yeni İsimler Üretme Butonu -->
     <div class="mt-6">
         <button id="generate-new" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full flex items-center">
-            🔄 Yenilerini Getir
+            🔄 Create More
         </button>
     </div>
     
