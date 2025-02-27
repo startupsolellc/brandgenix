@@ -1,49 +1,9 @@
-<header class="w-screen max-w-full bg-white shadow-md py-4 px-4 flex justify-between items-center">
+<header class="w-screen max-w-full bg-white shadow-md py-4 flex justify-center items-center">
     <div class="text-2xl font-bold text-gray-900">
-        <a href="/" class="text-gray-900 no-underline" style="font-family: 'Orbitron', sans-serif; color: #22507d; font-size: 2rem;">NAME GENERATOR</a>
-    </div>
-    <nav class="hidden md:flex flex-grow justify-center space-x-6">
-        <a href="https://startupsole.com" class="text-gray-600 hover:text-gray-900" data-i18n="home">Anasayfa</a>
-        <a href="https://startupsole.com/amerika-sirket-isimleri-secme" class="text-gray-600 hover:text-gray-900" data-i18n="llc_name">LLC İsim Seçme</a>
-        <a href="https://startupsole.com/amerikada-sirket-kurmak-ve-maliyeti" class="text-gray-600 hover:text-gray-900" data-i18n="llc_cost">LLC Maliyeti</a>
-        <a href="https://startupsole.com/yardim/" class="text-gray-600 hover:text-gray-900" data-i18n="faq">SSS</a>
-    </nav>
-    <div class="flex items-center space-x-4">
-        <button id="auth-button" class="auth-button bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700 hidden md:block" data-i18n="login">Google ile Giriş Yap</button>
-        <div id="lang-switcher" class="cursor-pointer text-gray-700 hover:text-gray-900 hidden md:block" data-i18n="language">EN</div>
-        <button id="mobile-menu-button" class="md:hidden text-gray-700 focus:outline-none">
-            <span class="material-icons">menu</span>
-        </button>
+        <a href="/" class="text-gray-900 no-underline" style="font-family: 'Orbitron', sans-serif; color: #22507d; font-size: 2.5rem;">BRANDGENIX</a>
     </div>
 </header>
 
-<!-- Mobil Menü -->
-<div id="mobile-menu" class="hidden absolute top-16 right-4 bg-white shadow-md rounded-lg p-4 w-48 z-50">
-    <a href="https://startupsole.com/" class="block text-gray-600 hover:text-gray-900 py-2" data-i18n="home">Home</a>
-    <a href="https://startupsole.com/amerika-sirket-isimleri-secme/" class="block text-gray-600 hover:text-gray-900 py-2" data-i18n="llc_name">LLC İsim Seçme</a>
-    <a href="https://startupsole.com/amerikada-sirket-kurmak-ve-maliyeti" class="block text-gray-600 hover:text-gray-900 py-2" data-i18n="llc_cost">LLC Maliyeti</a>
-    <a href="https://startupsole.com/yardim" class="block text-gray-600 hover:text-gray-900 py-2" data-i18n="faq">SSS</a>
-    <button id="mobile-auth-button" class="auth-button bg-blue-500 text-white w-full py-2 rounded hover:bg-blue-700 mt-2" data-i18n="login">Google ile Giriş Yap</button>
-    <div id="mobile-lang-switcher" class="cursor-pointer text-gray-700 text-center mt-2" data-i18n="language">EN</div>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const menuButton = document.getElementById("mobile-menu-button");
-        const mobileMenu = document.getElementById("mobile-menu");
-
-        if (menuButton && mobileMenu) {
-            console.log("✅ Mobil menü butonu bulundu!"); // Konsolda görünüyor mu?
-            menuButton.addEventListener("click", function () {
-                console.log("🎯 Mobil menüye tıklandı!"); // Tıklanınca görünüyor mu?
-                mobileMenu.classList.toggle("hidden");
-            });
-        } else {
-            console.error("❌ Mobil menü veya buton bulunamadı!");
-        }
-    });
-</script>
-<script>
-    console.log("🚦 JavaScript yüklendi mi?");
-</script>
-
-<script type="module" src="i18n.js"></script>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+</style>
