@@ -141,28 +141,12 @@ document.addEventListener("DOMContentLoaded", async function () {
             layer.batchDraw();
             saveHistory();
         };
-document.addEventListener("DOMContentLoaded", () => {
-    const applyFontBtn = document.getElementById('applyFontBtn');
-    const googleFontsLink = document.getElementById('googleFontsLink');
-
-    if (!googleFontsLink) {
-        console.error('googleFontsLink ID bulunamadı!');
-        return;
     }
 
-    applyFontBtn.addEventListener('click', () => {
+    document.getElementById('applyFontBtn').addEventListener('click', function () {
         const selectedFont = document.getElementById('fontSelector').value;
-        googleFontsLink.href = `https://fonts.googleapis.com/css2?family=${selectedFont.replace(/ /g, '+')}&display=swap`;
-
-        const canvasText = stage.findOne('Text');
-        if (canvasText) {
-            canvasText.fontFamily(selectedFont);
-            layer.draw();
-        } else {
-            console.error('Canvas üzerinde metin bulunamadı!');
-        }
+        applyFont(selectedFont);
     });
-});
 
     document.getElementById('textColorPicker').addEventListener('input', function () {
         text.fill(this.value);
