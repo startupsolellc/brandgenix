@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const width = 800; // Mevcut canvas genişliği
     const height = 600; // Mevcut canvas yüksekliği
     const stage = new Konva.Stage({
-        container: 'canvas', // HTML element id
+        container: 'canvas-container', // HTML element id
         width: width,
         height: height,
     });
