@@ -180,19 +180,20 @@ footer a:hover {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: rgba(255, 255, 255, 0.9); /* Daha fazla opaklık */
+    background: rgba(255, 255, 255, 1); /* Tam opak beyaz */
     z-index: 9999;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
     opacity: 1;
     visibility: visible;
 }
 
 /* 🔄 Loading Ekranı Kapanırken */
 .loading-container.hidden {
-    opacity: 0;
+    opacity: 0; /* Tamamen görünmez */
     visibility: hidden;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    pointer-events: none; /* Tıklanabilirliği kapatır */
 }
+
 
 /* Spinning Animasyonu */
 .spinner {
