@@ -100,15 +100,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Removed event listeners for Undo, Redo, Opacity, Flip, Duplicate
 
     saveHistory(); // initial save
-
-    // Removed opacity button event listener
-
-    // Removed flip button event listener
-
-    // Removed duplicate button event listener
 
     // Populate font selector with Google Fonts
     async function loadGoogleFonts() {
@@ -148,12 +141,28 @@ document.addEventListener("DOMContentLoaded", async function () {
             layer.batchDraw();
             saveHistory();
         };
+document.addEventListener("DOMContentLoaded", () => {
+    const applyFontBtn = document.getElementById('applyFontBtn');
+    const googleFontsLink = document.getElementById('googleFontsLink');
+
+    if (!googleFontsLink) {
+        console.error('googleFontsLink ID bulunamadı!');
+        return;
     }
 
-    document.getElementById('applyFontBtn').addEventListener('click', function () {
+    applyFontBtn.addEventListener('click', () => {
         const selectedFont = document.getElementById('fontSelector').value;
-        applyFont(selectedFont);
+        googleFontsLink.href = `https://fonts.googleapis.com/css2?family=${selectedFont.replace(/ /g, '+')}&display=swap`;
+
+        const canvasText = stage.findOne('Text');
+        if (canvasText) {
+            canvasText.fontFamily(selectedFont);
+            layer.draw();
+        } else {
+            console.error('Canvas üzerinde metin bulunamadı!');
+        }
     });
+});
 
     document.getElementById('textColorPicker').addEventListener('input', function () {
         text.fill(this.value);
