@@ -192,7 +192,7 @@ footer a:hover {
     opacity: 0; /* Tamamen görünmez */
     visibility: hidden;
     pointer-events: none; /* Tıklanabilirliği kapatır */
-
+ }
 /* Spinning Animasyonu */
 .spinner {
     width: 80px;
