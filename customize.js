@@ -1,3 +1,6 @@
+let stage;
+let layer;
+
 document.addEventListener("DOMContentLoaded", async function () {
     const urlParams = new URLSearchParams(window.location.search);
     const name = urlParams.get('name');
