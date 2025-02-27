@@ -137,7 +137,16 @@ async function generateNames() {
                 }
                 attempts++;
             }
-
+            // 🔄 Loading ekranını güvenli şekilde gizle
+            if (loadingDiv) {
+                loadingDiv.classList.add('hidden');
+            }
+            
+            // 🟢 Ana içeriği güvenli şekilde göster
+            const mainContent = document.getElementById('main-content');
+            if (mainContent) {
+                mainContent.classList.remove('hidden');
+            }
             document.body.removeChild(loadingDiv);
 
             if (uniqueNames.size > 0) {
