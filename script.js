@@ -221,117 +221,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Header ve Footer'ı yükleme fonksiyonu
 document.addEventListener("DOMContentLoaded", function () {
-    // Header'ı yükle ve ardından butonları aktif et
     fetch("header.html")
         .then(response => response.text())
-        .then(data => {
-            document.getElementById("header-placeholder").innerHTML = data;
+        .then(data => document.getElementById("header-placeholder").innerHTML = data);
 
-            // ✅ Mobil menü butonunu aktif et
-            const menuButton = document.getElementById("mobile-menu-button");
-            const mobileMenu = document.getElementById("mobile-menu");
-
-            if (menuButton && mobileMenu) {
-                console.log("✅ Mobil menü butonu bulundu!"); 
-                menuButton.addEventListener("click", function () {
-                    console.log("🎯 Mobil menüye tıklandı!"); 
-                    mobileMenu.classList.toggle("hidden");
-                });
-            } else {
-                console.error("❌ Mobil menü veya buton bulunamadı!");
-            }
-
-            // ✅ Dil değiştirici butonlarını aktif et
-            const langSwitcher = document.getElementById("lang-switcher");
-            const mobileLangSwitcher = document.getElementById("mobile-lang-switcher");
-
-            if (langSwitcher) {
-                console.log("✅ Masaüstü dil değiştirici bulundu!");
-                langSwitcher.addEventListener("click", () => {
-                    console.log("🌐 Masaüstü dil değiştirici tıklandı!");
-                });
-            } else {
-                console.error("❌ Masaüstü dil değiştirici bulunamadı!");
-            }
-
-            if (mobileLangSwitcher) {
-                console.log("✅ Mobil dil değiştirici bulundu!");
-                mobileLangSwitcher.addEventListener("click", () => {
-                    console.log("🌐 Mobil dil değiştirici tıklandı!");
-                });
-            } else {
-                console.error("❌ Mobil dil değiştirici bulunamadı!");
-            }
-        })
-        .catch(error => console.error("❌ Header yüklenirken hata oluştu:", error));
-
-    // Footer'ı yükle
     fetch("footer.html")
         .then(response => response.text())
         .then(data => document.getElementById("footer-placeholder").innerHTML = data);
 });
-// Desteklenen diller
-const supportedLanguages = ['en', 'tr'];
-let currentLanguage = localStorage.getItem('language') || 'en';
-
-// Dil dosyalarını yükleme fonksiyonu
-async function loadLanguage(lang) {
-    console.log(`🚦 loadLanguage fonksiyonu çağrıldı: ${lang}`);
-    
-    try {
-        const response = await fetch(`/locales/${lang}.json`);
-        
-        // ✅ Fetch isteğini kontrol edelim
-        if (!response.ok) {
-            console.error(`❌ Dil dosyası yüklenemedi: ${response.statusText}`);
-            return;
-        }
-
-        const translations = await response.json();
-        console.log(`✅ ${lang} dil dosyası yüklendi:`, translations);
-
-        document.querySelectorAll('[data-i18n]').forEach(element => {
-            const key = element.getAttribute('data-i18n');
-            if (translations[key]) {
-                element.textContent = translations[key];
-                console.log(`✅ ${key} -> ${translations[key]}`);
-            } else {
-                console.warn(`⚠️ Çeviri anahtarı bulunamadı: ${key}`);
-            }
-        });
-
-        // Dil değiştirici butonunu güncelle
-        document.getElementById('lang-switcher').textContent = lang.toUpperCase();
-        document.getElementById('mobile-lang-switcher').textContent = lang.toUpperCase();
-
-        localStorage.setItem('language', lang);
-
-    } catch (error) {
-        console.error('❌ Dil dosyası yükleme hatası:', error);
-    }
-}
-
-// Test: Sayfa yüklendiğinde otomatik olarak dil dosyasını yükle
-console.log("🚦 Otomatik olarak dil yükleme başlatılıyor...");
-loadLanguage('en'); // İlk test için İngilizce dil dosyasını yükleyelim
-
-
-// Dil değiştirici butonlarına tıklama olayları
-if (langSwitcher) {
-    langSwitcher.addEventListener("click", () => {
-        console.log("🌐 Masaüstü dil değiştirici tıklandı!");
-        currentLanguage = currentLanguage === 'en' ? 'tr' : 'en';
-        loadLanguage(currentLanguage);
-    });
-}
-
-if (mobileLangSwitcher) {
-    mobileLangSwitcher.addEventListener("click", () => {
-        console.log("🌐 Mobil dil değiştirici tıklandı!");
-        currentLanguage = currentLanguage === 'en' ? 'tr' : 'en';
-        loadLanguage(currentLanguage);
-    });
-}
-
-// Sayfa yüklendiğinde mevcut dili yükle
-loadLanguage(currentLanguage);
