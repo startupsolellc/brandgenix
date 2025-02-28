@@ -119,33 +119,33 @@
     </div>
 </div>
     <!-- Additional Content End -->
-    <!-- FAQ Section -->
-<div class="max-w-4xl w-full mx-auto mt-16">
-    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Frequently Asked Questions</h2>
-    <div class="space-y-4">
-        <div class="bg-white shadow-md p-4 rounded-md">
-            <h3 class="text-lg font-medium text-gray-800">1. How does BrandGenix generate business names?</h3>
-            <p class="text-gray-600 mt-2">BrandGenix uses advanced AI algorithms to create unique and brandable business names based on the keywords you provide.</p>
+<!-- Accordion FAQ -->
+<div class="max-w-4xl w-full mx-auto bg-white p-8 rounded-lg shadow-md mt-8">
+    <h1 class="text-4xl font-bold text-gray-800 mb-6 text-center">Frequently Asked Questions</h1>
+
+    <div class="space-y-4" x-data="{ open: null }">
+        <div class="border-b" x-data="{ open: false }">
+            <button @click="open = !open" class="w-full text-left py-4 flex justify-between items-center">
+                <span class="text-lg font-medium text-gray-800">1. How does BrandGenix generate business names?</span>
+                <svg x-show="!open" class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                <svg x-show="open" class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div x-show="open" class="text-gray-600 pl-4 pb-4">BrandGenix uses advanced AI algorithms to create unique and brandable business names based on the keywords you provide.</div>
         </div>
-        <div class="bg-white shadow-md p-4 rounded-md">
-            <h3 class="text-lg font-medium text-gray-800">2. Can I customize the generated names?</h3>
-            <p class="text-gray-600 mt-2">Yes! You can use our built-in canvas editor to modify the design, style, and appearance of the generated names.</p>
+        
+        <div class="border-b" x-data="{ open: false }">
+            <button @click="open = !open" class="w-full text-left py-4 flex justify-between items-center">
+                <span class="text-lg font-medium text-gray-800">2. Can I customize the generated names?</span>
+                <svg x-show="!open" class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+                <svg x-show="open" class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            <div x-show="open" class="text-gray-600 pl-4 pb-4">Yes! You can use our built-in canvas editor to modify the design, style, and appearance of the generated names.</div>
         </div>
-        <div class="bg-white shadow-md p-4 rounded-md">
-            <h3 class="text-lg font-medium text-gray-800">3. In which formats can I download my designs?</h3>
-            <p class="text-gray-600 mt-2">You can download your customized designs in both PNG and SVG formats for versatile use.</p>
-        </div>
-        <div class="bg-white shadow-md p-4 rounded-md">
-            <h3 class="text-lg font-medium text-gray-800">4. Is BrandGenix free to use?</h3>
-            <p class="text-gray-600 mt-2">Yes, BrandGenix offers a free version with essential features. Additional premium features may be available with a subscription.</p>
-        </div>
-        <div class="bg-white shadow-md p-4 rounded-md">
-            <h3 class="text-lg font-medium text-gray-800">5. Can I use the generated names for my business legally?</h3>
-            <p class="text-gray-600 mt-2">While BrandGenix generates unique names, we recommend performing a trademark search to ensure the name's availability in your region.</p>
-        </div>
+
+        <!-- Faq Section end -->
     </div>
 </div>
-    <!-- FAQ Section End-->
+
 
     <div id="footer-placeholder"></div>
 </body>
