@@ -3,6 +3,12 @@ function goHome() {
     window.location.href = "index.html";
 }
 
+// ATab functions tailwind
+function showTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById(tabId).classList.remove('hidden');
+    }
+
 // Önceden üretilen isimleri saklamak için değişken
 let previousNames = new Set();
 const netlifyFontsApiUrl = "/.netlify/functions/get-fonts"; // Netlify Functions API
