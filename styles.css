@@ -299,7 +299,7 @@ footer {
             100% { background-position: 0% 50%; }
         }
         .animate-gradient {
-            background: linear-gradient(120deg, #c1d8ff, #e4e6ea, #f4c1da, #45b2ca);
+            background: linear-gradient(120deg, #c1d8ff, #e4e6ea, #c6c6f5, #45b2ca);
             background-size: 300% 300%;
             animation: gradientAnimation 19s infinite alternate;
         }
